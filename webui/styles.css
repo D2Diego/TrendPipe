@@ -1,0 +1,439 @@
+header[data-testid="stHeader"],
+div[data-testid="stToolbar"],
+div[data-testid="stDecoration"],
+div[data-testid="stStatusWidget"],
+div[data-testid="stSkillsNudgeAnchor"],
+div[data-testid="stSkillsNudge"] {
+    display: none !important;
+}
+
+div[data-testid="stMainBlockContainer"] {
+    padding-top: 0.5rem !important;
+}
+
+h1 {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* Streamlit Defaultly allows the help area in the label to occupy the remaining width, resulting in the question mark button being posted to the right of the control.
+   Helps to suggest semantic subordination to label text, thus eliminating the stretching of the area and allowing for the use of fixed spacing
+   Question mark close to tag; no help The argument label does not exist div，It won't be affected. */
+label[data-testid="stWidgetLabel"] > div {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    margin-left: 0.35rem !important;
+}
+
+/* The sound is represented by a narrow panel in the four-column layout.Streamlit Yes. stretch Mode default to single segment
+   button close to half-line width, three options will be replaced by two lines; here only the control will be tri parsed and compressed
+   Horizontal margins, keep other segmented control The original size remains unchanged. */
+div[class*="st-key-voice_mode_control"] [role="radiogroup"] {
+    flex-wrap: nowrap !important;
+}
+
+div[class*="st-key-voice_mode_control"] [role="radiogroup"] > button {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    padding: 0.25rem !important;
+}
+
+div[class*="st-key-voice_mode_control"] [role="radiogroup"] > button p {
+    overflow: hidden !important;
+    font-size: 0.8rem !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+
+/* The top brand area places project names and weaker version numbers in the same baseline. Item name remains the only page h1；
+   The version number itself serves as a link to the project, avoiding the addition of separate icons to interfere with the visual level of the title. */
+.mpt-brand {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    color: inherit;
+    line-height: 1.15;
+}
+
+/* Streamlit Custom h1 Adds a layer of text containers, and the actual line layout needs to function
+   This layer is used to stabilize the space between the project name and the version number. */
+.mpt-brand > span:first-child {
+    display: flex;
+    align-items: baseline;
+    gap: 0.65rem;
+    min-width: 0;
+}
+
+.mpt-brand__name {
+    min-width: 0;
+    font-size: 2.75rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+
+.mpt-brand__version {
+    flex: 0 0 auto;
+    font-size: 1rem;
+    font-weight: 600;
+    color: inherit !important;
+    opacity: 0.72;
+    text-decoration: none !important;
+    white-space: nowrap;
+}
+
+.mpt-brand__version:hover {
+    color: inherit !important;
+    opacity: 1;
+    text-decoration: underline !important;
+    text-underline-offset: 0.18em;
+}
+
+.mpt-brand__version:focus-visible {
+    outline: 2px solid rgba(255, 75, 75, 0.48);
+    outline-offset: 2px;
+}
+
+/* The new version of the alarm only appears when there is an official update. Use text links instead of buttons or banners.
+   Keep it detectable without taking over the visual layer of the project title and the main operational entrance. */
+.mpt-brand__update {
+    flex: 0 0 auto;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #d94848 !important;
+    text-decoration: none !important;
+    white-space: nowrap;
+}
+
+.mpt-brand__update:hover {
+    text-decoration: underline !important;
+    text-underline-offset: 0.18em;
+}
+
+.mpt-brand__update:focus-visible {
+    outline: 2px solid rgba(255, 75, 75, 0.48);
+    outline-offset: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .mpt-brand__update {
+        color: #ff6b6b !important;
+    }
+}
+
+/* Streamlit It's automatic. h1 Adds a title anchor. The brand area already has version number links, extra
+   The title anchor has no real value, so it is hidden in this heading to avoid redundant icons on the narrow screen. */
+.mpt-brand > [data-testid="stHeaderActionElements"] {
+    display: none !important;
+}
+
+/* Top task entry by st.fragment This post is part of our special coverage Global Voices 2011.Streamlit Yes. Fragment Auto Generate One
+   The whole line. LayoutWrapper。Only the packaging is constricted here to ensure that the right-hand operating area is organized closely by content. */
+.st-key-top_bar_actions
+    > div[data-testid="stLayoutWrapper"]:first-child {
+    flex: 0 0 auto !important;
+    width: fit-content !important;
+}
+
+@media (max-width: 700px) {
+    .mpt-brand > span:first-child {
+        gap: 0.45rem;
+    }
+
+    .mpt-brand__name {
+        font-size: 1.875rem;
+    }
+
+    .mpt-brand__version {
+        font-size: 0.875rem;
+    }
+
+    .mpt-brand__update {
+        font-size: 0.75rem;
+    }
+
+}
+
+@media (max-width: 480px) {
+    .mpt-brand > span:first-child {
+        gap: 0.35rem;
+    }
+
+    .mpt-brand__name {
+        font-size: 1.5rem;
+    }
+
+    .mpt-brand__version {
+        font-size: 0.75rem;
+    }
+
+    .mpt-brand__update {
+        font-size: 0.6875rem;
+    }
+
+}
+
+/* Advanced settings are content development portals, not execution operations. Reservations Streamlit Native expander Yes.
+   Semantics interact with keyboards only advanced_settings_ key The local container removes the card border.
+   To avoid being close to each other. AI Generates buttons to create visual interference with two successive large buttons. */
+div[class*="st-key-advanced_settings_"] details {
+    border: 0 !important;
+    border-radius: 4px !important;
+    background: transparent !important;
+}
+
+div[class*="st-key-advanced_settings_"] details > summary {
+    min-height: 2.25rem !important;
+    padding: 0.35rem 0.25rem !important;
+    color: inherit !important;
+    opacity: 0.78;
+}
+
+div[class*="st-key-advanced_settings_"] details > summary:hover {
+    opacity: 1;
+    background: color-mix(
+        in srgb,
+        currentColor 6%,
+        transparent
+    ) !important;
+}
+
+/* After expansion, the title and content are shared in the same context and visually form a continuous area; the folding remains the same
+   Transparent light access, with no additional page level. */
+div[class*="st-key-advanced_settings_"] details[open] > summary {
+    border-radius: 4px 4px 0 0 !important;
+    opacity: 1;
+    background: color-mix(
+        in srgb,
+        currentColor 5%,
+        transparent
+    ) !important;
+}
+
+div[class*="st-key-advanced_settings_"] details > summary:focus {
+    background: color-mix(
+        in srgb,
+        currentColor 5%,
+        transparent
+    ) !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Keyboard operation uses header underline as focus feedback, without drawing any outer frames to ensure that the area is visible
+   is completely borderless and still allows keyboard users to recognize the current focus. */
+div[class*="st-key-advanced_settings_"] details > summary:focus-visible {
+    box-shadow: none !important;
+}
+
+div[class*="st-key-advanced_settings_"] details > summary:focus-visible p {
+    text-decoration: underline !important;
+    text-underline-offset: 0.18em;
+}
+
+div[class*="st-key-advanced_settings_"] details > summary p {
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+}
+
+/* Content area is seamlessly linked to the extended title, not using any border, expressed only by unifying background and inner margins
+   Controls are subordinate to advanced settings and avoid the appearance of embedded cards or split two-part structures. */
+div[class*="st-key-advanced_settings_"] div[data-testid="stExpanderDetails"] {
+    margin-top: 0 !important;
+    padding: 0.75rem 0.75rem 0.85rem 1rem !important;
+    border: 0 !important;
+    border-radius: 0 0 4px 4px !important;
+    background: color-mix(
+        in srgb,
+        currentColor 5%,
+        transparent
+    ) !important;
+}
+
+/* Task management popover Fixed width is required to avoid empty, list status switching
+   Repeatedly changing width causes page shaking. The width remains bound by the eye and is compatible with the narrow screen. */
+div[data-testid="stPopoverBody"] {
+    width: min(860px, calc(100vw - 48px)) !important;
+    max-width: min(860px, calc(100vw - 48px)) !important;
+}
+
+div[data-testid="stPopoverBody"] div[data-testid="stVerticalBlock"] {
+    width: 100% !important;
+}
+
+/* Other Organiser Streamlit Original layout, only light compression to avoid excessiveness in each row.
+   Pass. task_row_ key Limit the range to avoid affecting other configuration panels container。 */
+div[class*="st-key-task_row_"] {
+    margin-bottom: 0.18rem !important;
+}
+
+div[class*="st-key-task_row_"] div[data-testid="stVerticalBlockBorderWrapper"] {
+    padding: 0.18rem 0.6rem !important;
+}
+
+div[class*="st-key-task_row_"] div[data-testid="stElementContainer"],
+div[class*="st-key-task_row_"] div[data-testid="stMarkdown"] {
+    margin-bottom: 0 !important;
+}
+
+div[class*="st-key-task_row_"] div[data-testid="stMarkdown"] {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 1.75rem !important;
+}
+
+div[class*="st-key-task_row_"] div[data-testid="stMarkdownContainer"] {
+    display: flex !important;
+    align-items: center !important;
+    margin-bottom: 0 !important;
+}
+
+div[class*="st-key-task_row_"] p {
+    margin-bottom: 0 !important;
+    line-height: 1.25 !important;
+}
+
+div[class*="st-key-task_row_"] button[kind="secondary"] {
+    position: relative !important;
+    min-height: 1.75rem !important;
+    height: 1.75rem !important;
+    padding: 0.1rem 0.3rem !important;
+}
+
+/* Button text is hidden.Streamlit Keeps the default space between icons and text, resulting in
+   Moves a separate icon to the left. Clears the spacing and fills the content layer with a button to ensure that the operating icons are strictly centered. */
+div[class*="st-key-task_row_"]
+    button[kind="secondary"]
+    span[data-has-shortcut] {
+    width: 100% !important;
+    gap: 0 !important;
+    justify-content: center !important;
+}
+
+/* Inline operations keep accessable button names, but only icons are visible. Visible with Screen Reader
+   Hide ways, not display:none，Make sure every operation is read correctly. */
+div[class*="st-key-task_row_"] button[kind="secondary"] p {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+}
+
+
+/* Adjust four settings to medium width 2×2，Avoids the too narrowness of each column leading to frequent row breaks of labels and buttons. */
+@media (min-width: 701px) and (max-width: 1100px) {
+    .mpt-brand__name {
+        font-size: 2.25rem;
+    }
+
+    .mpt-brand__version {
+        font-size: 0.875rem;
+    }
+
+    div[class*="st-key-main_settings_grid"]
+        > div[data-testid="stLayoutWrapper"]
+        > div[data-testid="stHorizontalBlock"] {
+        flex-wrap: wrap !important;
+        gap: 1rem !important;
+    }
+
+    div[class*="st-key-main_settings_grid"]
+        > div[data-testid="stLayoutWrapper"]
+        > div[data-testid="stHorizontalBlock"]
+        > div[data-testid="stColumn"] {
+        flex: 1 1 calc(50% - 0.5rem) !important;
+        width: calc(50% - 0.5rem) !important;
+        min-width: calc(50% - 0.5rem) !important;
+    }
+}
+
+/* Move side hides the desktop header and resets the task line to the theme + MetaInfo + Operation's compact structure. */
+@media (max-width: 700px) {
+    div[class*="st-key-task_table_header_"] {
+        display: none !important;
+    }
+
+    div[class*="st-key-task_row_"]
+        > div[data-testid="stLayoutWrapper"]
+        > div[data-testid="stHorizontalBlock"] {
+        display: grid !important;
+        grid-template-columns: auto minmax(0, 1fr) auto auto;
+        gap: 0.2rem 0.5rem !important;
+        align-items: center !important;
+    }
+
+    div[class*="st-key-task_row_"]
+        > div[data-testid="stLayoutWrapper"]
+        > div[data-testid="stHorizontalBlock"]
+        > div[data-testid="stColumn"] {
+        width: auto !important;
+        min-width: 0 !important;
+    }
+
+    div[class*="st-key-task_row_"]
+        > div[data-testid="stLayoutWrapper"]
+        > div[data-testid="stHorizontalBlock"]
+        > div[data-testid="stColumn"]:nth-child(1) {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    div[class*="st-key-task_row_"]
+        > div[data-testid="stLayoutWrapper"]
+        > div[data-testid="stHorizontalBlock"]
+        > div[data-testid="stColumn"]:nth-child(2) {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    div[class*="st-key-task_row_"]
+        > div[data-testid="stLayoutWrapper"]
+        > div[data-testid="stHorizontalBlock"]
+        > div[data-testid="stColumn"]:nth-child(3) {
+        grid-column: 1 / 4;
+        grid-row: 1;
+        font-weight: 600;
+    }
+
+    div[class*="st-key-task_row_"]
+        > div[data-testid="stLayoutWrapper"]
+        > div[data-testid="stHorizontalBlock"]
+        > div[data-testid="stColumn"]:nth-child(4) {
+        grid-column: 3;
+        grid-row: 2;
+    }
+
+    div[class*="st-key-task_row_"]
+        > div[data-testid="stLayoutWrapper"]
+        > div[data-testid="stHorizontalBlock"]
+        > div[data-testid="stColumn"]:nth-child(5) {
+        grid-column: 4;
+        grid-row: 1 / 3;
+    }
+
+    div[class*="st-key-task_row_"]
+        > div[data-testid="stLayoutWrapper"]
+        > div[data-testid="stHorizontalBlock"]
+        > div[data-testid="stColumn"]:nth-child(5)
+        div[data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 0.15rem !important;
+    }
+
+    div[class*="st-key-task_row_"]
+        > div[data-testid="stLayoutWrapper"]
+        > div[data-testid="stHorizontalBlock"]
+        > div[data-testid="stColumn"]:nth-child(5)
+        div[data-testid="stColumn"] {
+        flex: 1 1 0 !important;
+        width: auto !important;
+        min-width: 1.75rem !important;
+    }
+}
