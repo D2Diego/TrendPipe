@@ -1,0 +1,164 @@
+import json
+from pathlib import Path
+import unittest
+
+import numpy as np
+
+from app.models.schema import SubtitleRequest, VideoParams
+from app.services import video
+
+
+class TestSubtitleBackgroundSettings(unittest.TestCase):
+    def test_subtitle_background_is_disabled_by_default(self):
+        """New jobs and separate subtitle interfaces should not be used to render subtitle background when the user is not specified."""
+        video_params = VideoParams(video_subject="default subtitle background")
+        subtitle_request = SubtitleRequest(video_script="default subtitle background")
+
+        self.assertFalse(video_params.text_background_color)
+        self.assertFalse(subtitle_request.text_background_color)
+
+    def test_all_locales_include_subtitle_background_labels(self):
+        """
+        WebUI After adding subtitle background switches and colour selections, all existing languages must be matched
+        Translation key，Avoid some language interfaces to show directly inside English key。
+        """
+        i18n_dir = Path(__file__).parent.parent.parent / "webui" / "i18n"
+        required_keys = {
+            "Enable Subtitle Background",
+            "Subtitle Background Color",
+            "Subtitle Colors Are Indistinguishable",
+            "Subtitle Font Does Not Support Text",
+            "No Voice",
+        }
+
+        for locale_file in i18n_dir.glob("*.json"):
+            with self.subTest(locale=locale_file.name):
+                data = json.loads(locale_file.read_text(encoding="utf-8"))
+                translations = data.get("Translation", {})
+                missing_keys = required_keys - translations.keys()
+
+                self.assertEqual(missing_keys, set())
+
+    def test_video_params_accepts_disabled_and_colored_subtitle_background(self):
+        """
+        UI It'll be passed back by switch. False or colour string. Check here schema Still
+        Accept both values to avoid subsequent dependency or type-adjusted damage WebUI And a contract with synthetic logic.
+        """
+        base_params = {
+            "video_subject": "subtitle background smoke",
+        }
+
+        disabled_params = VideoParams(
+            **base_params,
+            text_background_color=False,
+        )
+        colored_params = VideoParams(
+            **base_params,
+            text_background_color="#123456",
+        )
+
+        self.assertFalse(disabled_params.text_background_color)
+        self.assertEqual(colored_params.text_background_color, "#123456")
+
+    def test_visible_text_position_centers_actual_mask_bounds(self):
+        """
+        TextClip The canvas will contain font lines taller baseline Blank, right in the middle of the canvas.
+        Subtitles look down in the background. Here's a fake. mask Simulate " Visible Text Pixels "
+        In the lower half of the canvas, verify helper Recalculate by real visible area y。
+        """
+
+        class FakeMask:
+            def get_frame(self, _):
+                mask = np.zeros((46, 100), dtype=float)
+                mask[12:46, 10:90] = 1.0
+                return mask
+
+        class FakeTextClip:
+            w = 100
+            h = 46
+            mask = FakeMask()
+
+        x, y = video._get_visible_center_position(
+            FakeTextClip(), container_width=100, container_height=93
+        )
+
+        self.assertEqual(x, 0)
+        # Visible pixel height 34px，Put it on. 93px The packagings shall be about to go up or down 29px；
+        # Because... mask Top from 12px Start, so... TextClip It needs to move up to 18px。
+        self.assertEqual(y, 18)
+
+    def test_detects_indistinguishable_subtitle_colors(self):
+        invisible_params = VideoParams(
+            video_subject="subtitle color validation",
+            text_fore_color="#000000",
+            text_background_color="#000000",
+            stroke_color="#000000",
+            stroke_width=1.5,
+        )
+        different_outline_params = VideoParams(
+            video_subject="subtitle color validation",
+            text_fore_color="#000000",
+            text_background_color="#000000",
+            stroke_color="#FFFFFF",
+            stroke_width=1.5,
+        )
+        background_disabled_params = VideoParams(
+            video_subject="subtitle color validation",
+            text_fore_color="#000000",
+            text_background_color=False,
+            stroke_color="#000000",
+            stroke_width=1.5,
+        )
+
+        self.assertTrue(
+            video.subtitle_colors_are_indistinguishable(invisible_params)
+        )
+        self.assertTrue(
+            video.subtitle_colors_are_indistinguishable(different_outline_params)
+        )
+        self.assertFalse(
+            video.subtitle_colors_are_indistinguishable(background_disabled_params)
+        )
+
+    def test_detects_font_without_chinese_glyphs(self):
+        fonts_dir = (
+            Path(__file__).parent.parent.parent / "resource" / "fonts"
+        )
+
+        self.assertFalse(
+            video.subtitle_font_supports_text(
+                str(fonts_dir / "BeVietnamPro-Bold.ttf"), "Artificial intelligence changes life."
+            )
+        )
+        self.assertTrue(
+            video.subtitle_font_supports_text(
+                str(fonts_dir / "MicrosoftYaHeiBold.ttc"), "Artificial intelligence changes life."
+            )
+        )
+        self.assertTrue(
+            video.subtitle_font_supports_text(
+                str(fonts_dir / "BeVietnamPro-Bold.ttf"), "Artificial intelligence"
+            )
+        )
+
+    def test_wrap_text_keeps_closing_punctuation_with_text(self):
+        """
+        When the Chinese long sentence is replaced by a character, the closed point of the period cannot be a single line, otherwise the subtitle background
+        It's gonna be high by a single dot. Here's the border of the Chinese long sentence with the big word.
+        """
+        font_path = (
+            Path(__file__).parent.parent.parent
+            / "resource"
+            / "fonts"
+            / "MicrosoftYaHeiBold.ttc"
+        )
+
+        wrapped_text, _ = video.wrap_text(
+            "If you adjust the characters, the Chinese pen can't be overshadowed by the black background.",
+            max_width=1642,
+            font=str(font_path),
+            fontsize=72,
+        )
+
+        self.assertNotIn("\n。", wrapped_text)
+        self.assertIn("Block.", wrapped_text)
