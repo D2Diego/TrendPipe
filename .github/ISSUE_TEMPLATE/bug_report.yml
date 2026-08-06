@@ -1,0 +1,69 @@
+name: 🐛 Bug Report
+description: Report an error or unexpected behavior
+title: "[Bug]: "
+labels:
+  - bug
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Before submitting an issue, please read the [system requirements and setup instructions](https://github.com/D2Diego/TrendPipe#system-requirements-).**
+
+  - type: textarea
+    attributes:
+      label: Current Behavior
+      description: Describe the issue you are experiencing.
+      placeholder: When I perform..., the application shows...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Steps to Reproduce
+      description: Describe in detail how to reproduce the issue.
+      placeholder: |
+        1. Open...
+        2. Click...
+        3. Observe the error...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Error Logs
+      description: Provide relevant errors or logs without including sensitive information.
+      placeholder: Error messages, logs, or screenshots...
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Python Version
+      description: The Python version you are using.
+      placeholder: v3.11.0, v3.13.0, etc.
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Operating System
+      description: Your operating system and version.
+      placeholder: macOS 14.1, Windows 11, Ubuntu 22.04, etc.
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Application Version
+      description: The application version or commit you are using.
+      placeholder: v1.2.2 or a commit SHA
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional Information
+      description: Add any screenshots, videos, or other useful context.
+    validations:
+      required: false

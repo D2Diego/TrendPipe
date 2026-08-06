@@ -1,0 +1,22 @@
+name: ✨ Feature Request
+description: Suggest a new idea or improvement
+title: "[Feature]: "
+labels:
+  - enhancement
+
+body:
+  - type: textarea
+    attributes:
+      label: Problem Statement
+      description: Describe the problem or need you want to address.
+      placeholder: I encountered... while using this project.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Proposed Solution
+      description: Describe your suggested solution or implementation.
+      placeholder: Consider adding... to address this problem.
+    validations:
+      required: true
