@@ -1,0 +1,79 @@
+# Notes:
+# 1. Project dependencies are defined in pyproject.toml.
+# 2. uv.lock pins the runtime environment so every machine resolves the same versions.
+[build-system]
+requires = ["hatchling>=1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "moneyprinterturbo"
+version = "1.3.3"
+description = "Generate short videos from prompts, local assets, subtitles, and TTS."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "moviepy==2.2.1",
+    "streamlit==1.59.1",
+    "streamlit-tour==1.1.0",
+    "edge-tts==7.2.7",
+    "fastapi==0.136.3",
+    "uvicorn==0.32.1",
+    "openai==2.24.0",
+    "faster-whisper==1.1.0",
+    "loguru==0.7.3",
+    "dashscope==1.20.14",
+    "azure-cognitiveservices-speech==1.41.1",
+    "redis==5.2.0",
+    "python-multipart==0.0.27",
+    "pyyaml==6.0.3",
+    "requests==2.33.1",
+    "packaging==24.2",
+    "socksio==1.0.0",
+    "pydub==0.25.1",
+    "audioop-lts==0.2.2; python_version >= '3.13'",
+    "litellm==1.86.2",
+    "google-genai==2.11.0",
+]
+
+[project.optional-dependencies]
+# Optional TwelveLabs (https://twelvelabs.io) video-understanding/embedding
+# integration. Only needed when `twelvelabs_api_keys` is configured; install
+# with `uv sync --extra twelvelabs`.
+twelvelabs = [
+    "twelvelabs>=1.2.8",
+]
+
+[dependency-groups]
+dev = [
+    "coverage==7.15.1",
+    "pytest==9.1.1",
+    "ruff==0.15.21",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# The WebUI must add the project root to sys.path before importing the app package.
+"webui/Main.py" = ["E402"]
+
+[tool.coverage.run]
+# Branch coverage identifies conditions whose alternative path was never exercised,
+# making it a stronger CI quality baseline than line coverage alone. The application
+# services and all production entry points are included so coverage reflects the
+# complete runtime rather than a subset of modules.
+branch = true
+source = ["app", "cli", "webui", "main"]
+
+[tool.coverage.report]
+# Complete test runs on Python 3.11 and 3.13 achieve more than 70.4% branch coverage.
+# A 70% baseline protects failure-state, asynchronous publish-recovery, and atomic
+# Redis-update behavior while allowing small platform-specific branch differences.
+fail_under = 70
+show_missing = true
+skip_covered = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.uv]
+# This project runs as an application and is not installed as a publishable Python package.
+package = false

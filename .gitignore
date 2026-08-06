@@ -1,0 +1,37 @@
+.DS_Store
+/config.toml
+/config.toml.bak
+/storage/
+/.idea/
+/app/services/__pycache__
+/app/__pycache__/
+/app/config/__pycache__/
+/app/models/__pycache__/
+/app/utils/__pycache__/
+/*/__pycache__/*
+.vscode
+/**/.streamlit
+__pycache__
+logs/
+
+node_modules
+# Model directory
+/models/
+./models/*
+
+venv/
+.venv
+
+# Debug and test files
+CLAUDE.md
+debug/
+debug_*.py
+test_*.py
+!test/services/test_*.py
+!test/test_*.py
+streamlit.log
+.coverage
+coverage.xml
+htmlcov/
+.codegraph
+.understand-anything
