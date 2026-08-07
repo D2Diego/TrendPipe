@@ -28,3 +28,10 @@ logs/
 
 storage/
 config.toml
+
+# Frontend dependencies and local build output are recreated in the Node stage.
+webui-react/node_modules/
+webui-react/dist/
+webui-react/*.tsbuildinfo
+webui-react/vite.config.js
+webui-react/vite.config.d.ts

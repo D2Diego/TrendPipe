@@ -8,20 +8,9 @@
 #
 # This file overrides the default docker-compose.yml to:
 #   - Build with Dockerfile.gpu (NVIDIA CUDA base image)
-#   - Attach GPU devices to both services because video generation can run in
-#     either the WebUI process or the API process
+#   - Build only the FastAPI generation service with CUDA
+#   - Keep the React/Nginx webui service on the normal lightweight image
 services:
-  webui:
-    build:
-      context: .
-      dockerfile: Dockerfile.gpu
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
   api:
     build:
       context: .

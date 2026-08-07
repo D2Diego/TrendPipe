@@ -1,4 +1,4 @@
-x-common-volumes: &common-volumes
+x-api-volumes: &api-volumes
   - ./:/MoneyPrinterTurbo
 
 services:
@@ -9,8 +9,15 @@ services:
     container_name: "moneyprinterturbo-webui"
     ports:
       - "127.0.0.1:8501:8501"
-    command: [ "streamlit", "run", "./webui/Main.py", "--server.address=0.0.0.0", "--server.port=8501", "--browser.serverAddress=127.0.0.1", "--server.enableCORS=True", "--browser.gatherUsageStats=False", "--client.toolbarMode=minimal", "--logger.hideWelcomeMessage=True", "--server.showEmailPrompt=False" ]
-    volumes: *common-volumes
+    command: [ "nginx", "-g", "daemon off;" ]
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/', timeout=3)" ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
     restart: always
   api:
     build:
@@ -20,5 +27,11 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
     command: [ "python3", "main.py" ]
-    volumes: *common-volumes
+    volumes: *api-volumes
+    healthcheck:
+      test: [ "CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/docs', timeout=3)" ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
     restart: always

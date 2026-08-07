@@ -44,9 +44,8 @@ RUN python3 -m pip install --no-cache-dir \
 # Now copy the rest of the codebase into the image
 COPY . .
 
-# Expose the port the app runs on
-EXPOSE 8501
+# The GPU image is now used only by the FastAPI generation service. The React
+# frontend remains on the lightweight Nginx image from Dockerfile.
+EXPOSE 8080
 
-# The container must listen on 0.0.0.0; the Docker port mapping still limits
-# host access to 127.0.0.1. browser.serverAddress does not replace server.address.
-CMD ["streamlit", "run", "./webui/Main.py", "--server.address=0.0.0.0", "--server.port=8501", "--browser.serverAddress=127.0.0.1", "--server.enableCORS=True", "--browser.gatherUsageStats=False", "--client.toolbarMode=minimal", "--logger.hideWelcomeMessage=True", "--server.showEmailPrompt=False"]
+CMD ["python3", "main.py"]

@@ -1,4 +1,20 @@
-# Use an official Python runtime as a parent image
+# Build the production React application. The locale JSON files intentionally
+# remain shared with the legacy UI until the i18n migration is completed.
+FROM node:20-alpine AS frontend-build
+
+WORKDIR /build/webui-react
+
+COPY webui-react/package.json webui-react/package-lock.json ./
+RUN npm ci
+
+COPY webui-react/ ./
+COPY webui/i18n/ /build/webui/i18n/
+
+ARG VITE_APP_VERSION=1.3.3
+RUN VITE_APP_VERSION="$VITE_APP_VERSION" npm run build
+
+# The runtime image contains both Nginx (used by the webui service) and Python
+# (used by the api service). This keeps the existing single-image release flow.
 FROM python:3.11-slim-bullseye
 
 # Set the working directory in the container
@@ -26,7 +42,8 @@ RUN if [ "$DOCKER_BUILD_MIRROR" = "china" ]; then \
             echo "Attempt $i: installing system dependencies"; \
             apt-get update && apt-get install -y --no-install-recommends \
                 git \
-                ffmpeg && break || \
+                ffmpeg \
+                nginx && break || \
             echo "Attempt $i failed, retrying..."; \
             if [ "$DOCKER_BUILD_MIRROR" = "china" ] && [ $i -eq 3 ]; then \
                 echo "Aliyun mirror failed, switching to Tsinghua mirror"; \
@@ -35,14 +52,16 @@ RUN if [ "$DOCKER_BUILD_MIRROR" = "china" ]; then \
                 ( \
                     apt-get update && apt-get install -y --no-install-recommends \
                         git \
-                        ffmpeg || \
+                        ffmpeg \
+                        nginx || \
                     ( \
                         echo "Tsinghua mirror failed, switching to default Debian mirror"; \
                         sed -i 's/mirrors.tuna.tsinghua.edu.cn/deb.debian.org/g' /etc/apt/sources.list && \
                         sed -i 's/mirrors.tuna.tsinghua.edu.cn\/debian-security/security.debian.org/g' /etc/apt/sources.list; \
                         apt-get update && apt-get install -y --no-install-recommends \
                             git \
-                            ffmpeg; \
+                            ffmpeg \
+                            nginx; \
                     ); \
                 ); \
             fi; \
@@ -65,18 +84,22 @@ RUN if [ "$PIP_USE_OFFICIAL" = "1" ]; then \
 # Now copy the rest of the codebase into the image
 COPY . .
 
-# Expose the port the app runs on
-EXPOSE 8501
+# Install the immutable frontend artifact and the same-origin reverse proxy.
+COPY --from=frontend-build /build/webui-react/dist/ /usr/share/nginx/html/
+COPY deploy/nginx-react.conf /etc/nginx/conf.d/default.conf
 
-# The container must listen on 0.0.0.0; the Docker port mapping still limits
-# host access to 127.0.0.1. browser.serverAddress does not replace server.address.
-CMD ["streamlit", "run", "./webui/Main.py", "--server.address=0.0.0.0", "--server.port=8501", "--browser.serverAddress=127.0.0.1", "--server.enableCORS=True", "--browser.gatherUsageStats=False", "--client.toolbarMode=minimal", "--logger.hideWelcomeMessage=True", "--server.showEmailPrompt=False"]
+# Nginx serves the React UI on 8501; the compose api service overrides CMD and
+# serves FastAPI on 8080 from the same image.
+EXPOSE 8501 8080
+
+CMD ["nginx", "-g", "daemon off;"]
 
 # 1. Build the Docker image using the following command
 # docker build -t moneyprinterturbo .
 
 # 2. Run the Docker container using the following command
 ## For Linux or MacOS:
-# docker run -v $(pwd)/config.toml:/MoneyPrinterTurbo/config.toml -v $(pwd)/storage:/MoneyPrinterTurbo/storage -p 127.0.0.1:8501:8501 moneyprinterturbo
+# Use docker compose so Nginx can proxy API and generated-video requests to
+# the companion api service.
 ## For Windows:
-# docker run -v ${PWD}/config.toml:/MoneyPrinterTurbo/config.toml -v ${PWD}/storage:/MoneyPrinterTurbo/storage -p 127.0.0.1:8501:8501 moneyprinterturbo
+# Use docker compose for the same reason.
