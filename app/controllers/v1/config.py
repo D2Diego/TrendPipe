@@ -4,24 +4,46 @@ from pydantic import BaseModel
 from app.config import config
 from app.controllers.v1.base import new_router
 from app.models.exception import HttpException
+from app.services import elevenlabs_music as elevenlabs_music_service
+from app.services import sonilo as sonilo_service
 from app.utils import utils
 
 router = new_router()
 
-# Only "ui" is exposed here — the other RUNTIME_CONFIG_SECTIONS entries
-# (app, azure, elevenlabs, siliconflow, chatterbox) hold provider API keys
-# and other credentials in plaintext, and this API currently has no auth.
-# Do not widen this set without adding real authentication to this router.
-_EXPOSED_CONFIG_SECTIONS = {"ui"}
+# The settings UI needs every runtime section. This API intentionally has no
+# authentication, matching the original local Streamlit UI. Keep the service
+# bound to a trusted local/private network until authentication is added.
+_EXPOSED_CONFIG_SECTIONS = set(config.RUNTIME_CONFIG_SECTIONS.keys())
 
 
 class SetConfigValueRequest(BaseModel):
     value: object
 
 
+@router.get(
+    "/config/readiness",
+    summary="Get non-sensitive generation provider readiness flags",
+)
+def get_generation_readiness(request: Request):
+    return utils.get_response(
+        200,
+        {
+            "pexels": bool(config.app.get("pexels_api_keys", "")),
+            "pixabay": bool(config.app.get("pixabay_api_keys", "")),
+            "coverr": bool(config.app.get("coverr_api_keys", "")),
+            "sonilo": sonilo_service.is_enabled(),
+            "elevenlabs": elevenlabs_music_service.is_enabled(),
+        },
+    )
+
+
 def _resolve_section(section: str):
     if section not in _EXPOSED_CONFIG_SECTIONS:
-        raise HttpException(task_id="", status_code=400, message=f"unknown config section: {section}")
+        raise HttpException(
+            task_id="",
+            status_code=400,
+            message=f"unknown config section: {section}",
+        )
     return config.RUNTIME_CONFIG_SECTIONS[section]
 
 

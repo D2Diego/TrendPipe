@@ -51,28 +51,13 @@ class TestConfigController(unittest.TestCase):
             response = config_controller.save_config(SimpleNamespace(headers={}))
         self.assertEqual(response["data"]["saved"], True)
 
-    def test_get_section_rejects_credential_bearing_sections(self):
-        for section in ("app", "azure", "elevenlabs", "siliconflow", "chatterbox"):
-            with self.assertRaises(HttpException) as ctx:
-                config_controller.get_config_section(SimpleNamespace(headers={}), section=section)
-            self.assertEqual(ctx.exception.status_code, 400, f"section={section} should be rejected")
-
-    def test_set_key_rejects_credential_bearing_sections(self):
-        with self.assertRaises(HttpException) as ctx:
-            config_controller.set_config_key(
-                SimpleNamespace(headers={}),
-                section="app",
-                key="openai_api_key",
-                body=config_controller.SetConfigValueRequest(value="attacker-key"),
-            )
-        self.assertEqual(ctx.exception.status_code, 400)
-
-    def test_delete_key_rejects_credential_bearing_sections(self):
-        with self.assertRaises(HttpException) as ctx:
-            config_controller.delete_config_key(
-                SimpleNamespace(headers={}), section="azure", key="speech_key"
-            )
-        self.assertEqual(ctx.exception.status_code, 400)
+    def test_get_section_allows_all_runtime_sections(self):
+        for section in ("app", "azure", "chatterbox", "elevenlabs", "siliconflow", "ui"):
+            with patch.object(config_controller.config, "snapshot_config_with_pending", return_value={}):
+                response = config_controller.get_config_section(
+                    SimpleNamespace(headers={}), section=section
+                )
+            self.assertEqual(response["status"], 200, f"section={section} should be allowed")
 
 
 if __name__ == "__main__":

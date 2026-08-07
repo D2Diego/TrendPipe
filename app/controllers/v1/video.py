@@ -305,6 +305,21 @@ def delete_video(request: Request, task_id: str = Path(..., description="Task ID
         logger.success(f"video deleted: {utils.to_json(task)}")
         return utils.get_response(200)
 
+    # Completed history can outlive the in-memory/Redis state entry. Preserve
+    # the original WebUI behavior by deleting a validated on-disk task folder.
+    try:
+        history_task_dir = file_security.resolve_path_within_directory(
+            utils.task_dir(), task_id, require_file=False
+        )
+    except ValueError:
+        history_task_dir = ""
+    if history_task_dir and os.path.isdir(history_task_dir):
+        shutil.rmtree(history_task_dir)
+        if hasattr(sm.state, "delete_task"):
+            sm.state.delete_task(task_id)
+        logger.success(f"historical video task deleted: {task_id}")
+        return utils.get_response(200)
+
     raise HttpException(
         task_id=task_id, status_code=404, message=f"{request_id}: task not found"
     )
@@ -439,13 +454,13 @@ async def stream_video(request: Request, file_path: str):
     start, end = _parse_byte_range(range_header, video_size, request_id)
     length = end - start + 1
 
-    def file_iterator(file_path, offset=0, bytes_to_read=None):
+    async def file_iterator(file_path, offset=0, bytes_to_read=None):
         with open(file_path, "rb") as f:
             f.seek(offset, os.SEEK_SET)
             remaining = bytes_to_read or video_size
             while remaining > 0:
-                bytes_to_read = min(4096, remaining)
-                data = f.read(bytes_to_read)
+                chunk_size = min(64 * 1024, remaining)
+                data = f.read(chunk_size)
                 if not data:
                     break
                 remaining -= len(data)

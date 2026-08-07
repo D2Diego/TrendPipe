@@ -10,6 +10,19 @@ from app.models.schema import (
 
 
 class TestLlmController(unittest.TestCase):
+    def test_preview_video_script_prompt_uses_the_same_builder_as_generation(self):
+        body = VideoScriptRequest(video_subject="Coffee", video_language="en", paragraph_number=2)
+        with patch.object(llm_controller.llm, "build_script_prompt", return_value="final prompt") as build:
+            response = llm_controller.preview_video_script_prompt(None, body)
+        self.assertEqual(response, {"status": 200, "data": {"prompt": "final prompt"}})
+        build.assert_called_once_with(
+            video_subject="Coffee",
+            language="en",
+            paragraph_number=2,
+            video_script_prompt="",
+            custom_system_prompt="",
+        )
+
     def test_generate_video_script_forwards_all_prompt_fields(self):
         """The file interface cannot lose the number of advanced hints or paragraphs."""
         body = VideoScriptRequest(

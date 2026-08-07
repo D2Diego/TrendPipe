@@ -17,6 +17,18 @@ from app.utils import utils
 router = new_router()
 
 
+@router.post("/scripts/preview", summary="Build the final script prompt without calling the LLM")
+def preview_video_script_prompt(request: Request, body: VideoScriptRequest):
+    prompt = llm.build_script_prompt(
+        video_subject=body.video_subject,
+        language=body.video_language,
+        paragraph_number=body.paragraph_number,
+        video_script_prompt=body.video_script_prompt,
+        custom_system_prompt=body.custom_system_prompt,
+    )
+    return utils.get_response(200, {"prompt": prompt})
+
+
 @router.post(
     "/scripts",
     response_model=VideoScriptResponse,

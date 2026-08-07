@@ -346,6 +346,15 @@ class TestVideoControllerTasks(unittest.TestCase):
         self.assertEqual(response["status"], 200)
         delete_task.assert_called_once_with("completed-task")
 
+    def test_delete_allows_history_only_task_directory(self):
+        with tempfile.TemporaryDirectory() as tasks_root:
+            task_path = os.path.join(tasks_root, "history-task")
+            os.makedirs(task_path)
+            with patch.object(video_controller.sm.state, "get_task", return_value=None), patch.object(video_controller.utils, "task_dir", return_value=tasks_root):
+                response = video_controller.delete_video(self._request(), task_id="history-task")
+            self.assertEqual(response["status"], 200)
+            self.assertFalse(os.path.exists(task_path))
+
     def test_get_and_delete_missing_task_return_404(self):
         """Both query or delete unknown tasks should return the same 404，It's not an empty response."""
         with patch.object(video_controller.sm.state, "get_task", return_value=None):
