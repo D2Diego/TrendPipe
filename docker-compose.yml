@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: "moneyprinterturbo-webui"
+    container_name: "trendpipe-webui"
     ports:
       - "127.0.0.1:8501:8501"
     command: [ "nginx", "-g", "daemon off;" ]
@@ -23,7 +23,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: "moneyprinterturbo-api"
+    container_name: "trendpipe-api"
     ports:
       - "127.0.0.1:8080:8080"
     command: [ "python3", "main.py" ]
