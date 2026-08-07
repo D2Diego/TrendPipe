@@ -2,6 +2,7 @@ import errno
 import threading
 import time
 import tomllib
+import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
@@ -468,3 +469,18 @@ class TestConfigPersistence:
                     config.app.pop(key, None)
                 else:
                     config.app[key] = original_value
+
+
+class TestRuntimeConfigSectionsRegistry(unittest.TestCase):
+    def test_registry_maps_expected_section_names_to_live_objects(self):
+        from app.config import config as config_module
+
+        self.assertIn("RUNTIME_CONFIG_SECTIONS", dir(config_module))
+        registry = config_module.RUNTIME_CONFIG_SECTIONS
+        self.assertEqual(
+            set(registry.keys()),
+            {"app", "azure", "chatterbox", "elevenlabs", "siliconflow", "ui"},
+        )
+        # must be the same objects the rest of the app mutates, not copies
+        self.assertIs(registry["app"], config_module.app)
+        self.assertIs(registry["ui"], config_module.ui)

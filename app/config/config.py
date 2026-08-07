@@ -539,3 +539,15 @@ if ffmpeg_path and os.path.isfile(ffmpeg_path):
     os.environ["IMAGEIO_FFMPEG_EXE"] = ffmpeg_path
 
 logger.info(f"{project_name} v{project_version}")
+
+# Maps a stable section name to its live config object, for callers (e.g. the
+# runtime-config API controller) that need to resolve a section by name
+# without importing every section individually.
+RUNTIME_CONFIG_SECTIONS = {
+    "app": app,
+    "azure": azure,
+    "chatterbox": chatterbox,
+    "elevenlabs": elevenlabs,
+    "siliconflow": siliconflow,
+    "ui": ui,
+}
