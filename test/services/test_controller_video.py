@@ -144,11 +144,32 @@ class TestVideoControllerTasks(unittest.TestCase):
         self.assertEqual(response["data"]["request_id"], "request-123")
         update_task.assert_called_once_with("task-123")
         add_task.assert_called_once_with(
-            video_controller.tm.start,
+            video_controller.api_task_logs.start_with_log_capture,
             task_id="task-123",
             params=body,
             stop_at="audio",
         )
+
+    def test_create_task_schedules_start_with_log_capture_not_bare_start(self):
+        from app.controllers.v1 import video as video_controller
+
+        captured = {}
+
+        def fake_add_task(func, **kwargs):
+            captured["func"] = func
+            captured["kwargs"] = kwargs
+            return "task-log-capture-check"
+
+        with patch.object(video_controller.task_manager, "add_task", side_effect=fake_add_task):
+            video_controller.create_task(
+                SimpleNamespace(headers={}),
+                video_controller.TaskVideoRequest(video_subject="test"),
+                stop_at="video",
+            )
+
+        from app.services import api_task_logs
+
+        self.assertIs(captured["func"], api_task_logs.start_with_log_capture)
 
     def test_create_task_removes_state_when_queue_is_full(self):
         """Queue full must roll back to the created state and return to the caller 429。"""

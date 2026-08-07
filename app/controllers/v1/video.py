@@ -30,6 +30,7 @@ from app.models.schema import (
     VideoMaterialUploadResponse,
     VideoMaterialRetrieveResponse
 )
+from app.services import api_task_logs
 from app.services import bgm as bgm_service
 from app.services import state as sm
 from app.services import task as tm
@@ -206,7 +207,9 @@ def create_task(
             "params": body.model_dump(),
         }
         sm.state.update_task(task_id)
-        task_manager.add_task(tm.start, task_id=task_id, params=body, stop_at=stop_at)
+        task_manager.add_task(
+            api_task_logs.start_with_log_capture, task_id=task_id, params=body, stop_at=stop_at
+        )
         logger.success(f"Task created: {utils.to_json(task)}")
         return utils.get_response(200, task)
     except TaskQueueFullError as e:
