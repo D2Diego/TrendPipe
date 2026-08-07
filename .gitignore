@@ -35,3 +35,6 @@ coverage.xml
 htmlcov/
 .codegraph
 .understand-anything
+
+# last30days local secrets (OpenRouter key etc.)
+/vendor/last30days/.env
