@@ -12,4 +12,10 @@ describe("Tabs", () => {
     expect(screen.getByText("Content B")).toBeInTheDocument();
     expect(screen.queryByText("Content A")).not.toBeInTheDocument();
   });
+
+  it("can open a requested tab initially", () => {
+    render(<Tabs tabs={tabs} initialTab="b" />);
+    expect(screen.getByText("Content B")).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "Tab B" })).toHaveAttribute("aria-selected", "true");
+  });
 });
