@@ -1,6 +1,7 @@
 import json
 import logging
 import re
+import requests
 from time import perf_counter
 from typing import List
 
@@ -962,6 +963,41 @@ def generate_social_metadata(
 
     logger.warning("falling back to heuristic social metadata")
     return _fallback_social_metadata(video_subject, video_script, platform)
+
+
+def get_groq_model_ids(api_key: str, base_url: str) -> list[str]:
+    """List available Groq model IDs for the given credentials.
+
+    Ported from webui/Main.py's get_groq_model_ids (unchanged logic) so the
+    API layer can offer the same model picker without depending on webui/.
+    """
+    if not api_key:
+        return []
+
+    normalized_base_url = (base_url or "https://api.groq.com/openai/v1").strip().rstrip("/")
+    models_url = f"{normalized_base_url}/models"
+
+    try:
+        response = requests.get(
+            models_url,
+            headers={"Authorization": f"Bearer {api_key}"},
+            timeout=10,
+        )
+        response.raise_for_status()
+        payload = response.json()
+        data = payload.get("data", [])
+
+        model_ids = []
+        for item in data:
+            if isinstance(item, dict):
+                model_id = item.get("id")
+                if isinstance(model_id, str) and model_id.strip():
+                    model_ids.append(model_id.strip())
+
+        return sorted(set(model_ids))
+    except Exception as e:
+        logger.warning(f"failed to fetch groq models: {e}")
+        return []
 
 
 if __name__ == "__main__":

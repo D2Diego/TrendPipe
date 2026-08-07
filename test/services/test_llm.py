@@ -6,7 +6,7 @@ import tomllib
 import types
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from pydantic import ValidationError
 
@@ -1559,6 +1559,39 @@ class TestLiteLLMLiveIntegration(unittest.TestCase):
 
         self.assertNotIn("Error:", result)
         self.assertIn("4", result)
+
+
+class TestGetGroqModelIds(unittest.TestCase):
+    def test_returns_empty_list_without_api_key(self):
+        from app.services import llm
+
+        self.assertEqual(llm.get_groq_model_ids("", "https://api.groq.com/openai/v1"), [])
+
+    def test_returns_sorted_unique_model_ids(self):
+        from app.services import llm
+
+        fake_response = MagicMock()
+        fake_response.json.return_value = {
+            "data": [{"id": "llama3-70b"}, {"id": "mixtral-8x7b"}, {"id": "llama3-70b"}]
+        }
+        fake_response.raise_for_status.return_value = None
+
+        with patch.object(llm.requests, "get", return_value=fake_response) as mock_get:
+            result = llm.get_groq_model_ids("key123", "https://api.groq.com/openai/v1")
+
+        self.assertEqual(result, ["llama3-70b", "mixtral-8x7b"])
+        mock_get.assert_called_once()
+        self.assertEqual(
+            mock_get.call_args.kwargs["headers"], {"Authorization": "Bearer key123"}
+        )
+
+    def test_returns_empty_list_on_request_failure(self):
+        from app.services import llm
+
+        with patch.object(llm.requests, "get", side_effect=Exception("boom")):
+            result = llm.get_groq_model_ids("key123", "")
+
+        self.assertEqual(result, [])
 
 
 if __name__ == "__main__":
