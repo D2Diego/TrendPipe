@@ -406,6 +406,15 @@ def _generate_response(prompt: str, app_config=None) -> str:
         return f"Error: {_sanitize_error_message(e)}"
 
 
+def generate_response(prompt: str, app_config=None) -> str:
+    """Generate unformatted text with the configured application LLM.
+
+    Higher-level conversational services can serialize their own bounded
+    transcript into a prompt while still sharing every configured provider.
+    """
+    return _generate_response(prompt=prompt, app_config=app_config)
+
+
 def test_connection() -> tuple[bool, str, float]:
     """
     Use current Provider Configure to initiate a minimum request to verify the availability of the actual generation link.
