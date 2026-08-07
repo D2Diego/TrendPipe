@@ -23,8 +23,9 @@ async def application_lifespan(_: FastAPI):
 
     # Cross-platform release is executed by the current process thread pool and will not be restored after service restarts. On startup Redis
     # It recognizes that the state of activity that has lost the implementation process has failed to materialize, avoiding the permanent elimination of mandates.
-    from app.services import task as task_service
+    from app.services import research_store, task as task_service
 
+    research_store.init_db()
     task_service.recover_interrupted_cross_posts()
     try:
         yield

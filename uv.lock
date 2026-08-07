@@ -1519,6 +1519,7 @@ dependencies = [
     { name = "redis" },
     { name = "requests" },
     { name = "socksio" },
+    { name = "toml" },
     { name = "uvicorn" },
 ]
 
@@ -1554,6 +1555,7 @@ requires-dist = [
     { name = "redis", specifier = "==5.2.0" },
     { name = "requests", specifier = "==2.33.1" },
     { name = "socksio", specifier = "==1.0.0" },
+    { name = "toml", specifier = "==0.10.2" },
     { name = "twelvelabs", marker = "extra == 'twelvelabs'", specifier = ">=1.2.8" },
     { name = "uvicorn", specifier = "==0.32.1" },
 ]

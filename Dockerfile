@@ -13,7 +13,7 @@ RUN VITE_APP_VERSION="$VITE_APP_VERSION" npm run build
 
 # The runtime image contains both Nginx (used by the webui service) and Python
 # (used by the api service). This keeps the existing single-image release flow.
-FROM python:3.11-slim-bullseye
+FROM python:3.12-slim-bullseye
 
 # Set the working directory in the container
 WORKDIR /MoneyPrinterTurbo
