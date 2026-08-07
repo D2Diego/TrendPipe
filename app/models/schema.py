@@ -156,6 +156,35 @@ class AudioRequest(BaseModel):
     video_source: Optional[str] = "local"
 
 
+class CreateResearchRequest(BaseModel):
+    topic: str
+    depth: str = "quick"
+    sources: list[str] = Field(default_factory=list)
+
+
+class UpdateResearchSettingsRequest(BaseModel):
+    values: dict[str, str]
+
+
+ArtifactField = Literal[
+    "video_subject",
+    "video_script_prompt",
+    "custom_system_prompt",
+    "video_script",
+    "video_terms",
+]
+
+
+class ArtifactChatMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(min_length=1, max_length=8000)
+
+
+class ArtifactChatRequest(BaseModel):
+    selected_fields: list[ArtifactField] = Field(min_length=1)
+    messages: list[ArtifactChatMessage] = Field(default_factory=list, max_length=30)
+
+
 class VideoScriptParams:
     """
     {

@@ -16,6 +16,7 @@ from app.controllers.v1 import (
     fonts,
     llm,
     providers,
+    research,
     task_logs,
     task_history,
     video,
@@ -27,6 +28,7 @@ root_api_router = APIRouter()
 # v1
 root_api_router.include_router(audio_upload.router)
 root_api_router.include_router(cache.router)
+root_api_router.include_router(research.router)
 root_api_router.include_router(task_history.router)
 root_api_router.include_router(video.router)
 root_api_router.include_router(version.router)
