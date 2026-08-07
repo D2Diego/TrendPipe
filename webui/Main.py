@@ -1252,6 +1252,7 @@ support_locales = [
     "en-US",
     "es-ES",
     "fr-FR",
+    "pt-BR",
     "ru-RU",
     "vi-VN",
     "th-TH",
