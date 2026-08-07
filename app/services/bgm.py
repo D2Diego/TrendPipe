@@ -11,8 +11,8 @@ from loguru import logger
 from app.utils import file_security, utils
 
 
-# Streamlit Default allows larger upload files, but background music is usually only a few MB。Here's a clear set.
-# Service end cap, avoid API or WebUI The complete writing of mega files on disks affects video tasks in the same process.
+# Background music is usually only a few MB. Enforce a service-side limit so
+# oversized API uploads cannot consume disk and disrupt video tasks.
 MAX_BGM_UPLOAD_BYTES = 30 * 1024 * 1024
 _COPY_CHUNK_BYTES = 1024 * 1024
 _INTERNAL_UPLOAD_PREFIX = ".bgm-upload-"
@@ -220,8 +220,8 @@ def _stage_bgm_upload(filename: str, source: BinaryIO) -> tuple[str, str, int]:
             raise BgmServiceError("failed to stage background music upload") from exc
         raise
     finally:
-        # Streamlit We need to use the same. UploadedFile browsing;recovering file pointers
-        # Avoid checking the player or ultimately saving to read empty content.
+        # Restore reusable file-like inputs so validation does not leave later
+        # reads at end-of-file.
         try:
             source.seek(0)
         except (AttributeError, OSError):
@@ -246,8 +246,8 @@ def save_bgm_upload(filename: str, source: BinaryIO) -> str:
     """
     Saves the user background music in blocks, limits and atoms.
 
-    Use scenes including FastAPI UploadFile and Streamlit UploadedFile，Both provide binary.
-    File interface. Write a temporary directory file and verify it, then pass it. os.replace The atom drops, and it avoids.
+    Accept binary file-like inputs such as FastAPI UploadFile. Write a temporary
+    file, verify it, and install it atomically with os.replace.
     Half the audio files left behind by uploading or process interruptions will also allow the same name to be uploaded differently. UUID Store key,
     Queued or running tasks therefore always refer to the original unchangeable document.
     """

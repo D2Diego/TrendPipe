@@ -11,7 +11,7 @@ from app.utils import utils
 router = new_router()
 
 # The settings UI needs every runtime section. This API intentionally has no
-# authentication, matching the original local Streamlit UI. Keep the service
+# authentication, matching the original local-only UI. Keep the service
 # bound to a trusted local/private network until authentication is added.
 _EXPOSED_CONFIG_SECTIONS = set(config.RUNTIME_CONFIG_SECTIONS.keys())
 

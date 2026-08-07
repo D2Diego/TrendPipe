@@ -43,9 +43,8 @@ def synthesize_voice_preview(
 ) -> dict | None:
     """Generate a short TTS preview and return it as in-memory bytes.
 
-    Ported from webui/Main.py:_synthesize_voice_preview, minus the
-    st.session_state preview-reuse cache (no session concept over HTTP —
-    every call re-synthesizes, which is acceptable for a short preview clip).
+    HTTP requests do not share a browser-session cache, so every call
+    re-synthesizes the short preview clip.
     """
     temp_dir = utils.storage_dir("temp", create=True)
     audio_file = os.path.join(temp_dir, f"tmp-voice-{str(uuid4())}.mp3")

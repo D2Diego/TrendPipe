@@ -89,8 +89,8 @@ def save_custom_audio_upload(filename: str, source: BinaryIO) -> str:
 
     Mirrors app/services/bgm.py:save_bgm_upload's stage-then-atomic-rename
     pattern, but stores into storage/uploaded_audio/ with no task_id
-    dependency (POST /api/v1/videos always server-generates its own task_id,
-    so the upload can't be pre-scoped to a task the way Streamlit does it).
+    dependency because POST /api/v1/videos always generates the task_id on the
+    server after the upload has completed.
     """
     safe_name = sanitize_upload_filename(filename)
     target_dir = uploaded_audio_dir(create=True)

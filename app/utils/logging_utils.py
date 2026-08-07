@@ -41,8 +41,8 @@ def configure_terminal_logger(sink, level: str, colorize: bool = True) -> int:
     """
     Replace the process terminal handler while preserving task-specific sinks.
 
-    Streamlit may initialize logging after reloads. Remove only the known
-    terminal handler and guard its ID against concurrent browser sessions.
+    The UI may initialize logging after reloads. Remove only the known terminal
+    handler and guard its ID against concurrent browser sessions.
     """
     global _terminal_handler_id
 

@@ -113,8 +113,8 @@ class TestBackgroundMusicService(unittest.TestCase):
                 [name for name in os.listdir(temp_dir) if name.startswith(".bgm-upload-")],
                 [],
             )
-            # The service restores the file pointer to the beginning, the same. UploadedFile Still available Streamlit
-            # Testing or follow-up rerun Use, not empty files because of saving operations.
+            # The service restores the file pointer so the same upload remains
+            # available to later validation or persistence steps.
             self.assertEqual(source.tell(), 0)
 
     def test_validate_bgm_upload_checks_audio_without_persisting_file(self):

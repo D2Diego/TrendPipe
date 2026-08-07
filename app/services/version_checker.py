@@ -108,8 +108,8 @@ class AsyncUpdateChecker:
     """
     Run version checks in a background thread and cache the latest result.
 
-    Streamlit reruns the page after each interaction. A daemon performs network
-    access so initial loads and expired caches never block the page.
+    A daemon performs network access so initial loads and expired caches never
+    block the UI.
 
     Positive and negative results are cached to avoid retrying on every rerun.
     The lock protects memory only and never wraps network I/O.
@@ -192,5 +192,5 @@ _ASYNC_UPDATE_CHECKER = AsyncUpdateChecker()
 
 
 def poll_available_update(current_version: str) -> UpdateCheckSnapshot:
-    """Share one checker across Streamlit sessions to avoid duplicate requests."""
+    """Share one checker across UI requests to avoid duplicate network calls."""
     return _ASYNC_UPDATE_CHECKER.poll(current_version)

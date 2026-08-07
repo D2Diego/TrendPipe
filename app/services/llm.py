@@ -968,8 +968,8 @@ def generate_social_metadata(
 def get_groq_model_ids(api_key: str, base_url: str) -> list[str]:
     """List available Groq model IDs for the given credentials.
 
-    Ported from webui/Main.py's get_groq_model_ids (unchanged logic) so the
-    API layer can offer the same model picker without depending on webui/.
+    Exposed through the API so the React settings UI can populate its model
+    picker from the configured Groq account.
     """
     if not api_key:
         return []

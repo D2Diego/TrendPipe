@@ -3,7 +3,6 @@ import math
 import os
 import re
 import shutil
-from functools import lru_cache
 from pathlib import Path
 import threading
 from typing import Any, Iterable
@@ -336,20 +335,6 @@ def resolve_ui_language(
     # English is normally present. Keep a fallback for a damaged or empty locale
     # directory so the UI can display raw diagnostic keys instead of crashing.
     return supported[0] if supported else default_language
-
-
-@lru_cache(maxsize=8)
-def load_locales(i18n_dir):
-    # Streamlit reruns on every interaction, but locale files do not change at
-    # runtime, so cache their parsed JSON content.
-    _locales = {}
-    for root, dirs, files in os.walk(i18n_dir):
-        for file in files:
-            if file.endswith(".json"):
-                lang = file.split(".")[0]
-                with open(os.path.join(root, file), "r", encoding="utf-8") as f:
-                    _locales[lang] = json.loads(f.read())
-    return _locales
 
 
 def parse_extension(filename):

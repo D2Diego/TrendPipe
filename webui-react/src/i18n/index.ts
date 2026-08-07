@@ -1,13 +1,13 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import de from "../../../webui/i18n/de.json";
-import en from "../../../webui/i18n/en.json";
-import es from "../../../webui/i18n/es.json";
-import id from "../../../webui/i18n/id.json";
-import pt from "../../../webui/i18n/pt.json";
-import ru from "../../../webui/i18n/ru.json";
-import tr from "../../../webui/i18n/tr.json";
-import vi from "../../../webui/i18n/vi.json";
+import de from "./locales/de.json";
+import en from "./locales/en.json";
+import es from "./locales/es.json";
+import id from "./locales/id.json";
+import pt from "./locales/pt.json";
+import ru from "./locales/ru.json";
+import tr from "./locales/tr.json";
+import vi from "./locales/vi.json";
 
 type Locale = { Language: string; Translation: Record<string, string> };
 export const localeFiles: Record<string, Locale> = { de, en, es, id, pt, ru, tr, vi };

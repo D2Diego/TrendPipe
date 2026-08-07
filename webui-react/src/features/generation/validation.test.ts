@@ -9,7 +9,7 @@ const valid: ValidationContext = {
 };
 
 describe("validateBeforeSubmit", () => {
-  it("returns the first Streamlit-equivalent validation error", () => {
+  it("returns the first generation validation error", () => {
     expect(validateBeforeSubmit(valid)).toBeNull();
     expect(validateBeforeSubmit({ ...valid, params: { ...valid.params, video_subject: "", video_script: "" } })).toMatch(/cannot both be empty/i);
     expect(validateBeforeSubmit({ ...valid, params: { ...valid.params, video_source: "local" } })).toMatch(/local material/i);

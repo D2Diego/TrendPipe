@@ -287,31 +287,24 @@ Notes:
 
 #### ② Launch the WebUI 🌐
 
-Note that you need to execute the following commands in the `root directory` of the MoneyPrinterTurbo project
-
-###### Windows
-
-```powershell
-.\webui.bat
-```
-
-You can also run `webui.bat` in CMD.
-`webui.bat` prefers the project `.venv` or bundled Python from the portable package. If no project Python is found but `uv` is installed, it automatically falls back to `uv run streamlit`.
-To allow other devices on your LAN to access the WebUI, run `set MPT_WEBUI_HOST=0.0.0.0` before running `webui.bat`.
-
-###### macOS or Linux
+Install the frontend dependencies and start the React development server:
 
 ```shell
-sh webui.sh
+cd webui-react
+npm ci
+npm run dev
 ```
 
-The script automatically uses the project virtual environment or `uv` and selects an available local port. To allow access from other devices on your LAN, run:
+Open http://127.0.0.1:5173. To allow other devices on your LAN to access the
+development server, use:
 
 ```shell
-MPT_WEBUI_HOST=0.0.0.0 sh webui.sh
+npm run dev -- --host 0.0.0.0
 ```
 
-After launching, the browser will open automatically
+For a local production build, run `npm run build`; the generated files are
+written to `webui-react/dist`. Docker builds and serves this production artifact
+with Nginx on http://127.0.0.1:8501.
 
 #### ③ Launch the API Service 🚀
 

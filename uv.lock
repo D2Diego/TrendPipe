@@ -1519,8 +1519,6 @@ dependencies = [
     { name = "redis" },
     { name = "requests" },
     { name = "socksio" },
-    { name = "streamlit" },
-    { name = "streamlit-tour" },
     { name = "uvicorn" },
 ]
 
@@ -1556,8 +1554,6 @@ requires-dist = [
     { name = "redis", specifier = "==5.2.0" },
     { name = "requests", specifier = "==2.33.1" },
     { name = "socksio", specifier = "==1.0.0" },
-    { name = "streamlit", specifier = "==1.59.1" },
-    { name = "streamlit-tour", specifier = "==1.1.0" },
     { name = "twelvelabs", marker = "extra == 'twelvelabs'", specifier = ">=1.2.8" },
     { name = "uvicorn", specifier = "==0.32.1" },
 ]
@@ -2829,53 +2825,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/25/44/ec35f1b6e83094b997da438a02c8c9b0ade2b1e84cfc48bd4656780760a6/starlette-1.2.1.tar.gz", hash = "sha256:9b9b5ebb992e67d6093741e63c2f59e4f6fff986f81163c087867bd7b924b3f6", size = 2701854 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/1c/54/196d0c1db10af76baa4f64894448505d60d3cdf70ef92cbb35f46a4e4c71/starlette-1.2.1-py3-none-any.whl", hash = "sha256:4de0082d08c8f6764a85a54cf1120d6939507a19905c7768acad2a9f875d2b89", size = 73350 },
-]
-
-[[package]]
-name = "streamlit"
-version = "1.59.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "altair" },
-    { name = "anyio" },
-    { name = "blinker" },
-    { name = "cachetools" },
-    { name = "click" },
-    { name = "gitpython" },
-    { name = "httptools" },
-    { name = "itsdangerous" },
-    { name = "numpy" },
-    { name = "packaging" },
-    { name = "pandas" },
-    { name = "pillow" },
-    { name = "protobuf" },
-    { name = "pyarrow" },
-    { name = "pydeck" },
-    { name = "python-multipart" },
-    { name = "requests" },
-    { name = "starlette" },
-    { name = "tenacity" },
-    { name = "toml" },
-    { name = "typing-extensions" },
-    { name = "uvicorn" },
-    { name = "watchdog", marker = "sys_platform != 'darwin'" },
-    { name = "websockets" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/91/70/1d488cb07fe8510805233c7128272d6502e621146eb0531420211279a898/streamlit-1.59.1.tar.gz", hash = "sha256:0f75162a43b1cd2542f34bff3168c4ea56c7a151fa80bfea02499913fbfccfca", size = 9770793 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/49/84/732e4c832a6ec79cc3119aea2da367bbc00c376a41a063bc477d62e20077/streamlit-1.59.1-py3-none-any.whl", hash = "sha256:b00d41fa9024d28ab30b81e56ddf07d61cda6ae625231dcb13e0be6c07ef1e0f", size = 10338093 },
-]
-
-[[package]]
-name = "streamlit-tour"
-version = "1.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "streamlit" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/f1/58/a5b31838ff8ac81ba8220c4abc057b9d9b0cfc1e78dbd4a6904cf6bba22a/streamlit_tour-1.1.0.tar.gz", hash = "sha256:034712c8e7c13743c7af4eb2163ecfa8c41ffd969e9def1ec992bef3d91b62d9", size = 32157 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/8f/a4/00dd225f3e55587ecf02e8bcf575e164e94bdfb4e9e7042a9fccb7a5461e/streamlit_tour-1.1.0-py3-none-any.whl", hash = "sha256:595a3f463dfe6779031b5540910928462a4c2bd0c8554bb210cfe9a9dcd9ff97", size = 31213 },
 ]
 
 [[package]]

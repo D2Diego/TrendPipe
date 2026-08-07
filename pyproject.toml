@@ -14,8 +14,6 @@ requires-python = ">=3.11"
 license = { text = "MIT" }
 dependencies = [
     "moviepy==2.2.1",
-    "streamlit==1.59.1",
-    "streamlit-tour==1.1.0",
     "edge-tts==7.2.7",
     "fastapi==0.136.3",
     "uvicorn==0.32.1",
@@ -51,17 +49,13 @@ dev = [
     "ruff==0.15.21",
 ]
 
-[tool.ruff.lint.per-file-ignores]
-# The WebUI must add the project root to sys.path before importing the app package.
-"webui/Main.py" = ["E402"]
-
 [tool.coverage.run]
 # Branch coverage identifies conditions whose alternative path was never exercised,
 # making it a stronger CI quality baseline than line coverage alone. The application
 # services and all production entry points are included so coverage reflects the
 # complete runtime rather than a subset of modules.
 branch = true
-source = ["app", "cli", "webui", "main"]
+source = ["app", "cli", "main"]
 
 [tool.coverage.report]
 # Complete test runs on Python 3.11 and 3.13 achieve more than 70.4% branch coverage.

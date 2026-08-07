@@ -1,5 +1,4 @@
-# Build the production React application. The locale JSON files intentionally
-# remain shared with the legacy UI until the i18n migration is completed.
+# Build the production React application.
 FROM node:20-alpine AS frontend-build
 
 WORKDIR /build/webui-react
@@ -8,7 +7,6 @@ COPY webui-react/package.json webui-react/package-lock.json ./
 RUN npm ci
 
 COPY webui-react/ ./
-COPY webui/i18n/ /build/webui/i18n/
 
 ARG VITE_APP_VERSION=1.3.3
 RUN VITE_APP_VERSION="$VITE_APP_VERSION" npm run build

@@ -35,8 +35,7 @@ def start_with_log_capture(task_id, params, stop_at="video", voice_preview=None)
 
     Must run ON the worker thread that app.controllers.manager.base_manager's
     TaskManager.execute_task() spawns for this task — it identifies "this
-    task's" log lines by filtering on the calling thread's identity, the same
-    technique webui_task.py uses for the (separate) Streamlit task queue.
+    task's" log lines by filtering on the calling thread's identity.
     """
     worker_thread_id = threading.get_ident()
 

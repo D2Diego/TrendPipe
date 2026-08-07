@@ -29,7 +29,7 @@ class _SynchronizedConfig(dict):
     """Preserve normal dict behavior while synchronizing runtime writes."""
 
     def __setitem__(self, key, value):
-        # Streamlit reruns write widget values back into the configuration.
+        # UI requests write form values back into the configuration.
         # Unchanged values are safe while a video task holds the runtime lock;
         # actual changes still wait so a running task cannot switch providers,
         # credentials, or other global settings midway through execution.
@@ -109,7 +109,7 @@ def update_config_nonblocking(config_section, key, value):
     acquired = _config_save_lock.acquire(blocking=False)
     if not acquired:
         # A deferred worker guarantees queued values are flushed even if the
-        # current Streamlit rerun exits before its normal save step.
+        # current UI request exits before its normal save step.
         _schedule_deferred_config_flush()
         return False
 
@@ -244,10 +244,10 @@ def _schedule_deferred_config_flush():
 
 def try_save_config():
     """
-    Save WebUI configuration without blocking on a long-running task.
+    Save UI configuration without blocking on a long-running task.
 
     API, CLI, and maintenance callers retain the blocking ``save_config``
-    behavior. Streamlit reruns use this function to stay responsive.
+    behavior. Interactive UI requests use this function to stay responsive.
     """
     global _pending_config_save_requested
 
@@ -437,7 +437,7 @@ def save_config():
     """
     Save runtime configuration atomically.
 
-    Streamlit sessions may save concurrently. A process lock serializes writes;
+    UI requests may save concurrently. A process lock serializes writes;
     data is written to a sibling temporary file and installed with os.replace.
 
     A Docker Desktop single-file bind mount cannot be replaced and returns
