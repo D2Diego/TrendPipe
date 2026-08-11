@@ -20,7 +20,15 @@ class ResearchExecutionError(Exception):
 
 
 def _last30days_env() -> dict[str, str]:
-    return {**os.environ, "LAST30DAYS_CONFIG_DIR": LAST30DAYS_DIR}
+    # Imported here, not at module level, to avoid a circular import:
+    # research_credentials imports LAST30DAYS_DIR from this module.
+    from app.services import research_credentials
+
+    return {
+        **research_credentials.read_env_file(),
+        **os.environ,
+        "LAST30DAYS_CONFIG_DIR": "",
+    }
 
 
 def _parse_json_result(

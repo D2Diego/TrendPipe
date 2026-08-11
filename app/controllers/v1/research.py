@@ -146,6 +146,7 @@ def get_research_settings(request: Request):
         diagnose = research_engine.run_diagnose()
     except research_engine.ResearchExecutionError as exc:
         raise HttpException(task_id="", status_code=502, message=str(exc)) from exc
+    diagnose["credential_keys"] = research_credentials.credential_presence()
     return utils.get_response(200, diagnose)
 
 
@@ -159,3 +160,12 @@ def update_research_settings(
     except ValueError as exc:
         raise HttpException(task_id="", status_code=400, message=str(exc)) from exc
     return utils.get_response(200, {"saved": True})
+
+
+@router.delete("/research-settings/{key}", summary="Remove a last30days API key")
+def delete_research_credential(request: Request, key: str = Path(...)):
+    try:
+        research_credentials.delete_credential(key)
+    except ValueError as exc:
+        raise HttpException(task_id="", status_code=400, message=str(exc)) from exc
+    return utils.get_response(200, {"deleted": True})
