@@ -94,6 +94,7 @@ export interface ResearchSettings {
   permission_preflight?: {
     credentials?: Record<string, CredentialStatus>;
   };
+  credential_keys?: Record<string, boolean>;
 }
 
 export const listResearches = () =>
@@ -108,6 +109,8 @@ export const getResearchSettings = () =>
   apiGet<ResearchSettings>("/research-settings");
 export const updateResearchSettings = (values: Record<string, string>) =>
   apiPut<{ saved: boolean }>("/research-settings", { values });
+export const deleteResearchCredential = (key: string) =>
+  apiDelete<{ deleted: boolean }>(`/research-settings/${encodeURIComponent(key)}`);
 
 function clusterArtifactPath(researchId: string, entity: string, clusterId: string) {
   return `/researches/${encodeURIComponent(researchId)}/entities/${encodeURIComponent(entity)}/clusters/${encodeURIComponent(clusterId)}`;

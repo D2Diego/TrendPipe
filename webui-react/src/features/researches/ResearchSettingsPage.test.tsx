@@ -14,25 +14,32 @@ function renderPage() {
 describe("ResearcherSettingsTab", () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it("shows credential presence without exposing values", async () => {
+  it("shows available sources and one row per credential key with per-key status", async () => {
     vi.spyOn(researchApi, "getResearchSettings").mockResolvedValue({
       available_sources: ["reddit"],
-      permission_preflight: { credentials: { openrouter: { present: true, label: "OpenRouter API key" } } },
+      credential_keys: { OPENROUTER_API_KEY: true, SCRAPECREATORS_API_KEY: false },
     });
     renderPage();
 
-    await waitFor(() => expect(screen.getByText(/OpenRouter API key/i)).toBeInTheDocument());
-    expect(screen.getByText(/configured/i)).toBeInTheDocument();
-    expect(screen.getByText(/reddit/i)).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByText(/reddit/i)).toBeInTheDocument());
+    expect(screen.getByText("OPENROUTER_API_KEY")).toBeInTheDocument();
+    expect(screen.getByText("SCRAPECREATORS_API_KEY")).toBeInTheDocument();
+    expect(screen.getAllByText(/configured/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/missing/i).length).toBeGreaterThan(0);
   });
 
-  it("saves entered keys", async () => {
-    vi.spyOn(researchApi, "getResearchSettings").mockResolvedValue({ available_sources: [] });
+  it("saves an entered key for one row without affecting others", async () => {
+    vi.spyOn(researchApi, "getResearchSettings").mockResolvedValue({
+      available_sources: [],
+      credential_keys: { OPENROUTER_API_KEY: false, GOOGLE_API_KEY: false },
+    });
     const saveMock = vi.spyOn(researchApi, "updateResearchSettings").mockResolvedValue({ saved: true });
     renderPage();
 
-    await userEvent.type(await screen.findByLabelText(/OPENROUTER_API_KEY/i), "sk-or-abc");
-    await userEvent.click(screen.getByRole("button", { name: /save|salvar/i }));
+    await userEvent.type(await screen.findByLabelText("OPENROUTER_API_KEY"), "sk-or-abc");
+    const saveButtons = screen.getAllByRole("button", { name: /save/i });
+    await userEvent.click(saveButtons[0]);
+
     await waitFor(() => expect(saveMock).toHaveBeenCalledWith({ OPENROUTER_API_KEY: "sk-or-abc" }));
   });
 });
