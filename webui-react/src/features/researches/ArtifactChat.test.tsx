@@ -49,29 +49,86 @@ describe("ArtifactChat", () => {
     fireEvent.click(screen.getByRole("button", { name: i18n.t("Continue") }));
 
     await waitFor(() => expect(screen.getByText(/Who is the audience\?/)).toBeInTheDocument());
-    expect(researchApi.postArtifactChat).toHaveBeenCalledWith("r1", "cats", "cluster-1", ["video_subject"], []);
+    expect(researchApi.postArtifactChat).toHaveBeenCalledWith("r1", "cats", "cluster-1", ["video_subject"], [], false, false);
   });
 
-  it("includes optional fields once selected and sends the transcript on reply", async () => {
+  it("does not offer Generate Now until a reply has been sent", async () => {
+    vi.spyOn(researchApi, "postArtifactChat").mockResolvedValue({ type: "question", message: "Who is the audience?" });
+    renderChat();
+
+    fireEvent.click(screen.getByRole("button", { name: i18n.t("Generate artifacts") }));
+    fireEvent.click(screen.getByRole("button", { name: i18n.t("Continue") }));
+    await waitFor(() => expect(screen.getByText(/Who is the audience\?/)).toBeInTheDocument());
+
+    expect(screen.queryByRole("button", { name: i18n.t("Generate Now") })).not.toBeInTheDocument();
+  });
+
+  it("keeps the chat open after a draft, shows it inline, and lets the user keep sending messages", async () => {
     vi.spyOn(researchApi, "postArtifactChat")
       .mockResolvedValueOnce({ type: "question", message: "Who is the audience?" })
-      .mockResolvedValueOnce({ type: "final", message: "Ready", artifact: { ...ARTIFACT, generated_fields: ["video_script"] } });
+      .mockResolvedValueOnce({ type: "final", message: "Here's a first draft.", artifact: { ...ARTIFACT, generated_fields: ["video_script"] } })
+      .mockResolvedValueOnce({ type: "final", message: "Made it funnier.", artifact: { ...ARTIFACT, video_subject: "Cats, but funnier", generated_fields: ["video_script"] } });
     renderChat();
 
     fireEvent.click(screen.getByRole("button", { name: i18n.t("Generate artifacts") }));
     fireEvent.click(screen.getByRole("checkbox", { name: i18n.t("Video Script") }));
     fireEvent.click(screen.getByRole("button", { name: i18n.t("Continue") }));
     await waitFor(() => expect(screen.getByText(/Who is the audience\?/)).toBeInTheDocument());
-    expect(researchApi.postArtifactChat).toHaveBeenCalledWith("r1", "cats", "cluster-1", ["video_subject", "video_script"], []);
 
     fireEvent.change(screen.getByLabelText(i18n.t("Your reply")), { target: { value: "General audience, concise." } });
     fireEvent.click(screen.getByRole("button", { name: i18n.t("Send") }));
 
-    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Ready"));
+    await waitFor(() => expect(screen.getByText("Why cats are great")).toBeInTheDocument());
+    expect(screen.getByLabelText(i18n.t("Your reply"))).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: i18n.t("Use artifacts") })).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText(i18n.t("Your reply")), { target: { value: "Make it funnier" } });
+    fireEvent.click(screen.getByRole("button", { name: i18n.t("Send") }));
+
+    await waitFor(() => expect(screen.getByText("Cats, but funnier")).toBeInTheDocument());
     expect(researchApi.postArtifactChat).toHaveBeenLastCalledWith(
       "r1", "cats", "cluster-1", ["video_subject", "video_script"],
-      [{ role: "assistant", content: "Who is the audience?" }, { role: "user", content: "General audience, concise." }],
+      [
+        { role: "assistant", content: "Who is the audience?" },
+        { role: "user", content: "General audience, concise." },
+        { role: "assistant", content: "Here's a first draft." },
+        { role: "user", content: "Make it funnier" },
+      ],
+      false, true,
     );
+  });
+
+  it("Generate Now sends any typed reply plus force_final, and reflects has_draft correctly", async () => {
+    vi.spyOn(researchApi, "postArtifactChat")
+      .mockResolvedValueOnce({ type: "question", message: "Who is the audience?" })
+      .mockResolvedValueOnce({ type: "final", message: "Ready", artifact: ARTIFACT });
+    renderChat();
+
+    fireEvent.click(screen.getByRole("button", { name: i18n.t("Generate artifacts") }));
+    fireEvent.click(screen.getByRole("button", { name: i18n.t("Continue") }));
+    await waitFor(() => expect(screen.getByText(/Who is the audience\?/)).toBeInTheDocument());
+
+    fireEvent.change(screen.getByLabelText(i18n.t("Your reply")), { target: { value: "Just wrap it up" } });
+    fireEvent.click(screen.getByRole("button", { name: i18n.t("Generate Now") }));
+
+    await waitFor(() => expect(researchApi.postArtifactChat).toHaveBeenLastCalledWith(
+      "r1", "cats", "cluster-1", ["video_subject"],
+      [
+        { role: "assistant", content: "Who is the audience?" },
+        { role: "user", content: "Just wrap it up" },
+      ],
+      true, false,
+    ));
+  });
+
+  it("a fresh 'Generate again' session does not treat the old artifact as this session's draft", async () => {
+    vi.spyOn(researchApi, "postArtifactChat").mockResolvedValue({ type: "question", message: "Who is the audience, this time?" });
+    renderChat({ artifact: ARTIFACT });
+
+    fireEvent.click(screen.getByRole("button", { name: i18n.t("Generate again") }));
+    fireEvent.click(screen.getByRole("button", { name: i18n.t("Continue") }));
+
+    await waitFor(() => expect(researchApi.postArtifactChat).toHaveBeenCalledWith("r1", "cats", "cluster-1", ["video_subject"], [], false, false));
   });
 
   it("shows a chat-level error without losing the conversation", async () => {

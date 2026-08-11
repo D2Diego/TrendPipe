@@ -60,7 +60,12 @@ describe("research API client", () => {
       .resolves.toEqual({ type: "question", message: "Who is the audience?" });
     expect(fetch).toHaveBeenLastCalledWith("/api/v1/researches/r1/entities/cats/clusters/cluster-1/artifact-chat", expect.objectContaining({
       method: "POST",
-      body: JSON.stringify({ selected_fields: ["video_subject"], messages }),
+      body: JSON.stringify({
+        selected_fields: ["video_subject"],
+        messages,
+        force_final: false,
+        has_draft: false,
+      }),
     }));
   });
 

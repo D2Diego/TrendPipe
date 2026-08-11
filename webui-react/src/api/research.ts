@@ -122,10 +122,14 @@ export const postArtifactChat = (
   clusterId: string,
   selectedFields: ArtifactField[],
   messages: ArtifactChatMessage[],
+  forceFinal = false,
+  hasDraft = false,
 ) =>
   apiPost<ArtifactChatTurn>(`${clusterArtifactPath(researchId, entity, clusterId)}/artifact-chat`, {
     selected_fields: selectedFields,
     messages,
+    force_final: forceFinal,
+    has_draft: hasDraft,
   });
 
 export const getArtifactRestoreParams = (researchId: string, entity: string, clusterId: string) =>

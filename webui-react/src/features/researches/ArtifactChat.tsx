@@ -26,7 +26,24 @@ const FIELD_LABEL_KEYS: Record<ArtifactField, string> = {
   video_terms: "Video Keywords",
 };
 
-type Stage = "idle" | "selecting" | "chatting" | "done";
+type Stage = "idle" | "selecting" | "chatting";
+
+function DraftSummary({ draft, onUse, useIsPending }: { draft: ResearchArtifact; onUse: () => void; useIsPending: boolean }) {
+  const { t } = useTranslation();
+  return <div className="space-y-2 rounded-md border border-border bg-muted/30 p-3">
+    <p className="text-sm font-medium">{t("Generated artifacts")}</p>
+    <dl className="space-y-1 text-sm">
+      <div><dt className="inline font-medium">{t(FIELD_LABEL_KEYS.video_subject)}: </dt><dd className="inline text-muted-foreground">{draft.video_subject}</dd></div>
+      {OPTIONAL_FIELDS.filter((field) => draft.generated_fields.includes(field)).map((field) => <div key={field}>
+        <dt className="inline font-medium">{t(FIELD_LABEL_KEYS[field])}: </dt>
+        <dd className="inline whitespace-pre-wrap text-muted-foreground">
+          {field === "video_terms" ? (draft.video_terms ?? []).join(", ") : draft[field]}
+        </dd>
+      </div>)}
+    </dl>
+    <Button type="button" variant="primary" disabled={useIsPending} onClick={onUse}>{t("Use artifacts")}</Button>
+  </div>;
+}
 
 export function ArtifactChat({ researchId, entity, clusterId, artifact }: {
   researchId: string;
@@ -42,21 +59,18 @@ export function ArtifactChat({ researchId, entity, clusterId, artifact }: {
     artifact ? ["video_subject", ...artifact.generated_fields] : ["video_subject"],
   );
   const [messages, setMessages] = useState<ArtifactChatMessage[]>([]);
-  const [draft, setDraft] = useState("");
-  const [savedMessage, setSavedMessage] = useState<string | null>(null);
+  const [replyDraft, setReplyDraft] = useState("");
+  const [currentDraft, setCurrentDraft] = useState<ResearchArtifact | null>(null);
 
   const chat = useMutation({
-    mutationFn: (nextMessages: ArtifactChatMessage[]) =>
-      postArtifactChat(researchId, entity, clusterId, selectedFields, nextMessages),
-    onSuccess: (turn, nextMessages) => {
-      if (turn.type === "question") {
-        setMessages([...nextMessages, { role: "assistant", content: turn.message }]);
-        setStage("chatting");
-        return;
+    mutationFn: (vars: { messages: ArtifactChatMessage[]; forceFinal?: boolean }) =>
+      postArtifactChat(researchId, entity, clusterId, selectedFields, vars.messages, vars.forceFinal ?? false, currentDraft !== null),
+    onSuccess: (turn, vars) => {
+      setMessages([...vars.messages, { role: "assistant", content: turn.message }]);
+      if (turn.type === "final") {
+        setCurrentDraft(turn.artifact);
+        void queryClient.invalidateQueries({ queryKey: ["research", researchId] });
       }
-      setSavedMessage(turn.message);
-      setStage("done");
-      void queryClient.invalidateQueries({ queryKey: ["research", researchId] });
     },
   });
 
@@ -74,39 +88,38 @@ export function ArtifactChat({ researchId, entity, clusterId, artifact }: {
 
   function startChat() {
     setMessages([]);
-    chat.mutate([]);
+    setCurrentDraft(null);
+    setStage("chatting");
+    chat.mutate({ messages: [] });
   }
 
   function sendReply() {
-    const content = draft.trim();
+    const content = replyDraft.trim();
     if (!content) return;
-    setDraft("");
-    chat.mutate([...messages, { role: "user", content }]);
+    setReplyDraft("");
+    setStage("chatting");
+    chat.mutate({ messages: [...messages, { role: "user", content }] });
+  }
+
+  function generateNow() {
+    const content = replyDraft.trim();
+    const nextMessages = content ? [...messages, { role: "user" as const, content }] : messages;
+    setReplyDraft("");
+    setStage("chatting");
+    chat.mutate({ messages: nextMessages, forceFinal: true });
   }
 
   function closeDialog() {
     setStage("idle");
     setMessages([]);
-    setDraft("");
-    setSavedMessage(null);
+    setReplyDraft("");
+    setCurrentDraft(null);
   }
 
   return <div className="space-y-2">
-    {artifact && stage === "idle" ? <div className="space-y-2 rounded-md border border-border bg-muted/30 p-3">
-      <p className="text-sm font-medium">{t("Generated artifacts")}</p>
-      <dl className="space-y-1 text-sm">
-        <div><dt className="inline font-medium">{t(FIELD_LABEL_KEYS.video_subject)}: </dt><dd className="inline text-muted-foreground">{artifact.video_subject}</dd></div>
-        {OPTIONAL_FIELDS.filter((field) => artifact.generated_fields.includes(field)).map((field) => <div key={field}>
-          <dt className="inline font-medium">{t(FIELD_LABEL_KEYS[field])}: </dt>
-          <dd className="inline whitespace-pre-wrap text-muted-foreground">
-            {field === "video_terms" ? (artifact.video_terms ?? []).join(", ") : artifact[field]}
-          </dd>
-        </div>)}
-      </dl>
-      <div className="flex gap-2">
-        <Button type="button" variant="primary" disabled={restore.isPending} onClick={() => restore.mutate()}>{t("Use artifacts")}</Button>
-        <Button type="button" onClick={() => setStage("selecting")}>{t("Generate again")}</Button>
-      </div>
+    {artifact && stage === "idle" ? <DraftSummary draft={artifact} onUse={() => restore.mutate()} useIsPending={restore.isPending} /> : null}
+    {artifact && stage === "idle" ? <div className="flex gap-2">
+      <Button type="button" onClick={() => setStage("selecting")}>{t("Generate again")}</Button>
       {restore.error ? <p role="alert" className="text-sm text-destructive">{restore.error.message}</p> : null}
     </div> : null}
 
@@ -130,7 +143,6 @@ export function ArtifactChat({ researchId, entity, clusterId, artifact }: {
             <span>{t(FIELD_LABEL_KEYS[field])}</span>
           </label>)}
         </fieldset>
-        {chat.error ? <p role="alert" className="text-sm text-destructive">{chat.error.message}</p> : null}
         <div className="flex justify-end gap-2">
           <Button type="button" onClick={closeDialog}>{t("Cancel")}</Button>
           <Button type="button" variant="primary" disabled={chat.isPending} onClick={startChat}>{t("Continue")}</Button>
@@ -138,24 +150,30 @@ export function ArtifactChat({ researchId, entity, clusterId, artifact }: {
       </div>
     </Dialog>
 
-    <Dialog open={stage === "chatting" || stage === "done"} onClose={closeDialog} title={t("Generate artifacts")}>
+    <Dialog open={stage === "chatting"} onClose={closeDialog} title={t("Generate artifacts")} className="max-w-3xl">
       <div className="space-y-4">
-        <div className="max-h-80 space-y-2 overflow-y-auto">
-          {messages.map((message, index) => <p key={index} className={message.role === "user" ? "text-right text-sm" : "text-sm text-muted-foreground"}>
-            <span className="font-medium">{message.role === "user" ? t("You") : t("Agent")}: </span>{message.content}
-          </p>)}
+        <div className="max-h-96 space-y-2 overflow-y-auto rounded-md border border-border bg-muted/20 p-3">
+          {messages.map((message, index) => <div key={index} className={message.role === "user" ? "flex justify-end" : "flex justify-start"}>
+            <p className={message.role === "user"
+              ? "max-w-[80%] rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground"
+              : "max-w-[80%] rounded-lg bg-card px-3 py-2 text-sm text-card-foreground"}>
+              {message.content}
+            </p>
+          </div>)}
         </div>
-        {stage === "done"
-          ? <p role="status" className="text-sm text-primary">{savedMessage}</p>
-          : <>
-            <Textarea aria-label={t("Your reply")} value={draft} onChange={(event) => setDraft(event.target.value)} rows={3} />
-            {chat.error ? <p role="alert" className="text-sm text-destructive">{chat.error.message}</p> : null}
-            <div className="flex justify-end gap-2">
-              <Button type="button" onClick={closeDialog}>{t("Cancel")}</Button>
-              <Button type="button" variant="primary" disabled={chat.isPending || !draft.trim()} onClick={sendReply}>{t("Send")}</Button>
-            </div>
-          </>}
-        {stage === "done" ? <div className="flex justify-end"><Button type="button" onClick={closeDialog}>{t("Close")}</Button></div> : null}
+
+        {currentDraft ? <DraftSummary draft={currentDraft} onUse={() => restore.mutate()} useIsPending={restore.isPending} /> : null}
+        {restore.error ? <p role="alert" className="text-sm text-destructive">{restore.error.message}</p> : null}
+
+        <Textarea aria-label={t("Your reply")} value={replyDraft} onChange={(event) => setReplyDraft(event.target.value)} rows={3} />
+        {chat.error ? <p role="alert" className="text-sm text-destructive">{chat.error.message}</p> : null}
+        <div className="flex flex-wrap justify-end gap-2">
+          <Button type="button" onClick={closeDialog}>{t("Cancel")}</Button>
+          {replyDraft.trim() || messages.some((message) => message.role === "user") ? (
+            <Button type="button" disabled={chat.isPending} onClick={generateNow}>{t("Generate Now")}</Button>
+          ) : null}
+          <Button type="button" variant="primary" disabled={chat.isPending || !replyDraft.trim()} onClick={sendReply}>{t("Send")}</Button>
+        </div>
       </div>
     </Dialog>
   </div>;
