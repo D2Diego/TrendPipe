@@ -283,6 +283,7 @@
     "Remove Credential Confirm": "Hapus {key}? Sumber yang bergantung padanya tidak akan tersedia pada riset berikutnya.",
     "Credential Updated": "{key} diperbarui.",
     "Credential Removed": "{key} dihapus.",
-    "Remove": "Hapus"
+    "Remove": "Hapus",
+    "Generate Now": "Buat Sekarang"
   }
 }

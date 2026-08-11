@@ -283,6 +283,7 @@
     "Remove Credential Confirm": "¿Eliminar {key}? Las fuentes que dependen de ella no estarán disponibles en la próxima investigación.",
     "Credential Updated": "{key} actualizada.",
     "Credential Removed": "{key} eliminada.",
-    "Remove": "Eliminar"
+    "Remove": "Eliminar",
+    "Generate Now": "Generar ahora"
   }
 }

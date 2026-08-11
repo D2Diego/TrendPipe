@@ -86,6 +86,7 @@
     "Agent": "Agent",
     "Close": "Close",
     "Your reply": "Your reply",
+    "Generate Now": "Generate Now",
     "Credential values are never returned by the API.": "Credential values are never returned by the API.",
     "Available sources": "Available sources",
     "Credential status": "Credential status",

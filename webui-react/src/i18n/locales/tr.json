@@ -283,6 +283,7 @@
     "Remove Credential Confirm": "{key} kaldırılsın mı? Buna bağlı kaynaklar bir sonraki araştırmada kullanılamayacak.",
     "Credential Updated": "{key} güncellendi.",
     "Credential Removed": "{key} kaldırıldı.",
-    "Remove": "Kaldır"
+    "Remove": "Kaldır",
+    "Generate Now": "Şimdi Oluştur"
   }
 }

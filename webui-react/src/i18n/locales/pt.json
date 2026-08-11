@@ -86,6 +86,7 @@
     "Agent": "Agente",
     "Close": "Fechar",
     "Your reply": "Sua resposta",
+    "Generate Now": "Gerar agora",
     "Credential values are never returned by the API.": "Os valores das credenciais nunca são retornados pela API.",
     "Available sources": "Fontes disponíveis",
     "Credential status": "Status das credenciais",

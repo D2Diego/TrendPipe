@@ -283,6 +283,7 @@
     "Remove Credential Confirm": "Xóa {key}? Các nguồn phụ thuộc vào nó sẽ không khả dụng trong lần nghiên cứu tiếp theo.",
     "Credential Updated": "{key} đã được cập nhật.",
     "Credential Removed": "{key} đã được xóa.",
-    "Remove": "Xóa"
+    "Remove": "Xóa",
+    "Generate Now": "Tạo ngay"
   }
 }

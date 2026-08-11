@@ -283,6 +283,7 @@
     "Remove Credential Confirm": "Удалить {key}? Источники, которые от него зависят, станут недоступны при следующем запуске исследования.",
     "Credential Updated": "{key} обновлён.",
     "Credential Removed": "{key} удалён.",
-    "Remove": "Удалить"
+    "Remove": "Удалить",
+    "Generate Now": "Сгенерировать сейчас"
   }
 }
