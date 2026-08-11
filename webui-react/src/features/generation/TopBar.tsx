@@ -52,17 +52,17 @@ export function TopBar() {
   return (
     <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card px-4 py-3">
       <div className="flex flex-wrap items-center gap-3">
-        {!isHome ? <Link className="rounded-md border border-border bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-colors hover:bg-secondary/80" to={backTarget}><ArrowLeft className="mr-1 inline size-4" />{t("Back")}</Link> : null}
+        {!isHome ? <Link className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-colors hover:bg-secondary/80" to={backTarget}><ArrowLeft className="size-4" />{t("Back")}</Link> : null}
         <div className="text-xl font-bold tracking-tight text-foreground">
           TrendPipe <span className="text-xs font-normal text-muted-foreground">v{version.data?.current_version || import.meta.env.VITE_APP_VERSION || ""}</span>
         </div>
         {version.data?.available_version ? <a className="text-xs font-medium text-primary hover:underline" href={version.data.release_url} target="_blank" rel="noreferrer">{t("Update Available", { version: version.data.available_version })}</a> : null}
       </div>
       <div className="flex flex-wrap items-center justify-end gap-2">
-        {isGenerator ? <Link className="rounded-md border border-border bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-colors hover:bg-secondary/80" to="/researches"><Search className="mr-1 inline size-4" />{t("Do Research")}</Link> : null}
-        {isResearch ? <Link className="rounded-md border border-border bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-colors hover:bg-secondary/80" to="/generate"><Video className="mr-1 inline size-4" />{t("Create Video")}</Link> : null}
+        {isGenerator ? <Link className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-colors hover:bg-secondary/80" to="/researches"><Search className="size-4" />{t("Do Research")}</Link> : null}
+        {isResearch ? <Link className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-colors hover:bg-secondary/80" to="/generate"><Video className="size-4" />{t("Create Video")}</Link> : null}
         <TaskManagerPanel />
-        <Button id="open-settings-dialog-button" data-tour-id="settings" type="button" onClick={() => setSettingsOpen(true)}><Settings className="mr-1 inline size-4" />{t("Settings")}</Button>
+        <Button id="open-settings-dialog-button" data-tour-id="settings" type="button" className="inline-flex items-center gap-1" onClick={() => setSettingsOpen(true)}><Settings className="size-4" />{t("Settings")}</Button>
         <Select aria-label="Language / Languages" className="w-auto" value={i18n.language.split("-")[0]} onChange={(event) => changeLanguage(event.target.value)}>
           {Object.entries(localeFiles).map(([code, locale]) => <option key={code} value={code}>{locale.Language}</option>)}
         </Select>

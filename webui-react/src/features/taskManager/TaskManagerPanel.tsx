@@ -28,7 +28,7 @@ export function TaskManagerPanel() {
   const table = (filtered: TaskSummary[]) => <TaskTable tasks={filtered} onPlay={setPreview} onRegenerate={setRestoreId} onDelete={(taskId) => remove.mutate(taskId)} deletingId={remove.isPending ? String(remove.variables || "") : null} />;
   const triggerLabel = processingCount ? `${t("Task Manager")} · ${processingCount}` : t("Task Manager");
   return <>
-    <Popover open={open} onOpenChange={setOpen} trigger={<Button type="button" onClick={() => setOpen((value) => !value)}><SquareKanban className="mr-1 inline size-4" />{triggerLabel}</Button>}>
+    <Popover open={open} onOpenChange={setOpen} trigger={<Button type="button" className="inline-flex items-center gap-1" onClick={() => setOpen((value) => !value)}><SquareKanban className="size-4" />{triggerLabel}</Button>}>
       <div className="space-y-3"><h2 className="font-semibold">{t("Task Manager")}</h2>{history.error ? <p role="alert" className="text-sm text-destructive-foreground">{String(history.error)}</p> : null}{message ? <p role="status" className="text-sm text-muted-foreground">{message}</p> : null}<Tabs tabs={[
         { key: "all", label: t("All Tasks"), content: table(tasks) },
         { key: "processing", label: t("Task Status Processing"), content: table(tasks.filter((task) => taskStatusFilterKey(task) === "processing")) },

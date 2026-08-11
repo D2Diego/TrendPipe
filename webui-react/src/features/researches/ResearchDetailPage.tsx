@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router-dom";
 import { getResearch, type ReportCluster, type ResearchArtifact } from "@/api/research";
@@ -74,7 +75,7 @@ export function ResearchDetailPage() {
   const data = research.data;
   return <div className="space-y-6 p-4">
     <div className="space-y-2">
-      <Link className="text-sm text-primary underline" to="/researches">← {t("Researches")}</Link>
+      <Link className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground shadow-sm transition-colors hover:bg-secondary/80" to="/researches"><ArrowLeft className="size-4" />{t("Researches")}</Link>
       <h1 className="text-xl font-semibold">{data.topic}</h1>
       <p className="text-sm text-muted-foreground">{t("Status")}: <span role="status">{data.status}</span> · {data.depth} · {data.sources.join(", ")}</p>
     </div>
