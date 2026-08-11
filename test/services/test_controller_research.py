@@ -166,12 +166,23 @@ class TestResearchController(unittest.TestCase):
             response = controller.artifact_chat(
                 SimpleNamespace(headers={}),
                 controller.ArtifactChatRequest(
-                    selected_fields=["video_subject"], messages=[]
+                    selected_fields=["video_subject"],
+                    messages=[],
+                    force_final=True,
+                    has_draft=True,
                 ),
                 research_id="r1", entity="cats", cluster_id="cluster-1",
             )
         self.assertEqual(response["data"], chat_result)
-        chat.assert_called_once_with("r1", "cats", "cluster-1", ["video_subject"], [])
+        chat.assert_called_once_with(
+            "r1",
+            "cats",
+            "cluster-1",
+            ["video_subject"],
+            [],
+            force_final=True,
+            has_draft=True,
+        )
 
         with patch.object(
             controller.research_artifacts,

@@ -116,6 +116,85 @@ class TestArtifactChat(unittest.TestCase):
         self.assertIn("A useful snippet", prompt)
         self.assertIn("Strong comment", prompt)
 
+    def test_current_draft_is_fetched_only_when_has_draft_is_true(self):
+        response = json.dumps({"type": "question", "message": "Anything else?"})
+        existing = {
+            "video_subject": "Why cats are great", "video_script": "Old script",
+            "generated_fields": ["video_script"],
+        }
+        with patch.object(research_artifacts.research_store, "get_research", return_value=COMPLETED_RESEARCH), patch.object(
+            research_artifacts.research_store, "get_artifact", return_value=existing
+        ) as get_artifact, patch.object(
+            research_artifacts.llm, "generate_response", return_value=response
+        ) as generate:
+            research_artifacts.chat(
+                "r1", "cats", "cluster-1", ["video_subject", "video_script"],
+                [{"role": "user", "content": "Make it shorter"}],
+                has_draft=True,
+            )
+
+        get_artifact.assert_called_once_with("r1", "cats", "cluster-1")
+        prompt = generate.call_args.args[0]
+        self.assertIn("Old script", prompt)
+
+    def test_current_draft_ignores_a_persisted_artifact_when_has_draft_is_false(self):
+        response = json.dumps({"type": "question", "message": "Who is the audience?"})
+        existing = {
+            "video_subject": "Stale", "video_script": "Stale script",
+            "generated_fields": ["video_script"],
+        }
+        with patch.object(research_artifacts.research_store, "get_research", return_value=COMPLETED_RESEARCH), patch.object(
+            research_artifacts.research_store, "get_artifact", return_value=existing
+        ) as get_artifact, patch.object(
+            research_artifacts.llm, "generate_response", return_value=response
+        ) as generate:
+            research_artifacts.chat(
+                "r1", "cats", "cluster-1", ["video_subject", "video_script"], [],
+            )
+
+        get_artifact.assert_not_called()
+        prompt = generate.call_args.args[0]
+        self.assertNotIn("Stale script", prompt)
+        self.assertIn("none yet", prompt)
+
+    def test_force_final_instructs_the_model_to_finish_now(self):
+        response = json.dumps({
+            "type": "final", "message": "Ready",
+            "artifacts": {"video_subject": "Cats"},
+        })
+        with patch.object(research_artifacts.research_store, "get_research", return_value=COMPLETED_RESEARCH), patch.object(
+            research_artifacts.llm, "generate_response", return_value=response
+        ) as generate, patch.object(research_artifacts.research_store, "upsert_artifact", return_value={"id": "a1"}):
+            research_artifacts.chat(
+                "r1", "cats", "cluster-1", ["video_subject"],
+                [{"role": "user", "content": "General audience"}],
+                force_final=True,
+            )
+
+        prompt = generate.call_args.args[0]
+        self.assertIn("without further questions", prompt)
+
+    def test_a_second_final_turn_overwrites_the_same_artifact(self):
+        response = json.dumps({
+            "type": "final", "message": "Updated",
+            "artifacts": {"video_subject": "Cats, but funnier"},
+        })
+        existing = {"video_subject": "Cats", "generated_fields": []}
+        with patch.object(research_artifacts.research_store, "get_research", return_value=COMPLETED_RESEARCH), patch.object(
+            research_artifacts.research_store, "get_artifact", return_value=existing
+        ), patch.object(
+            research_artifacts.llm, "generate_response", return_value=response
+        ), patch.object(
+            research_artifacts.research_store, "upsert_artifact", return_value={"id": "a1", "video_subject": "Cats, but funnier"}
+        ) as upsert:
+            research_artifacts.chat(
+                "r1", "cats", "cluster-1", ["video_subject"],
+                [{"role": "user", "content": "Make it funnier"}],
+                has_draft=True,
+            )
+
+        upsert.assert_called_once_with("r1", "cats", "cluster-1", {"video_subject": "Cats, but funnier"}, [])
+
 
 class TestRestoreParams(unittest.TestCase):
     def test_builds_complete_video_params_with_generated_overlay(self):

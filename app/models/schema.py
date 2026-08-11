@@ -183,6 +183,8 @@ class ArtifactChatMessage(BaseModel):
 class ArtifactChatRequest(BaseModel):
     selected_fields: list[ArtifactField] = Field(min_length=1)
     messages: list[ArtifactChatMessage] = Field(default_factory=list, max_length=30)
+    force_final: bool = False
+    has_draft: bool = False
 
 
 class VideoScriptParams:

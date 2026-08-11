@@ -75,6 +75,8 @@ def artifact_chat(
             cluster_id,
             list(body.selected_fields),
             [message.model_dump() for message in body.messages],
+            force_final=body.force_final,
+            has_draft=body.has_draft,
         )
     except research_artifacts.ArtifactValidationError as exc:
         raise HttpException(task_id=research_id, status_code=400, message=str(exc)) from exc
