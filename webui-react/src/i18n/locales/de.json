@@ -275,6 +275,14 @@
     "Video Source Settings": "**Videoquellen-Einstellungen**",
     "Coverr": "Coverr",
     "Coverr API Key": "Coverr API-Schlüssel ([API-Schlüssel holen](https://coverr.co/developers?ctx=header_navigation))",
-    "Please Enter the Coverr API Key": "Bitte geben Sie den **Coverr API-Schlüssel** ein"
+    "Please Enter the Coverr API Key": "Bitte geben Sie den **Coverr API-Schlüssel** ein",
+    "Change Credential": "Ändern",
+    "Delete Credential": "{key} löschen",
+    "Removing...": "Wird entfernt...",
+    "Remove Credential Title": "Zugangsdaten entfernen?",
+    "Remove Credential Confirm": "{key} entfernen? Quellen, die davon abhängen, sind beim nächsten Recherchelauf nicht verfügbar.",
+    "Credential Updated": "{key} aktualisiert.",
+    "Credential Removed": "{key} entfernt.",
+    "Remove": "Entfernen"
   }
 }

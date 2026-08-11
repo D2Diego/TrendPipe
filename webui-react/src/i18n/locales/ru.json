@@ -275,6 +275,14 @@
     "Custom Position (% from top)": "Пользовательское положение (% от верхнего края)",
     "Please enter a value between 0 and 100": "Введите значение от 0 до 100",
     "Please enter a valid number": "Введите корректное число",
-    "Please Select a Valid Video Source": "Выберите поддерживаемый источник материалов"
+    "Please Select a Valid Video Source": "Выберите поддерживаемый источник материалов",
+    "Change Credential": "Изменить",
+    "Delete Credential": "Удалить {key}",
+    "Removing...": "Удаление...",
+    "Remove Credential Title": "Удалить учётные данные?",
+    "Remove Credential Confirm": "Удалить {key}? Источники, которые от него зависят, станут недоступны при следующем запуске исследования.",
+    "Credential Updated": "{key} обновлён.",
+    "Credential Removed": "{key} удалён.",
+    "Remove": "Удалить"
   }
 }

@@ -275,6 +275,14 @@
     "Please Enter the Coverr API Key": "Silakan Masukkan **Kunci API Coverr**",
     "Video Encoder": "Encoder Video",
     "Default Video Encoder": "Default (Direkomendasikan)",
-    "Video Encoder Help": "Opsi lanjutan. Default mengikuti kebijakan encoder stabil aplikasi, saat ini libx264. Jika encoder perangkat keras tidak tersedia, aplikasi otomatis kembali ke libx264."
+    "Video Encoder Help": "Opsi lanjutan. Default mengikuti kebijakan encoder stabil aplikasi, saat ini libx264. Jika encoder perangkat keras tidak tersedia, aplikasi otomatis kembali ke libx264.",
+    "Change Credential": "Ganti",
+    "Delete Credential": "Hapus {key}",
+    "Removing...": "Menghapus...",
+    "Remove Credential Title": "Hapus kredensial?",
+    "Remove Credential Confirm": "Hapus {key}? Sumber yang bergantung padanya tidak akan tersedia pada riset berikutnya.",
+    "Credential Updated": "{key} diperbarui.",
+    "Credential Removed": "{key} dihapus.",
+    "Remove": "Hapus"
   }
 }

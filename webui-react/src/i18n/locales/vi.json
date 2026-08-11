@@ -275,6 +275,14 @@
     "Please Enter the Coverr API Key": "Vui lòng nhập **API Key Coverr**",
     "Video Encoder": "Bộ Mã Hóa Video",
     "Default Video Encoder": "Mặc định (Khuyên dùng)",
-    "Video Encoder Help": "Tùy chọn nâng cao. Mặc định tuân theo chính sách mã hóa ổn định của ứng dụng, hiện là libx264. Nếu bộ mã hóa phần cứng không khả dụng, ứng dụng tự động chuyển về libx264."
+    "Video Encoder Help": "Tùy chọn nâng cao. Mặc định tuân theo chính sách mã hóa ổn định của ứng dụng, hiện là libx264. Nếu bộ mã hóa phần cứng không khả dụng, ứng dụng tự động chuyển về libx264.",
+    "Change Credential": "Thay đổi",
+    "Delete Credential": "Xóa {key}",
+    "Removing...": "Đang xóa...",
+    "Remove Credential Title": "Xóa thông tin xác thực?",
+    "Remove Credential Confirm": "Xóa {key}? Các nguồn phụ thuộc vào nó sẽ không khả dụng trong lần nghiên cứu tiếp theo.",
+    "Credential Updated": "{key} đã được cập nhật.",
+    "Credential Removed": "{key} đã được xóa.",
+    "Remove": "Xóa"
   }
 }
