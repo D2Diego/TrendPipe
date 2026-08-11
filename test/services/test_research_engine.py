@@ -32,6 +32,13 @@ class TestNormalizeReport(unittest.TestCase):
 
 
 class TestRunDiagnose(unittest.TestCase):
+    def setUp(self):
+        env_patcher = patch(
+            "app.services.research_credentials.read_env_file", return_value={}
+        )
+        env_patcher.start()
+        self.addCleanup(env_patcher.stop)
+
     def test_parses_diagnose_json_from_stdout(self):
         fake = MagicMock(
             returncode=0,
@@ -46,6 +53,13 @@ class TestRunDiagnose(unittest.TestCase):
 
 
 class TestRunResearch(unittest.TestCase):
+    def setUp(self):
+        env_patcher = patch(
+            "app.services.research_credentials.read_env_file", return_value={}
+        )
+        env_patcher.start()
+        self.addCleanup(env_patcher.stop)
+
     def test_success_returns_normalized_payload(self):
         fake = MagicMock(
             returncode=0,
@@ -93,6 +107,32 @@ class TestRunResearch(unittest.TestCase):
         ):
             with self.assertRaises(research_engine.ResearchExecutionError):
                 research_engine.run_research("cats", "deep", ["reddit"])
+
+
+class TestLast30daysEnv(unittest.TestCase):
+    def test_forces_empty_config_dir(self):
+        with patch(
+            "app.services.research_credentials.read_env_file", return_value={}
+        ):
+            env = research_engine._last30days_env()
+        self.assertEqual(env["LAST30DAYS_CONFIG_DIR"], "")
+
+    def test_merges_values_from_the_credentials_file(self):
+        with patch(
+            "app.services.research_credentials.read_env_file",
+            return_value={"LAST30DAYS_REASONING_PROVIDER": "openrouter"},
+        ):
+            env = research_engine._last30days_env()
+        self.assertEqual(env["LAST30DAYS_REASONING_PROVIDER"], "openrouter")
+
+    def test_real_process_env_wins_over_the_file(self):
+        with patch(
+            "app.services.research_credentials.read_env_file",
+            return_value={"SOME_KEY": "from-file", "FILE_ONLY_KEY": "only-in-file"},
+        ), patch.object(research_engine.os, "environ", {"SOME_KEY": "from-shell"}):
+            env = research_engine._last30days_env()
+        self.assertEqual(env["SOME_KEY"], "from-shell")
+        self.assertEqual(env["FILE_ONLY_KEY"], "only-in-file")
 
 
 if __name__ == "__main__":

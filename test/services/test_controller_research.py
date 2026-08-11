@@ -122,6 +122,44 @@ class TestResearchController(unittest.TestCase):
             )
         write_mock.assert_called_once_with({"OPENROUTER_API_KEY": "abc"})
 
+    def test_get_settings_includes_credential_presence(self):
+        with patch.object(
+            controller.research_engine,
+            "run_diagnose",
+            return_value={"available_sources": ["reddit"]},
+        ), patch.object(
+            controller.research_credentials,
+            "credential_presence",
+            return_value={"OPENROUTER_API_KEY": True, "GITHUB_TOKEN": False},
+        ):
+            response = controller.get_research_settings(SimpleNamespace(headers={}))
+        self.assertEqual(
+            response["data"]["credential_keys"],
+            {"OPENROUTER_API_KEY": True, "GITHUB_TOKEN": False},
+        )
+
+    def test_delete_credential_returns_success(self):
+        with patch.object(
+            controller.research_credentials, "delete_credential"
+        ) as delete_mock:
+            response = controller.delete_research_credential(
+                SimpleNamespace(headers={}), key="OPENROUTER_API_KEY"
+            )
+        delete_mock.assert_called_once_with("OPENROUTER_API_KEY")
+        self.assertTrue(response["data"]["deleted"])
+
+    def test_delete_credential_rejects_invalid_key(self):
+        with patch.object(
+            controller.research_credentials,
+            "delete_credential",
+            side_effect=ValueError("unsupported credential key: NOPE"),
+        ):
+            with self.assertRaises(HttpException) as ctx:
+                controller.delete_research_credential(
+                    SimpleNamespace(headers={}), key="NOPE"
+                )
+        self.assertEqual(ctx.exception.status_code, 400)
+
     def test_artifact_chat_and_restore(self):
         chat_result = {"type": "question", "message": "Audience?"}
         with patch.object(controller.research_artifacts, "chat", return_value=chat_result) as chat:
