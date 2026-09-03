@@ -114,7 +114,7 @@ def run_auto_setup(config: Dict[str, Any], *, allow_browser_cookies: bool = Fals
 
     # Check yt-dlp availability and install via Homebrew if missing. Windows
     # has no Homebrew, and its working install path is `pip install yt-dlp`
-    # (see #904), so it gets its own no-op-install guidance branch instead of
+    #, so it gets its own no-op-install guidance branch instead of
     # falling into the Homebrew-oriented no_homebrew outcome.
     ytdlp_action: str
     if shutil.which("yt-dlp") is not None:

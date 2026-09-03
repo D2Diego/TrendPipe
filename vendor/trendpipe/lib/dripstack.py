@@ -9,8 +9,7 @@ are out of scope for this source adapter.
 The signal is complementary to the other financial sources: StockTwits gives
 retail sentiment, Polymarket gives prediction-market odds, and DripStack gives
 what professional analysts and paid newsletter authors are actually writing
-about. The search results carry publication attribution (e.g. "SemiAnalysis",
-"Bloomberg") which is high-credibility signal for synthesis.
+about. The search results carry publication attribution (e.g. a named newsletter or wire service) which is high-credibility signal for synthesis.
 
 GATING: DripStack search is most valuable for finance, markets, company
 analysis, and industry research topics. Like arXiv (science) and Techmeme
@@ -157,7 +156,7 @@ def parse_dripstack_response(
         body = subtitle or snippet_text or title
 
         # Publication name as author — gives attribution credit to the
-        # newsletter/analyst who wrote it (e.g. "SemiAnalysis", "Bloomberg").
+        # newsletter/analyst who wrote it (e.g. a named newsletter or wire service).
         # Use the slug as a readable fallback.
         author = pub_slug.replace(".substack.com", "").replace(".com", "")
 

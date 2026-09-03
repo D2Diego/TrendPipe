@@ -100,7 +100,7 @@ _SCAFFOLD_RES = [re.compile(p, re.IGNORECASE) for p in (
 
 _LAUNCH_RE = re.compile(r"^(show hn|launch hn)\b")
 # Leading interrogatives: wh-words count only with a question follow-through
-# ("What is the best..." is junk; "What Gemma 4 means..." is an explainer).
+# ("What is the best..." is junk; "What <product> 4 means..." is an explainer).
 _WH_JUNK_RE = re.compile(
     r"^(how|what|why|when|where|which|who)\s+"
     r"(do|does|did|is|are|was|were|am|can|could|should|would|will|to|i|we|you|your|my|one)\b"

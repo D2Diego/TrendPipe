@@ -100,7 +100,7 @@ MAX_SOURCE_FETCHES: dict[str, int] = {"x": 2, "jobs": 1, "linkedin": 1, "stocktw
 
 
 def _resolve_depth_settings(depth: str, config: dict[str, Any]) -> dict[str, int]:
-    """Depth profile with optional CLI cap overrides applied (issue #716).
+    """Depth profile with optional CLI cap overrides applied.
 
     Returns a copy so the module-level DEPTH_SETTINGS is never mutated. Overrides
     are set directly (not max()) so callers can also lower a cap. `--max-results`
@@ -215,7 +215,7 @@ def available_sources(
     # GitHub is reachable via the unauthenticated REST tier too, so it is
     # available even without a token/gh CLI (a token only raises rate limits).
     available.append("github")
-    # DripStack is opt-in only (owner decision, #791): a commercial
+    # DripStack is opt-in only (owner decision): a commercial
     # third-party API must never receive default-run traffic. Opt in per run
     # (--search dripstack) or persistently (INCLUDE_SOURCES=dripstack in
     # .env, the LinkedIn/Perplexity pattern); the search API is free and
@@ -2033,8 +2033,8 @@ def run(
             plan.source_weights = planner._normalize_weights(plan.source_weights)
 
     # Always-on planner trace. Emits one summary line plus one per subquery
-    # so retrieval-breadth failures like the 2026-04-19 Hermes Agent Use Cases
-    # disaster are visible without --debug. Stderr only; does not leak into
+    # so retrieval-breadth failures like the intent-modifier retrieval
+    # regression are visible without --debug. Stderr only; does not leak into
     # the user-facing stdout synthesis.
     print(
         f"[Planner] Plan: intent={plan.intent}, freshness={plan.freshness_mode}, "
@@ -2215,7 +2215,7 @@ def run(
                 # Skip GitHub keyword search if person-mode already ran
                 if source == "github" and (_github_person_done or _github_custom_done):
                     continue
-                # Enforce per-source fetch cap. A CLI override (issue #716) raises
+                # Enforce per-source fetch cap. A CLI override raises
                 # the cap for capped sources so every X subquery in a multi-angle
                 # --plan fetches, instead of only the first two.
                 cap = MAX_SOURCE_FETCHES.get(source)
@@ -2743,7 +2743,7 @@ def _finalize_items_by_source(
             # top-by-views candidates, while final selection ranks by
             # relevance. Backfill survivors that arrived without one so the
             # transcript budget lands on videos the brief actually shows
-            # (#542).
+            #.
             matched, replayed = http.fixture_source_replay(enrichment_request)
             if matched:
                 items = _merge_replayed_enrichment(items, replayed)
@@ -2757,10 +2757,10 @@ def _finalize_items_by_source(
                 )
                 http.fixture_source_record(enrichment_request, schema.to_dict(items))
         # Post-merge topic-relevance filter for Polymarket: comparison queries
-        # fan out into per-entity subqueries ("Hermes", "OpenClaw") whose topic
-        # is too narrow for Gamma API to filter meaningfully. Re-validating the
-        # merged list against the full original topic drops off-topic markets
-        # (e.g., WTI crude oil, Elon tweet counts) before footer emission.
+        # fan out into per-entity subqueries ("Product A", "Product B") whose
+        # topic is too narrow for Gamma API to filter meaningfully. Re-validating
+        # the merged list against the full original topic drops off-topic markets
+        # (e.g., crude-oil or celebrity-tweet counts) before footer emission.
         if source == "polymarket" and topic:
             items = polymarket.filter_items_against_topic(topic, items)
             # --polymarket-keywords (via config): additional keyword filter
@@ -3361,7 +3361,7 @@ def _retry_thin_sources(
     if not core:
         return
     # Note: we intentionally do NOT skip when core == topic. For short topics
-    # like "Kanye West", the 3-word core IS the topic — but the planner may
+    # like a two- or three-word name, the core IS the topic — but the planner may
     # have sent a different (worse) query to the source. Retrying with the
     # raw core subject is still valuable.
 

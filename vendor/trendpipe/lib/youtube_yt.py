@@ -981,7 +981,7 @@ def fetch_transcript(
             # fetch_transcripts_parallel() counts it as a plain success —
             # making a rate-limited/bot-gated run look like nothing went
             # wrong. Log the rescue and flag it in `status` so the summary
-            # can report it explicitly instead of masking it (#831).
+            # can report it explicitly instead of masking it.
             _log(f"ScrapeCreators transcript fallback rescued {video_id} "
                  f"after the keyless fetch cascade failed")
             if status is not None:
@@ -1051,7 +1051,7 @@ def fetch_transcripts_parallel(
     # direct HTTP path alone (see fetch_transcript()). Folding
     # those into a bare "M failed" count previously made a fully rate-limited
     # yt-dlp run — every fetch failing, silently saved by the fallback — read
-    # as "0 failed", with no trace of the fallback ever having fired (#831).
+    # as "0 failed", with no trace of the fallback ever having fired.
     # Surface the split so the summary can't misrepresent a masked failure
     # as a clean success.
     sc_rescued = sum(1 for st in statuses.values() if st.get("sc_rescued"))
@@ -1067,7 +1067,7 @@ def backfill_transcripts(
     items: List[Any], topic: str = "", depth: str = "default",
     token: Optional[str] = None,
 ) -> None:
-    """Second-pass transcript fetch for finalized items that lack one (#542).
+    """Second-pass transcript fetch for finalized items that lack one.
 
     ``token`` is the optional ScrapeCreators key, threaded to
     ``fetch_transcripts_parallel`` so the SC fallback covers backfill survivors

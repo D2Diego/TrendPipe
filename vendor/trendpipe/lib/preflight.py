@@ -7,9 +7,8 @@ query; the model sees the REFUSE on stderr and asks the user for the
 hobbies/relationship/budget context it needs.
 
 Patterns ported from SKILL.md Step 0.45 prose. Only Class 1 is implemented
-here because it has a verified failure mode on v3.0.8 (2026-04-18 'birthday
-gift for 40 year old' run returned r/todayilearned and unrelated drama
-posts).
+here because it has a verified failure mode: a 'birthday gift for a 40 year old'
+run returned unrelated posts.
 """
 
 from __future__ import annotations
@@ -106,8 +105,7 @@ def _refuse_message(topic: str) -> str:
         "\n"
         "The literal phrase is not the vocabulary of actual gift discussions "
         "on Reddit, X, or TikTok. Running the engine will return low-signal "
-        "generic posts (the 2026-04-18 validation run returned "
-        "r/todayilearned and unrelated drama).\n"
+        "generic posts (a validation run returned unrelated drama).\n"
         "\n"
         "Ask the user for at least one of:\n"
         "  - hobbies (cooks / runs / reads / gaming / outdoors / golf / music)\n"

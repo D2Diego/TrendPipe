@@ -317,7 +317,7 @@ def _request_bgm(video_path: str, output_path: str, prompt: str) -> str:
                     params={"output_format": "mp3_44100_128"},
                     files=[
                         (
-                            # The official document displays the table array as ``videos[]``，But... 2026-07-18
+                            # The official document displays the table array as ``videos[]``
                             # The production interface returns the field 422，Actual Starlette Parameter Name
                             # ``videos``。Repeat Uploading requests The same name paragraph could continue to be added.
                             "videos",

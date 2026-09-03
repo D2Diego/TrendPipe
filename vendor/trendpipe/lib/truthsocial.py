@@ -91,7 +91,7 @@ def search_truthsocial(
             "GET", url,
             headers={
                 "Authorization": f"Bearer {token}",
-                # Cloudflare 403s the skill's default User-Agent regardless of token validity (#909).
+                # Cloudflare 403s the skill's default User-Agent regardless of token validity.
                 # Reuse http.BROWSER_USER_AGENT, as the keyless Reddit path does.
                 "User-Agent": http.BROWSER_USER_AGENT,
                 "Accept": "application/json, text/plain, */*",

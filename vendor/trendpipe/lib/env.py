@@ -487,7 +487,7 @@ def get_config(policy: ConfigLoadPolicy | None = None) -> dict[str, Any]:
         # keeps its fixed 240s quick budget regardless.
         ('TRENDPIPE_ENRICH_BUDGET_SECONDS', None),
         # Opt-in strict exit: truthy -> CLI exits 3 when any source outcome is
-        # degraded (neither ok, no-results, nor skipped-unconfigured). #384.
+        # degraded (neither ok, no-results, nor skipped-unconfigured).
         ('TRENDPIPE_STRICT_EXIT', None),
         ('TRENDPIPE_MEMORY_DIR', None),
         # Optional local-only evidence source. Paths are separated with the
@@ -599,7 +599,7 @@ def get_config(policy: ConfigLoadPolicy | None = None) -> dict[str, Any]:
             config['SCRAPECREATORS_API_KEY'] = legacy
 
     # Multi-key rotation: comma-separated SCRAPECREATORS_API_KEY round-robins
-    # via random.choice per run. Originally added in #268, accidentally dropped
+    # via random.choice per run. Originally added earlier, accidentally dropped
     # in v3.0.6, restored here.
     sc_key_raw = config.get('SCRAPECREATORS_API_KEY') or ''
     if ',' in sc_key_raw:

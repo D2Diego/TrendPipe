@@ -87,7 +87,7 @@ def _fetch_json(
 
     When ``failure_out`` is provided, a short human-readable reason is
     appended for every failure branch so callers can distinguish transport
-    failures from genuinely empty results (issue #384).
+    failures from genuinely empty results.
     """
 
     def _note(msg: str) -> None:
@@ -219,7 +219,7 @@ def search_github(
                                              "to_date": to_date, "count": count}}
         if authed and fetch_failures:
             # Authenticated transport failures must not be laundered into a
-            # clean no-results outcome (issue #384).
+            # clean no-results outcome.
             envelope["error"] = f"GitHub API request failed: {fetch_failures[-1]}"
         elif not authed:
             # Could be the anon rate limit (403) or an unprocessable query (422)

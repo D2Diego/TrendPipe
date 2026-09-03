@@ -211,6 +211,9 @@ LLM_PROVIDER_REGISTRY = (
     LLMProviderSpec(
         "oneapi",
         "OneAPI",
+        # Self-hosted gateway: the token and Base URL come from the user's own
+        # deployment, so there is no hosted sign-up page.
+        requires_api_key=False,
     ),
     LLMProviderSpec(
         "litellm",

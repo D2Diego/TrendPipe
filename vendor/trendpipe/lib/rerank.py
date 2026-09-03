@@ -14,9 +14,9 @@ from . import http, providers, relevance, schema, signals
 # from the topic in its title or snippet. Picked empirically: a typical
 # score spread in the shortlist is 30-70, so 25 points reliably pushes
 # an off-topic candidate below on-topic ones without fully zeroing out
-# marginal matches. See 2026-04-19 Hermes Agent Use Cases failure: a
-# Nate Herk "Managed Agents" video scored 51 / ranked #2 with zero
-# Hermes content.
+# marginal matches. See the entity-miss failure: an unrelated tutorial
+# video about a different agent framework scored 51 / ranked #2 with zero
+# on-topic content.
 ENTITY_MISS_PENALTY = 25.0
 
 # A fallback entity miss is hidden from synthesized evidence only when it also
@@ -93,7 +93,7 @@ def discovery_velocity_score(
     return round(raw * corroboration, 4)
 
 
-# Discovery confidence floor. The named 2026-07-12 failure mode: quiet feeds
+# Discovery confidence floor. The named failure mode: quiet feeds
 # left the sweep ranking noise against noise, and it dutifully emitted five
 # 1-like tweets as a "trend list". The floor makes "nothing solid this window"
 # a first-class outcome instead. Constants are deliberately tunable:
@@ -192,8 +192,8 @@ INTERACTION_FLOOR = 35.0
 FIRST_PARTY_FLOOR = 25.0
 
 # Intent modifiers to strip before extracting the primary entity so that,
-# for example, "Hermes Agent use cases" yields primary_entity="hermes agent"
-# rather than "hermes agent use cases". Kept in sync with
+# for example, "Example Agent use cases" yields primary_entity="example agent"
+# rather than "example agent use cases". Kept in sync with
 # planner._INTENT_MODIFIER_PATTERNS.
 _INTENT_MODIFIER_RE = re.compile(
     r"\b("
@@ -361,8 +361,8 @@ def _build_prompt(
             "A candidate that does NOT mention this entity (or a clear synonym/abbreviation) "
             "in its title or snippet should score no higher than 30, regardless of other "
             "signals. Do not let a candidate match the topic vicinity without matching the "
-            "entity itself. 2026-04-19 Hermes Agent Use Cases failure: a Nate Herk video "
-            "about Claude's Managed Agents scored 51 with zero Hermes content. "
+            "entity itself. Example failure: an unrelated tutorial video about a "
+            "different agent framework scored 51 with zero on-topic content. "
             "EXCEPTION: a candidate marked `first_party: true` is the subject's own post - "
             "it is first-class evidence about the subject and is EXEMPT from this cap. Score "
             "it on its own merits (a person rarely names themselves in their own post).\n"
@@ -567,7 +567,7 @@ def _apply_engagement_rescue(
 def _candidate_haystack(candidate: schema.Candidate) -> str:
     """Build the lowercase text blob against which entity-grounding is checked.
 
-    Expanded 2026-04-19 to include transcript snippets, transcript highlights,
+    Expanded to include transcript snippets, transcript highlights,
     and top-comment text. The prior `title + snippet` check missed YouTube
     videos whose entity mentions live in transcript content and Reddit posts
     whose mentions are in top comments. Now checks all text surfaces a human
@@ -722,8 +722,8 @@ def prune_fallback_entity_misses(
 #: rerank_score). The -25 on rerank_score composes to only -15 on final_score
 #: via the 0.60 weight, which engagement bonus partially offsets on
 #: high-view YouTube items. This secondary penalty lands the full weight on
-#: the composite signal the cluster-scoring layer consumes. 2026-04-19
-#: Nate Herk "Managed Agents" video ranked at cluster #2 with score 51
+#: the composite signal the cluster-scoring layer consumes. In the example
+#: failure, an unrelated tutorial video ranked at cluster #2 with score 51
 #: despite the rerank_score demotion because engagement + freshness drowned
 #: the dilute penalty. This backstop makes the demotion actually decisive.
 ENTITY_MISS_FINAL_PENALTY = 20.0

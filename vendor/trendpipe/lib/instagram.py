@@ -417,7 +417,7 @@ def fetch_captions(
         try:
             # Isolate transcript fetch errors from the pipeline-level
             # capture_failures() context so an individual reel's 400 doesn't
-            # poison the entire source outcome (#829).
+            # poison the entire source outcome.
             with http.capture_failures() as _tf:
                 data = http.get(
                     f"{SCRAPECREATORS_BASE}/v2/instagram/media/transcript",

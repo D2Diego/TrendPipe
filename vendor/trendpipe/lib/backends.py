@@ -33,7 +33,7 @@ Paid lanes (xai, xquik, serper, and every other API-key backend, including
 ScrapeCreators) probe KEY PRESENCE ONLY: a dict lookup, never a network
 call or credential spend. Binary-backed lanes reuse the U1 dependency
 probe layer (``health.probe_dependency``) so a stale shim reads as BROKEN,
-not available (#692).
+not available.
 
 This module observes and predicts only. It must never alter which backend
 the pipeline actually uses; parity with the pipeline's pre-failover

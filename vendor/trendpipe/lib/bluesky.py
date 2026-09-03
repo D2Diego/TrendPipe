@@ -3,7 +3,7 @@
 Uses bsky.social for auth and api.bsky.app for post search (the canonical
 authenticated AppView). The previous default `public.api.bsky.app` is the
 unauthenticated public mirror, which BunnyCDN now blocks for searchPosts
-regardless of auth header (verified 2026-05-04). Override the search host
+regardless of auth header (verified). Override the search host
 via BSKY_SEARCH_HOST env var if Bluesky migrates infrastructure again.
 
 Requires BSKY_HANDLE and BSKY_APP_PASSWORD env vars. App passwords are

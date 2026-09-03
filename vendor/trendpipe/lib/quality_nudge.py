@@ -94,7 +94,7 @@ def _is_youtube_degraded(research_results: dict, threshold: float) -> bool:
     post-pruning ratio: the report counts only see items that survived
     freshness/relevance pruning, so a run where every transcript fetch
     succeeded but the fetched videos were later pruned looks identical to a
-    stale-binary run (#531). Zero failures across attempted fetches proves
+    stale-binary run. Zero failures across attempted fetches proves
     the binary works - don't flag.
     """
     videos = int(research_results.get("youtube_videos_count") or 0)

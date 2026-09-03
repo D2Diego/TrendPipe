@@ -36,7 +36,7 @@ _MIMO_VOICE_IDS = {
     "White Birch": "\u767d\u6866",
 }
 NO_VOICE_NAME = "no-voice"
-# `none` Yes. PR #981 No voice tag used. It's short-term compatible. Avoid.
+# `none` Yes. No voice tag used. It's short-term compatible. Avoid.
 # It's been called manually. API Validation upon upgrade;WebUI Harmonize with the new code
 # More clearly. `no-voice`。
 _NO_VOICE_ALIASES = {NO_VOICE_NAME, "none"}

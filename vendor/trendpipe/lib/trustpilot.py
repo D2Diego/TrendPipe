@@ -25,7 +25,7 @@ Default-on safety (three gates):
      cannot re-harvest, timeout) degrades to empty results, never an error.
 
 Domain resolution: Trustpilot review pages are keyed by domain
-(``www.thriftbooks.com``), not company name -- ``info ThriftBooks`` 404s.
+(``www.example.com``), not company name -- ``info ExampleCo`` 404s.
 Priority chain: user flag (verbatim) > auto-resolve hint (retries via search
 on a miss) > domain token in the topic > CLI ``search`` name->domain lookup
 (cached per topic) > cleaned topic (legacy behavior).
@@ -59,7 +59,7 @@ NO_BROWSER_ENV = "TRENDPIPE_TRUSTPILOT_NO_BROWSER"
 
 # Among name-matching search hits, the top hit must have this many times the
 # runner-up's review volume to win automatically. Lookalike/squatter pages have
-# tiny volume (ThriftBooks: 2.8M vs 130); comparable volume means genuine
+# tiny volume (e.g. 2.8M vs 130 reviews); comparable volume means genuine
 # ambiguity, where falling back beats silently picking the wrong company.
 DOMAIN_DOMINANCE_FACTOR = 50
 

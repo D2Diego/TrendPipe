@@ -59,7 +59,7 @@ def _skill_version() -> str:
 def _render_badge() -> list[str]:
     """Emit the MANDATORY first-line badge per SKILL.md OUTPUT CONTRACT.
 
-    Added in v3.0.8 after three Opus 4.7 self-debugs (2026-04-18) confirmed
+    Added after repeated self-debugs confirmed
     the model was failing to emit the badge manually because SKILL.md was
     too big to reach the BADGE MANDATORY block before synthesis. Engine
     emission makes passing-through-the-script-output the default-correct
@@ -768,7 +768,7 @@ def render_compact(
     # Open EVIDENCE FOR SYNTHESIS envelope. The ## Ranked Evidence Clusters,
     # ## Stats, and ## Source Coverage blocks inside this envelope are raw
     # evidence for the model to READ, not output to emit. LAW 6 in SKILL.md
-    # names the failure mode: 2026-04-19 Hermes Agent runs dumped this block
+    # names the failure mode: prior runs dumped this block
     # verbatim as user output. The envelope comments give the model an
     # unambiguous scope for "pass through verbatim" (the PASS-THROUGH FOOTER
     # block below) vs "synthesize from" (this block).
@@ -776,7 +776,7 @@ def render_compact(
         "<!-- EVIDENCE FOR SYNTHESIS: read this, do not emit verbatim. Transform into `What I learned:` prose per LAW 2. -->"
     )
     lines.append("")
-    # Echo the synthesis contract early so it survives tail truncation (#726).
+    # Echo the synthesis contract early so it survives tail truncation.
     lines.extend(_render_synthesis_directive())
     visible_clusters = evidence_report.clusters[:cluster_limit]
     solid_clusters = _clusters_clearing_relevance_floor(
@@ -1101,8 +1101,8 @@ def _append_html_footer(
 def _render_synthesis_directive() -> list[str]:
     """Echo the synthesis contract at the TOP of the evidence envelope.
 
-    Added 2026-06-30 for issue #726 (Grok Build v0.2.67 emitted only logs and
-    raw evidence clusters instead of the canonical synthesis). Root cause: the
+    Added after a runtime build emitted only logs and raw evidence clusters
+    instead of the canonical synthesis. Root cause: the
     strong directive only lived in `_render_canonical_boundary` — the very END
     of stdout, AFTER the whole evidence block and footer. Hosts that truncate
     the tail (`engine | head -N`, timeout-backgrounding that captures partial
@@ -1245,9 +1245,9 @@ def _render_degraded_run_warning(report: schema.Report) -> list[str]:
 
     Positioned BEFORE the EVIDENCE FOR SYNTHESIS envelope in render_compact
     so the model's pass-through contract forces it into the user's view per
-    LAW 7. The 2026-04-19 Hermes Agent Use Cases Run 1 failure mode: the
-    engine's stderr warning about "no LLM provider" was invisible to the
-    user because Claude hid stderr. User-visible stdout block is the
+    LAW 7. The degraded-run failure mode: the engine's stderr warning about
+    "no LLM provider" was invisible to the user because the host hid stderr.
+    User-visible stdout block is the
     backstop that makes silent degradation impossible.
     """
     if report.artifacts.get("hiring_signals_mode"):
@@ -1413,7 +1413,7 @@ def render_comparison_multi(
         "`What I learned:` prose per LAW 2. Each entity has its own evidence subsection. -->"
     )
     lines.append("")
-    # Echo the synthesis contract early so it survives tail truncation (#726).
+    # Echo the synthesis contract early so it survives tail truncation.
     lines.extend(_render_synthesis_directive())
 
     resolved_block = _render_resolved_entities_block(entity_reports)
@@ -2338,9 +2338,9 @@ def _shorten_polymarket_title(title: str) -> str:
     """Strip boilerplate from a Polymarket question to produce a compact descriptor.
 
     Examples:
-    - "Will Kanye West visit the UK by June 30?" -> "UK visit"
-    - "Kanye West blocked from entering another country by June 30?" -> "blocked from entering another country"
-    - "Will Bianca and Kanye West separate in 2026?" -> "Bianca and Kanye West separate"
+    - "Will the artist visit the UK by June 30?" -> "UK visit"
+    - "Artist blocked from entering another country by June 30?" -> "blocked from entering another country"
+    - "Will the couple separate in 2026?" -> "the couple separate"
 
     Falls back to first 3-4 significant words if stripping does not reduce below 40 chars.
     Never truncates mid-word.
@@ -3429,7 +3429,7 @@ def _render_top_comments(
         if not _best_take_relevance_ok(cand):
             continue
         # Skip comments from off-topic threads when enough candidates clear the
-        # floor; sparse niche topics still surface their best comments (#641).
+        # floor; sparse niche topics still surface their best comments.
         if (
             apply_relevance_floor
             and (cand.local_relevance or 0.0) < relevance.RELEVANCE_FLOOR
@@ -3535,7 +3535,7 @@ def _format_untrusted_evidence(
 
     Multi-line snippets previously broke out of the ``   - Evidence:`` indent
     so a bare ``##`` from a jobs page became a sibling of engine section
-    headings inside the EVIDENCE FOR SYNTHESIS block (#874). Continuation
+    headings inside the EVIDENCE FOR SYNTHESIS block. Continuation
     lines stay indented (CommonMark ATX headings need ≤3 leading spaces), and
     leading ``#`` runs are escaped as defense in depth.
     """

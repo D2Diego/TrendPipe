@@ -48,7 +48,7 @@ def expand_xquik_queries(topic: str, depth: str) -> List[str]:
         List of query strings (1 for quick, 2 for default, 3 for deep).
     """
     core = _extract_core_subject(topic)
-    # Anti-bare-generic guard (#607): never let the core collapse to a single
+    # Anti-bare-generic guard: never let the core collapse to a single
     # bare token when the topic carries more — a lone generic word floods X with
     # off-topic collisions. Fall back to the full multi-word topic as the anchor.
     topic_clean = topic.strip()
@@ -197,7 +197,7 @@ def search_handles(
 ) -> List[Dict[str, Any]]:
     """FROM lane: tweets authored BY each handle (their own timeline).
 
-    The topic is NOT AND'd into the query (that was the from:-AND bug, #610) —
+    The topic is NOT AND'd into the query (that was the from:-AND bug) —
     we pull the raw timeline and use ``topic`` for relevance ranking only.
     Returns a flat list of item dicts (mirrors ``bird_x.search_handles``).
     """

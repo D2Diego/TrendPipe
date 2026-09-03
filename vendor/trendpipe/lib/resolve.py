@@ -155,7 +155,7 @@ def _extract_official_domain(topic: str, items: list[dict]) -> str:
     """Extract the brand's own domain from search-result URLs.
 
     Conservative on purpose: only a hostname whose registrable label
-    normalizes to the topic name qualifies ("ThriftBooks" -> thriftbooks.com).
+    normalizes to the topic name qualifies ("ExampleShop" -> exampleshop.com).
     This feeds Trustpilot targeting as a HINT (the engine retries via the
     CLI's own search when the hint misses), so a miss here is cheap and a
     wrong guess is recoverable.

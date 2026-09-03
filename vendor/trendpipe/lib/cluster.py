@@ -127,8 +127,8 @@ def _merge_entity_clusters(
     The initial greedy pass uses text similarity which misses cross-source
     matches where phrasing differs. This second pass looks at entity overlap
     (proper nouns, names, numbers) to catch cases like:
-      - Reddit: "Kanye West to headline all three nights of Wireless Festival 2026"
-      - X: "BREAKING: Kanye West (Ye) is making his massive UK comeback!"
+      - Reddit: "The artist to headline all three nights of a festival in 2026"
+      - X: "BREAKING: the artist is making a massive comeback!"
     """
     if len(clusters) < 2:
         return clusters
@@ -159,9 +159,9 @@ def _merge_entity_clusters(
             if sources_i == sources_j and len(sources_i) == 1:
                 continue
             # Prevent Polymarket clusters from merging with non-Polymarket
-            # clusters. Prediction markets about "Sam Altman equity" should not
-            # merge into a news cluster about "Sam Altman rivalry" just because
-            # both mention the same entity.
+            # clusters. Prediction markets about "an executive's equity" should
+            # not merge into a news cluster about "an executive's rivalry" just
+            # because both mention the same entity.
             poly_i = "polymarket" in sources_i
             poly_j = "polymarket" in sources_j
             if poly_i != poly_j:

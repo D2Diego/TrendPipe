@@ -206,7 +206,7 @@ def search_rss(
         # submit_with_context, not executor.submit: a plain submit starts the
         # worker with an empty context, dropping the pipeline's
         # capture_failures() sink so a feed's 429/403 is silently discarded and
-        # the source reports a clean no-results (issue #899).
+        # the source reports a clean no-results.
         futures = {
             http.submit_with_context(executor, _fetch_feed, url, query): url
             for url in urls

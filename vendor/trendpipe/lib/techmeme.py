@@ -10,7 +10,7 @@ Activation gate: only available when ``techmeme-pp-cli`` is on PATH.
 
 Surface choice: ``search "<topic>" --json`` (NOT ``--agent``). ``--agent``
 implies ``--compact``, which on older binaries stripped headline records to
-``{}`` (fixed upstream in printing-press-library PR #1383); ``--json`` without
+``{}`` (fixed upstream); ``--json`` without
 ``--compact`` returns the populated record shape on every binary version, so
 the adapter is robust regardless of the installed build.
 

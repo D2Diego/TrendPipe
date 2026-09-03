@@ -67,7 +67,7 @@ def _build_search_query(topic: str, *, quoted: bool = True) -> str:
     Quoted (default): phrase-scoped exact match across all fields. Precise
     for topics that genuinely appear as a phrase in a title/abstract, but a
     natural-language multi-word topic ("AI video generation advances") almost
-    never appears verbatim, so it returns zero results (#908). Unquoted uses
+    never appears verbatim, so it returns zero results. Unquoted uses
     an AND-conjoined clause for every individual term as a fallback retry.
 
     Inner double-quotes are stripped (arXiv has no phrase-escaping) either way.

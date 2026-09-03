@@ -66,7 +66,7 @@ def _normalize_service_id(service_id: str) -> str:
     """
     Will Sonilo Service identifiers are harmonized into underlined formats used within the project.
 
-    2026-07-14 Actual interface returns ``video_to_music``，However, an example of a public document on the same day is used
+    The actual interface returns ``video_to_music``, However, an example of a public document on the same day is used
     ``video-to-music``。The difference is a word separator only, and therefore in a uniform format at the third-party agreement boundary,
     Avoid UI The connection test failed due to a temporary discrepancy between the provider ' s document and the production response.
     """

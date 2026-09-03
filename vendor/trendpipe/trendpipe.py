@@ -109,7 +109,7 @@ def resolve_requested_sources(args_search: str | None, config: dict) -> list[str
     """Resolve the requested source set: explicit --search wins, then the
     TRENDPIPE_DEFAULT_SEARCH config key (env var or .env file), then None
     (per-query default behavior). The config fallback lets users pin a fixed
-    source set that survives upgrades without patching SKILL.md (#442).
+    source set that survives upgrades without patching SKILL.md.
     """
     if args_search:
         return parse_search_flag(args_search)
@@ -142,7 +142,7 @@ def activate_trustpilot_for_explicit_domain(
 
     Passing ``--trustpilot-domain`` (or a plan-level ``trustpilot_domain``) is
     unambiguous intent — silently ignoring it when Trustpilot is not in
-    ``INCLUDE_SOURCES`` / ``--search`` is the #873 failure mode. Auto-resolve
+    ``INCLUDE_SOURCES`` / ``--search`` is a failure mode. Auto-resolve
     hints must not call this helper.
 
     ``EXCLUDE_SOURCES=trustpilot`` still wins. Mutates ``config`` in place and
@@ -710,15 +710,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--max-results", dest="max_results", type=int,
                         help="Override the final ranked-pool cap (pool_limit/rerank_limit) from the depth profile. "
-                             "Use for high-volume topics where the default (deep=60) under-covers. See issue #716.")
+                             "Use for high-volume topics where the default (deep=60) under-covers.")
     parser.add_argument("--max-per-source", dest="max_per_source", type=int,
                         help="Override the per-stream cap (per_stream_limit) applied to each (source, subquery) before "
-                             "pooling. Raising it increases unique-item yield when one source has many relevant items. "
-                             "See issue #716.")
+                             "pooling. Raising it increases unique-item yield when one source has many relevant items.")
     parser.add_argument("--max-source-fetches", dest="max_source_fetches", type=int,
                         help="Override the per-source fetch cap (MAX_SOURCE_FETCHES, default x=2) that limits how many "
                              "subqueries actually fetch a capped source. Raise it so every X subquery in a multi-angle "
-                             "--plan runs instead of just the first two. See issue #716.")
+                             "--plan runs instead of just the first two.")
     parser.add_argument("--auto-resolve", action="store_true",
                         help="Use web search to discover subreddits/handles before planning (for platforms without WebSearch)")
     parser.add_argument("--github-user", help="GitHub username for person-mode search (e.g., a-github-handle)")
@@ -751,9 +750,9 @@ def build_parser() -> argparse.ArgumentParser:
         dest="polymarket_keywords",
         help=(
             "Comma-separated keywords that Polymarket market titles must match "
-            "to be included. Use for ambiguous single-token topics like 'Warriors' "
-            "(nba,gsw,golden-state) to filter out Glasgow Warriors rugby, Honor "
-            "of Kings Rogue Warriors, etc. When omitted, Polymarket returns all "
+            "to be included. Use for ambiguous single-token topics (e.g. a shared "
+            "team-name token) to filter out unrelated markets that share the "
+            "token. When omitted, Polymarket returns all "
             "matching markets — so expect cross-entity noise on generic topics."
         ),
     )
@@ -1159,7 +1158,7 @@ def _write_last_run(
             report_cache_path.chmod(0o600)
         return True
     except Exception as exc:
-        # Never fatal, but never silent either (#787's lesson): callers that
+        # Never fatal, but never silent either (a hard-won lesson): callers that
         # promise cache state (drill chaining) branch on the return value.
         sys.stderr.write(f"[trendpipe] warning: could not write run cache: {exc}\n")
         return False
@@ -1644,7 +1643,7 @@ def _discovery_strict_exit_code(
     config: dict[str, object],
 ) -> int:
     """The ONE TRENDPIPE_STRICT_EXIT evaluation for every discovery
-    invocation - the one-shot and all three protocol legs (issue #384's
+    invocation - the one-shot and all three protocol legs (the strict-exit
     discovery counterpart). Rendering/output already happened by the time
     this runs; only the exit code shifts to 3 when strict exit is on and any
     source outcome is neither clean nor an expected skip."""
@@ -2155,7 +2154,7 @@ def _strict_exit_code(
     entity_reports: list[tuple[str, schema.Report]] | None,
     config: dict[str, object],
 ) -> int:
-    """Opt-in machine-detectable degraded-run signal (issue #384).
+    """Opt-in machine-detectable degraded-run signal.
 
     When TRENDPIPE_STRICT_EXIT is truthy, a run whose report carries any
     source outcome that is neither clean nor a plain no-results exits 3 so
@@ -3094,7 +3093,7 @@ def _main(
 
     requested_sources = resolve_requested_sources(args.search, config)
     # Explicit --trustpilot-domain is user intent: activate the opt-in source
-    # before diagnose/run so the flag cannot silently no-op (#873). Auto-resolve
+    # before diagnose/run so the flag cannot silently no-op. Auto-resolve
     # hints are applied later and must not call this path.
     cli_trustpilot_domain = (
         args.trustpilot_domain.strip() if args.trustpilot_domain else ""
@@ -3167,7 +3166,7 @@ def _main(
     progress.start_processing()
 
     depth = "deep" if args.deep else "quick" if args.quick else "default"
-    # CLI overrides for the depth profile's result caps (issue #716). Stashed on
+    # CLI overrides for the depth profile's result caps. Stashed on
     # config so pipeline.run() can apply them without widening its signature; the
     # comparison path inherits them via `entity_config = dict(config)`.
     if args.max_results is not None:
@@ -3578,7 +3577,7 @@ def _main(
                 # computed from post-pruning items, so they can't tell "fetches
                 # failed (stale binary)" from "fetches succeeded but the videos
                 # were pruned downstream"; the latter was producing false
-                # stale-yt-dlp nudges (#531).
+                # stale-yt-dlp nudges.
                 "youtube_transcript_fetch_attempts": _yt_fetch_stats["attempts"],
                 "youtube_transcript_fetch_failures": _yt_fetch_stats["failures"],
                 # Track Instagram returned-zero-items so quality_nudge can detect

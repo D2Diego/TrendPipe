@@ -93,9 +93,9 @@ def run_with_timeout(
             # Child ignored SIGTERM (or our killpg lost the race); escalate.
             # Guard killpg/getpgid the same way the SIGTERM path above does:
             # they are POSIX-only and raise AttributeError on Windows. The
-            # primary path was hardened in #552; this mirrors that guard on the
-            # escalation path (added later in #433) so the same crash can't
-            # re-surface here (#588).
+            # primary path was hardened earlier; this mirrors that guard on the
+            # escalation path (added later) so the same crash can't
+            # re-surface here.
             try:
                 if hasattr(os, "killpg") and hasattr(os, "getpgid"):
                     os.killpg(os.getpgid(proc.pid), signal.SIGKILL)

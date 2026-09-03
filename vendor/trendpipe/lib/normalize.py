@@ -256,7 +256,7 @@ def _normalize_dripstack(
     DripStack returns article metadata from paid financial newsletters.
     No engagement signal — ranking relies on DripStack's own relevanceScore
     (0-100, normalized to 0-1) plus recency. The publication name serves as
-    author/attribution (e.g. "SemiAnalysis", "Bloomberg").
+    author/attribution (e.g. a named newsletter or wire service).
     """
     meta = item.get("metadata") or {}
     return _source_item(

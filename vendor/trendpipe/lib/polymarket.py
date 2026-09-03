@@ -106,7 +106,7 @@ _NOISE_WORDS = frozenset({
     "champion", "championship", "league", "division", "conference", "cup", "series",
     "team", "game", "match", "season", "win", "winner", "finals",
     # Common geographic / place nouns that cause false matches
-    # "club" -> Athletic Club, Racing Club; "island" -> Epstein's Island, Rhode Island
+    # "club" -> a sports club; "island" -> a place name ending in Island
     "club", "island", "city", "park", "hill", "lake", "bay", "beach", "valley",
     "river", "mountain", "county", "state", "village", "town", "point", "creek",
     "springs", "heights", "ridge", "bridge", "harbor", "port", "station", "center",
@@ -124,7 +124,7 @@ _NOISE_WORDS = frozenset({
 # topic ("cli" -> any CLI tool market; "ai" -> every AI market), but which ARE
 # the subject when the topic is a domain sweep rather than one product. Kept
 # separate from the rest of _NOISE_WORDS — the directional/sports/place words
-# there exist to PREVENT false matches ("NFC West" vs a "Kanye West" search),
+# there exist to PREVENT false matches ("Acme West" vs a "Jordan West" search),
 # so they must never be used as a positive signal.
 _DOMAIN_WORDS = frozenset({
     "cli", "mcp", "protocol", "tool", "app", "code", "model", "ai", "api",
@@ -175,8 +175,8 @@ def _domain_word_fallback_allows(core_words: list[str], informative: list[str],
                                  title_lower: str, title_words: set[str]) -> bool:
     """Allow domain-word title matches only for pure/soft domain sweeps.
 
-    Blocks mixed topics like \"MCP protocol benchmark\" from accepting a Kyoto
-    Protocol market via the shared domain token \"protocol\" when the distinctive
+    Blocks mixed topics like \"MCP protocol benchmark\" from accepting an unrelated
+    treaty market via the shared domain token \"protocol\" when the distinctive
     informative word (\"benchmark\") missed.
     """
     hard_informative = [w for w in informative if w not in _SWEEP_RESIDUE]
@@ -227,9 +227,10 @@ def _acronym_credit(core_words: list[str], title_words: set[str]) -> int:
 def _passes_topic_filter(topic: str, event_title: str) -> bool:
     """Check if event title contains enough informative words from the topic.
 
-    Prevents noise like "Meek Mill" matching "Mill.com food recycler" by requiring
-    proportional word overlap. For topics with 3+ informative words, at least 2 must
-    match. For shorter topics, 1 match suffices (existing behavior).
+    Prevents noise from a shared surname token (a person's name matching an
+    unrelated product name) by requiring proportional word overlap. For topics
+    with 3+ informative words, at least 2 must match. For shorter topics, 1
+    match suffices (existing behavior).
 
     Returns True if the event should be kept, False if it should be filtered out.
     """
@@ -268,8 +269,8 @@ def _passes_topic_filter(topic: str, event_title: str) -> bool:
                           _acronym_credit(core_words, title_words))
 
     # For topics with 3+ informative words, require at least 2 matches.
-    # This prevents single-word false positives like "mill" in "Meek Mill"
-    # when the topic is "Mill.com food recycler" (3 informative words).
+    # This prevents single-word false positives like a shared surname token
+    # when the topic is a multi-word product name (3 informative words).
     min_matches = 2 if len(informative) >= 3 else 1
 
     if match_count >= min_matches:
@@ -283,11 +284,11 @@ def _passes_any_informative_word(topic: str, event_title: str) -> bool:
     """Looser variant of _passes_topic_filter that keeps an item if ANY
     informative word from the topic appears in the title.
 
-    Designed for post-merge validation of comparison topics (e.g., "OpenClaw vs
-    Hermes vs Paperclip"), where a market mentioning just one of the entities
+    Designed for post-merge validation of comparison topics (e.g., "Product A vs
+    Product B vs Product C"), where a market mentioning just one of the entities
     is still on-topic. The stricter _passes_topic_filter (min_matches=2 for
-    3+ informative words) is correct for single-entity topics like "Mill.com
-    food recycler" but drops legitimate single-entity comparison results.
+    3+ informative words) is correct for single-entity topics like "a product
+    name" but drops legitimate single-entity comparison results.
     """
     core = _extract_core_subject(topic).lower()
     core_words = [w for w in re.sub(r"[^\w\s]", " ", core).split() if len(w) > 1]
@@ -314,8 +315,8 @@ def filter_items_against_topic(topic: str, items: List[Any]) -> List[Any]:
 
     Called post-merge from pipeline.py so per-entity subquery results for
     comparison topics get re-validated against the ORIGINAL full topic before
-    landing in the footer. Prevents noise like WTI crude oil or Elon tweet
-    markets from surviving a loose "Hermes" single-entity subquery match.
+    landing in the footer. Prevents noise like crude-oil or celebrity-tweet
+    markets from surviving a loose single-entity subquery match.
 
     Uses the looser _passes_any_informative_word rule (ANY entity name match
     is sufficient) so a market mentioning just one of several compared entities
@@ -347,9 +348,9 @@ def filter_items_against_topic(topic: str, items: List[Any]) -> List[Any]:
 def filter_items_against_keywords(items: List[Any], keywords: List[str]) -> List[Any]:
     """Keep only items whose title contains at least one keyword (case-insensitive).
 
-    Intended for disambiguating ambiguous single-token topics like 'Warriors'
-    via --polymarket-keywords (e.g., 'nba,gsw,golden-state') to filter out
-    Glasgow Warriors rugby, Honor of Kings Rogue Warriors markets that share
+    Intended for disambiguating ambiguous single-token topics
+    via --polymarket-keywords (e.g., a comma-separated keyword list) to filter out
+    unrelated sports markets that share
     the 'Warriors' token but are not the target entity.
     """
     if not keywords:
@@ -381,7 +382,7 @@ def _extract_domain_queries(topic: str, events: List[Dict]) -> List[str]:
     """Extract domain-indicator search terms from first-pass event tags.
 
     Uses structured tag metadata from Gamma API events to discover broader
-    domain categories (e.g., 'NCAA CBB' from a Big 12 basketball event).
+    domain categories (e.g., a league-wide tag from a single-game event).
     Falls back to frequent title bigrams if no useful tags exist.
     """
     query_words = set(_extract_core_subject(topic).lower().split())
@@ -594,8 +595,8 @@ def _parse_outcome_prices(market: Dict[str, Any]) -> List[tuple]:
 def _shorten_question(question: str) -> str:
     """Extract a short display name from a market question.
 
-    'Will Arizona win the 2026 NCAA Tournament?' -> 'Arizona'
-    'Will Duke be a number 1 seed in the 2026 NCAA...' -> 'Duke'
+    'Will the team win the 2026 tournament?' -> 'the team'
+    'Will the team be a number 1 seed in 2026...' -> 'the team'
     """
     q = question.strip().rstrip("?")
     # Common patterns: "Will X win/be/...", "X wins/loses..."
@@ -717,7 +718,7 @@ def parse_polymarket_response(
                 continue
 
         # Filter: skip events that don't match the topic's core subject
-        # This prevents "NFC West" from matching a "Kanye West" search
+        # This prevents "Acme West" from matching a "Jordan West" search
         if topic and not _passes_topic_filter(topic, title):
             filtered_count += 1
             continue
@@ -766,7 +767,7 @@ def parse_polymarket_response(
                 if price > 0.01 and name not in all_outcome_names:
                     all_outcome_names.append(name)
             # For neg-risk binary markets (Yes/No outcomes), the team/entity name
-            # lives in the question, e.g., "Will Arizona win the NCAA Tournament?"
+            # lives in the question, e.g., "Will the team win the tournament?"
             question = m.get("question", "")
             if question and question != title:
                 all_outcome_names.append(question)

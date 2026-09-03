@@ -389,8 +389,8 @@ def plan_query(
     # realizes it is supposed to generate the plan itself and pass --plan.
     # The word "provider" in engine messages refers to the engine's INTERNAL
     # planner credentials - NOT a prerequisite the caller needs. If you are
-    # the hosting reasoning model, YOU are the provider. LAW 7 / 2026-04-19
-    # Hermes Agent Use Cases failure mode.
+    # the hosting reasoning model, YOU are the provider. LAW 7 /
+    # intent-modifier retrieval regression.
     if not internal_subrun:
         import sys
         print(
@@ -451,8 +451,8 @@ Rules:
 - preserve exact proper nouns and entity strings from the topic
 - NEVER include temporal phrases in search_query: no 'last 30 days', 'recent', month names, year numbers
 - NEVER include meta-research phrases: no 'news', 'updates', 'public appearances', 'latest developments'
-- INTENT-MODIFIER HANDLING: when the topic contains one of {{use cases, use case, workflows, workflow, examples, tutorial, tutorials, review, reviews, comparison, applications, in practice, production, production use, how i use}}, STRIP that phrase from every search_query (keep its meaning in ranking_query). Emit 4-5 paraphrased subqueries that each express the intent differently (e.g., 'production', 'workflow OR pipeline', 'review OR experience', 'vs COMPETITOR', 'community discussion'). Broad retrieval, narrow ranking. This was the 2026-04-19 Hermes Agent Use Cases failure mode: the planner echoed "hermes agent use cases" as a literal search string and returned near-zero results because nobody posts that exact phrase.
-- DO NOT quote the user's full topic verbatim in search_query. Quote only multi-word proper nouns like "Hermes Agent", "Claude Code", "Nous Research". Bare keywords OR'd together retrieve more than exact-phrase searches.
+- INTENT-MODIFIER HANDLING: when the topic contains one of {{use cases, use case, workflows, workflow, examples, tutorial, tutorials, review, reviews, comparison, applications, in practice, production, production use, how i use}}, STRIP that phrase from every search_query (keep its meaning in ranking_query). Emit 4-5 paraphrased subqueries that each express the intent differently (e.g., 'production', 'workflow OR pipeline', 'review OR experience', 'vs COMPETITOR', 'community discussion'). Broad retrieval, narrow ranking. This is the intent-modifier retrieval failure mode: the planner echoes "example agent use cases" as a literal search string and returns near-zero results because nobody posts that exact phrase.
+- DO NOT quote the user's full topic verbatim in search_query. Quote only multi-word proper nouns like "Example Agent", "Acme Research". Bare keywords OR'd together retrieve more than exact-phrase searches.
 - search_query should match how content is TITLED on platforms
 - GitHub (Issues/PRs) is best for engineering, developer tools, and open source topics: 'kanye west bully' not 'kanye west album news March 2026'
 """.strip()
@@ -710,7 +710,7 @@ def _fallback_plan(
     # Intent-modifier fanout: when topic contains a phrase like "use cases",
     # "workflows", "examples", "review" (see _INTENT_MODIFIER_PATTERNS),
     # paraphrase the intent across 3 extra subqueries rather than echoing
-    # the literal phrase. Fixes 2026-04-19 Hermes Agent Use Cases failure.
+    # the literal phrase. Fixes intent-modifier retrieval failure.
     # Excluded for comparison/prediction since those already have dedicated
     # fanout (entity-per-subquery / odds).
     if depth != "quick" and intent not in {"comparison", "prediction"} and _has_intent_modifier(topic):
@@ -761,8 +761,8 @@ def _infer_intent(topic: str) -> str:
     # Recency signals take priority when nothing more specific matched.
     if re.search(r"\b(trending|this week|right now|today|this month)\b", text):
         return "breaking_news"
-    # Default changed from "breaking_news" to "concept" on 2026-04-19 after
-    # the Hermes Agent Use Cases failure: unclassified topics were getting
+    # Default changed from "breaking_news" to "concept" after
+    # the intent-modifier retrieval failure: unclassified topics were getting
     # strict_recent freshness, which over-weighted the last 7 days and
     # under-weighted older relevant material. "concept" defaults to
     # evergreen_ok freshness, a safer posture for unknown topics.
@@ -818,15 +818,15 @@ def _default_source_weights(intent: str, sources: list[str]) -> dict[str, float]
 def _keyword_query(topic: str, core: str) -> str:
     """Build a search_query string for the deterministic fallback.
 
-    Quote ONLY title-cased multi-word proper nouns ("Hermes Agent",
-    "Claude Code", "Nous Research") so platform search engines preserve the
+    Quote ONLY title-cased multi-word proper nouns ("Example Agent",
+    "Claude Code", "Acme Research") so platform search engines preserve the
     name as a phrase. Hyphenated compounds and lowercase terms are left as
     bare keywords, which broadens retrieval instead of narrowing it.
 
     Prior behavior quoted the entire compound including the user's typed
-    topic, producing searches like `"Hermes Agent Actual Use Cases" hermes agent actual`
+    topic, producing searches like `"Example Agent Actual Use Cases" example agent actual`
     that returned near-zero matches on X and Reddit because nobody posts
-    that exact phrase. See 2026-04-19 Hermes Agent Use Cases failure.
+    that exact phrase. See intent-modifier retrieval failure.
     """
     compounds = query.extract_compound_terms(topic)
     # Only quote title-cased proper nouns (multi-word names). Hyphenated
@@ -902,7 +902,7 @@ _INTENT_MODIFIER_PATTERNS = (
 def _has_intent_modifier(topic: str) -> bool:
     """Return True if the topic contains an intent modifier phrase.
 
-    See 2026-04-19 Hermes Agent Use Cases failure: a literal "Hermes Agent
+    See intent-modifier retrieval failure: a literal "Example Agent
     use cases" search returns near-zero matches because nobody posts that
     exact phrase. Intent modifiers should be stripped from search_query
     and paraphrased across multiple subqueries.
@@ -920,7 +920,7 @@ def _intent_modifier_subqueries(
     """Produce paraphrased subqueries for intent-modifier topics.
 
     The deterministic fallback used to echo the user's literal phrase
-    (e.g., "hermes agent use cases") into every search_query. This helper
+    (e.g., "example agent use cases") into every search_query. This helper
     fans out 3 extra subqueries that each express the intent differently
     so retrieval pulls a broader corpus for reranking.
     """
@@ -954,16 +954,15 @@ def _intent_modifier_subqueries(
 def _max_subqueries(intent: str, topic: str | None = None) -> int:
     # how_to/opinion/product/breaking_news/prediction benefit from 4-5
     # paraphrased subqueries when the topic carries an intent modifier
-    # (use cases, workflows, examples, review, etc.). See 2026-04-19
-    # Hermes Agent Use Cases failure: prior cap of 3 produced near-literal
-    # echoes of the topic instead of a paraphrase fanout.
+    # (use cases, workflows, examples, review, etc.). See the intent-modifier
+    # retrieval failure: prior cap of 3 produced near-literal echoes of the
+    # topic instead of a paraphrase fanout.
     if intent == "comparison":
         # primary + one dedicated subquery per entity (up to COMPARISON_ENTITY_MAX)
         return competitors.COMPARISON_ENTITY_MAX + 1
     # Intent-modifier topics get headroom for paraphrase fanout even when
-    # the intent itself is factual/concept. Without this, a "Hermes Agent
-    # use cases" query (classified "concept" after the 2026-04-19 default
-    # change) would be capped at 2 and drop the fanout.
+    # the intent itself is factual/concept. Without this, a "Example Agent
+    # use cases" query (classified "concept" after the default change) would be capped at 2 and drop the fanout.
     if topic and _has_intent_modifier(topic):
         return 5
     if intent in {"factual", "concept"}:

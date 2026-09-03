@@ -4,7 +4,7 @@
 runs on the surfaces that still serve data without a key, then enrichment runs
 on whatever was discovered:
 
-  Dedicated lane  entity-home subreddits (e.g. r/Kanye) pulled in full via the
+  Dedicated lane  entity-home subreddits (e.g. r/<entity>) pulled in full via the
                   shreddit listing partials (top+hot+new, real scores), kept
                   whole — floor-exempt — because the sub IS the topic.
   RSS lane        reddit_rss breadth (incl. global keyword search) + broad-sub
@@ -36,7 +36,7 @@ ENRICH_LIMITS = reddit_shreddit.ENRICH_LIMITS
 ENRICH_BUDGET = 45  # seconds total across all enrichment threads
 MAX_ENRICH_WORKERS = 4
 MAX_DERIVED_SUBS = 5  # subreddits derived from RSS results for score backfill
-# Dedicated subreddits (the entity's home, e.g. r/Kanye for "Kanye West") are
+# Dedicated subreddits (the entity's home, e.g. r/<entity> for a named topic) are
 # wholly on-topic, so pull top+hot+new — the top-of-month listing alone misses
 # fresh threads — and keep every item (floor-exempt).
 DEDICATED_SORTS = ["top", "hot", "new"]
@@ -216,9 +216,9 @@ def _slot_priority(topic: str, posts: List[Dict[str, Any]]) -> List[Dict[str, An
 
     Comment slots (ENRICH_LIMITS) are scarce; spending them on high-upvote
     posts that rerank later demotes as entity misses starves the on-topic
-    posts the user actually sees (2026-06-06 "OpenClaw vs Hermes" run:
-    2,000+ upvote Gemma/GPU threads took every slot, then were demoted to
-    zero). Mirror rerank's demotion signal via the shared `_entity_grounded`
+    posts the user actually sees (in one comparison run, 2,000+ upvote
+    off-topic threads took every slot, then were demoted to zero). Mirror
+    rerank's demotion signal via the shared `_entity_grounded`
     check (head token of the topic's stripped primary entity present in the
     post text) so slots go to posts likely to survive final ranking — keying
     on the same head token keeps the two paths from diverging. Falls back to

@@ -106,7 +106,7 @@ def probe_command(
 
 
 # ---------------------------------------------------------------------------
-# Dependency probes (doctor command, issue #692).
+# Dependency probes (doctor command).
 #
 # ``probe_dependency`` generalizes ``probe_command`` for the skill's external
 # binaries (yt-dlp, Printing Press CLIs, node for the vendored bird client,
@@ -349,7 +349,7 @@ def probe_dependency(name: str, timeout: float = PROBE_TIMEOUT) -> DependencyPro
       installing again would not fix anything.
     - BROKEN: shutil.which resolves it but a cheap version exec fails
       (OSError/exec-format, or any non-zero exit). Prescription says
-      *reinstall* — the #692 stale-shim class must never read as available.
+      *reinstall* — the stale-shim class must never read as available.
     - TIMEOUT: the version exec exceeded the per-probe budget.
     - OK: version exec exited 0; ``detail`` carries the version line.
 
