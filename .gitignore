@@ -36,5 +36,5 @@ htmlcov/
 .codegraph
 .understand-anything
 
-# last30days local secrets (OpenRouter key etc.)
-/vendor/last30days/.env
+# trendpipe local secrets (OpenRouter key etc.)
+/vendor/trendpipe/.env

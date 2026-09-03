@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 
-export const ONBOARDING_STORAGE_KEY = "mpt-onboarding-v1";
+export const ONBOARDING_STORAGE_KEY = "trendpipe-onboarding-v1";
 
 const steps = [
   { target: "[data-tour-id='settings']", title: "Onboarding Model Settings Title", description: "Onboarding Model Settings Description" },

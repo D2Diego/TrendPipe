@@ -103,34 +103,34 @@ class TestRunResearch(unittest.TestCase):
         with patch.object(
             research_engine.subprocess,
             "run",
-            side_effect=subprocess.TimeoutExpired(cmd="last30days", timeout=900),
+            side_effect=subprocess.TimeoutExpired(cmd="trendpipe", timeout=900),
         ):
             with self.assertRaises(research_engine.ResearchExecutionError):
                 research_engine.run_research("cats", "deep", ["reddit"])
 
 
-class TestLast30daysEnv(unittest.TestCase):
+class TestTrendPipeEnv(unittest.TestCase):
     def test_forces_empty_config_dir(self):
         with patch(
             "app.services.research_credentials.read_env_file", return_value={}
         ):
-            env = research_engine._last30days_env()
-        self.assertEqual(env["LAST30DAYS_CONFIG_DIR"], "")
+            env = research_engine._trendpipe_env()
+        self.assertEqual(env["TRENDPIPE_CONFIG_DIR"], "")
 
     def test_merges_values_from_the_credentials_file(self):
         with patch(
             "app.services.research_credentials.read_env_file",
-            return_value={"LAST30DAYS_REASONING_PROVIDER": "openrouter"},
+            return_value={"TRENDPIPE_REASONING_PROVIDER": "openrouter"},
         ):
-            env = research_engine._last30days_env()
-        self.assertEqual(env["LAST30DAYS_REASONING_PROVIDER"], "openrouter")
+            env = research_engine._trendpipe_env()
+        self.assertEqual(env["TRENDPIPE_REASONING_PROVIDER"], "openrouter")
 
     def test_real_process_env_wins_over_the_file(self):
         with patch(
             "app.services.research_credentials.read_env_file",
             return_value={"SOME_KEY": "from-file", "FILE_ONLY_KEY": "only-in-file"},
         ), patch.object(research_engine.os, "environ", {"SOME_KEY": "from-shell"}):
-            env = research_engine._last30days_env()
+            env = research_engine._trendpipe_env()
         self.assertEqual(env["SOME_KEY"], "from-shell")
         self.assertEqual(env["FILE_ONLY_KEY"], "only-in-file")
 

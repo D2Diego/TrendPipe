@@ -190,15 +190,15 @@ class TestRedisState(unittest.TestCase):
         self.assertEqual(set(state._redis.scan_types), {"HASH"})
 
     @unittest.skipUnless(
-        os.getenv("MPT_TEST_REDIS_HOST"),
-        "MPT_TEST_REDIS_HOST not set",
+        os.getenv("TRENDPIPE_TEST_REDIS_HOST"),
+        "TRENDPIPE_TEST_REDIS_HOST not set",
     )
     def test_real_redis_get_all_tasks_ignores_queue_keys(self):
         """Real Redis Medium List Queue cannot be miscalculated by the task list Hash Read."""
         state = RedisState(
-            host=os.environ["MPT_TEST_REDIS_HOST"],
-            port=int(os.getenv("MPT_TEST_REDIS_PORT", "6379")),
-            db=int(os.getenv("MPT_TEST_REDIS_DB", "15")),
+            host=os.environ["TRENDPIPE_TEST_REDIS_HOST"],
+            port=int(os.getenv("TRENDPIPE_TEST_REDIS_PORT", "6379")),
+            db=int(os.getenv("TRENDPIPE_TEST_REDIS_DB", "15")),
         )
         suffix = uuid.uuid4()
         task_ids = [f"ci-list-{suffix}-{index}" for index in range(3)]
@@ -238,15 +238,15 @@ class TestRedisState(unittest.TestCase):
         self.assertFalse(state.patch_task("missing", value="ignored"))
 
     @unittest.skipUnless(
-        os.getenv("MPT_TEST_REDIS_HOST"),
-        "MPT_TEST_REDIS_HOST not set",
+        os.getenv("TRENDPIPE_TEST_REDIS_HOST"),
+        "TRENDPIPE_TEST_REDIS_HOST not set",
     )
     def test_real_redis_patch_and_delete_are_atomic(self):
         """Real Redis Other Organiser"""
         state = RedisState(
-            host=os.environ["MPT_TEST_REDIS_HOST"],
-            port=int(os.getenv("MPT_TEST_REDIS_PORT", "6379")),
-            db=int(os.getenv("MPT_TEST_REDIS_DB", "15")),
+            host=os.environ["TRENDPIPE_TEST_REDIS_HOST"],
+            port=int(os.getenv("TRENDPIPE_TEST_REDIS_PORT", "6379")),
+            db=int(os.getenv("TRENDPIPE_TEST_REDIS_DB", "15")),
         )
 
         for _ in range(50):

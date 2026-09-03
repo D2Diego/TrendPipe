@@ -17,7 +17,7 @@ from app.services.state import MemoryState, RedisState
 from app.utils import utils
 
 resources_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "resources")
-RUN_INTEGRATION_TESTS = os.environ.get("MPT_RUN_INTEGRATION_TESTS", "").lower() in {
+RUN_INTEGRATION_TESTS = os.environ.get("TRENDPIPE_RUN_INTEGRATION_TESTS", "").lower() in {
     "1",
     "true",
     "yes",
@@ -1455,15 +1455,15 @@ class TestTaskService(unittest.TestCase):
         self.assertIn("cancelled", task["cross_post_error"])
 
     @unittest.skipUnless(
-        os.getenv("MPT_TEST_REDIS_HOST"),
-        "MPT_TEST_REDIS_HOST not set",
+        os.getenv("TRENDPIPE_TEST_REDIS_HOST"),
+        "TRENDPIPE_TEST_REDIS_HOST not set",
     )
     def test_real_redis_recovers_interrupted_cross_post_state(self):
         """Real Redis , which has a residual distribution status, must be preserved after recovery and enters a failure."""
         state = RedisState(
-            host=os.environ["MPT_TEST_REDIS_HOST"],
-            port=int(os.getenv("MPT_TEST_REDIS_PORT", "6379")),
-            db=int(os.getenv("MPT_TEST_REDIS_DB", "15")),
+            host=os.environ["TRENDPIPE_TEST_REDIS_HOST"],
+            port=int(os.getenv("TRENDPIPE_TEST_REDIS_PORT", "6379")),
+            db=int(os.getenv("TRENDPIPE_TEST_REDIS_DB", "15")),
         )
         task_id = f"ci-cross-post-recovery-{uuid4()}"
         state.update_task(
@@ -1539,7 +1539,7 @@ class TestTaskService(unittest.TestCase):
 
     @unittest.skipUnless(
         RUN_INTEGRATION_TESTS,
-        "MPT_RUN_INTEGRATION_TESTS not set",
+        "TRENDPIPE_RUN_INTEGRATION_TESTS not set",
     )
     def test_task_local_materials(self):
         task_id = "00000000-0000-0000-0000-000000000000"

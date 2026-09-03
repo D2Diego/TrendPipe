@@ -237,7 +237,7 @@ def _schedule_deferred_config_flush():
 
     threading.Thread(
         target=_run_deferred_config_flush,
-        name="mpt-config-flush",
+        name="trendpipe-config-flush",
         daemon=True,
     ).start()
 
@@ -411,7 +411,7 @@ def get_default_ollama_base_url() -> str:
 
 
 def load_config():
-    # fix: IsADirectoryError: [Errno 21] Is a directory: '/MoneyPrinterTurbo/config.toml'
+    # fix: IsADirectoryError: [Errno 21] Is a directory: '/TrendPipe/config.toml'
     if os.path.isdir(config_file):
         shutil.rmtree(config_file)
 
@@ -521,16 +521,16 @@ hostname = socket.gethostname()
 log_level = _cfg.get("log_level", "DEBUG")
 listen_host = _cfg.get("listen_host", "0.0.0.0")
 listen_port = _cfg.get("listen_port", 8080)
-project_name = _cfg.get("project_name", "MoneyPrinterTurbo")
+project_name = _cfg.get("project_name", "TrendPipe")
 project_description = _cfg.get(
     "project_description",
-    "<a href='https://github.com/harry0703/MoneyPrinterTurbo'>https://github.com/harry0703/MoneyPrinterTurbo</a>",
+    "<a href='https://github.com/d2diego/trendpipe'>https://github.com/d2diego/trendpipe</a>",
 )
 project_version = _cfg.get("project_version", __version__)
 reload_debug = False
 
 app["redis_host"] = os.getenv(
-    "MPT_APP_REDIS_HOST",
+    "TRENDPIPE_APP_REDIS_HOST",
     os.getenv("REDIS_HOST", app.get("redis_host", "localhost")),
 )
 

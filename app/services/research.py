@@ -1,4 +1,4 @@
-"""Validation and orchestration for last30days research runs."""
+"""Validation and orchestration for trendpipe research runs."""
 
 import json
 from typing import Any

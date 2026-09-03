@@ -36,7 +36,7 @@ from app.utils import file_security, utils
 # Get to completion immediately.
 _cross_post_executor = ThreadPoolExecutor(
     max_workers=2,
-    thread_name_prefix="mpt-cross-post",
+    thread_name_prefix="trendpipe-cross-post",
 )
 _cross_post_max_pending_tasks = max(
     1,

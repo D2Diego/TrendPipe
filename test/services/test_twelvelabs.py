@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from app.config import config
 from app.services import twelvelabs
 
-RUN_INTEGRATION_TESTS = os.environ.get("MPT_RUN_INTEGRATION_TESTS", "").lower() in {
+RUN_INTEGRATION_TESTS = os.environ.get("TRENDPIPE_RUN_INTEGRATION_TESTS", "").lower() in {
     "1",
     "true",
     "yes",
@@ -149,11 +149,11 @@ class TestTwelveLabsService(unittest.TestCase):
 
 @unittest.skipUnless(
     RUN_INTEGRATION_TESTS and os.getenv("TWELVELABS_API_KEY"),
-    "live test: set MPT_RUN_INTEGRATION_TESTS=1 and TWELVELABS_API_KEY to run "
+    "live test: set TRENDPIPE_RUN_INTEGRATION_TESTS=1 and TWELVELABS_API_KEY to run "
     "against the real TwelveLabs API",
 )
 class TestTwelveLabsLive(unittest.TestCase):
-    """Live contract check — only runs with MPT_RUN_INTEGRATION_TESTS=1 + a key."""
+    """Live contract check — only runs with TRENDPIPE_RUN_INTEGRATION_TESTS=1 + a key."""
 
     def setUp(self):
         self.original_app_config = dict(config.app)

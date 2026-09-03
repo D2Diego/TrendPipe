@@ -1,6 +1,6 @@
 x-api-volumes: &api-volumes
-  - ./config.toml:/MoneyPrinterTurbo/config.toml
-  - ./storage:/MoneyPrinterTurbo/storage
+  - ./config.toml:/TrendPipe/config.toml
+  - ./storage:/TrendPipe/storage
 
 services:
   webui:

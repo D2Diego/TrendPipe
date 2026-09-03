@@ -16,12 +16,12 @@ RUN VITE_APP_VERSION="$VITE_APP_VERSION" npm run build
 FROM python:3.12-slim-bullseye
 
 # Set the working directory in the container
-WORKDIR /MoneyPrinterTurbo
+WORKDIR /TrendPipe
 
 # Allow the runtime user to write to the application directory.
-RUN chmod 777 /MoneyPrinterTurbo
+RUN chmod 777 /TrendPipe
 
-ENV PYTHONPATH="/MoneyPrinterTurbo"
+ENV PYTHONPATH="/TrendPipe"
 
 # Local builds prefer regional mirrors. GitHub Actions uses the default mirrors
 # to avoid slow cross-region downloads while publishing the GHCR image.
@@ -93,7 +93,7 @@ EXPOSE 8501 8080
 CMD ["nginx", "-g", "daemon off;"]
 
 # 1. Build the Docker image using the following command
-# docker build -t moneyprinterturbo .
+# docker build -t trendpipe .
 
 # 2. Run the Docker container using the following command
 ## For Linux or MacOS:

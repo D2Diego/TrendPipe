@@ -1,5 +1,5 @@
 x-api-volumes: &api-volumes
-  - ./:/MoneyPrinterTurbo
+  - ./:/TrendPipe
 
 services:
   webui:

@@ -23,7 +23,7 @@ from app.models.llm_provider import (
 from app.models.schema import VideoScriptRequest, VideoSocialMetadataRequest
 from app.services import llm
 
-RUN_INTEGRATION_TESTS = os.environ.get("MPT_RUN_INTEGRATION_TESTS", "").lower() in {
+RUN_INTEGRATION_TESTS = os.environ.get("TRENDPIPE_RUN_INTEGRATION_TESTS", "").lower() in {
     "1",
     "true",
     "yes",
@@ -1540,7 +1540,7 @@ FOUNDRY_MODEL = "azure_ai/claude-sonnet-4-6"
 
 @unittest.skipUnless(
     RUN_INTEGRATION_TESTS and FOUNDRY_KEY,
-    "MPT_RUN_INTEGRATION_TESTS and ANTHROPIC_FOUNDRY_API_KEY not set",
+    "TRENDPIPE_RUN_INTEGRATION_TESTS and ANTHROPIC_FOUNDRY_API_KEY not set",
 )
 class TestLiteLLMLiveIntegration(unittest.TestCase):
     def setUp(self):

@@ -1,4 +1,4 @@
-"""Subprocess integration with the vendored last30days research engine."""
+"""Subprocess integration with the vendored trendpipe research engine."""
 
 import json
 import os
@@ -7,8 +7,8 @@ from typing import Any
 
 from app.utils import utils
 
-LAST30DAYS_DIR = os.path.join(utils.root_dir(), "vendor", "last30days")
-LAST30DAYS_SCRIPT = os.path.join(LAST30DAYS_DIR, "last30days.py")
+TRENDPIPE_DIR = os.path.join(utils.root_dir(), "vendor", "trendpipe")
+TRENDPIPE_SCRIPT = os.path.join(TRENDPIPE_DIR, "trendpipe.py")
 PYTHON_BIN = "python3.12"
 RESEARCH_TIMEOUT_SECONDS = 900
 DIAGNOSE_TIMEOUT_SECONDS = 30
@@ -16,18 +16,18 @@ _STDERR_TAIL_LENGTH = 2_000
 
 
 class ResearchExecutionError(Exception):
-    """The last30days process failed, timed out, or returned invalid output."""
+    """The trendpipe process failed, timed out, or returned invalid output."""
 
 
-def _last30days_env() -> dict[str, str]:
+def _trendpipe_env() -> dict[str, str]:
     # Imported here, not at module level, to avoid a circular import:
-    # research_credentials imports LAST30DAYS_DIR from this module.
+    # research_credentials imports TRENDPIPE_DIR from this module.
     from app.services import research_credentials
 
     return {
         **research_credentials.read_env_file(),
         **os.environ,
-        "LAST30DAYS_CONFIG_DIR": "",
+        "TRENDPIPE_CONFIG_DIR": "",
     }
 
 
@@ -37,31 +37,31 @@ def _parse_json_result(
     if result.returncode != 0:
         stderr_tail = (result.stderr or "").strip()[-_STDERR_TAIL_LENGTH:]
         raise ResearchExecutionError(
-            stderr_tail or f"last30days {action} exited with status {result.returncode}"
+            stderr_tail or f"trendpipe {action} exited with status {result.returncode}"
         )
     try:
         payload = json.loads(result.stdout)
     except json.JSONDecodeError as exc:
         raise ResearchExecutionError(
-            f"last30days {action} returned invalid JSON: {exc}"
+            f"trendpipe {action} returned invalid JSON: {exc}"
         ) from exc
     if not isinstance(payload, dict):
         raise ResearchExecutionError(
-            f"last30days {action} returned a non-object JSON payload"
+            f"trendpipe {action} returned a non-object JSON payload"
         )
     return payload
 
 
 def run_diagnose() -> dict[str, Any]:
-    """Discover which sources and credentials last30days can currently use."""
+    """Discover which sources and credentials trendpipe can currently use."""
     try:
         result = subprocess.run(
-            [PYTHON_BIN, LAST30DAYS_SCRIPT, "--diagnose", "--emit", "json"],
+            [PYTHON_BIN, TRENDPIPE_SCRIPT, "--diagnose", "--emit", "json"],
             capture_output=True,
             text=True,
             timeout=DIAGNOSE_TIMEOUT_SECONDS,
-            env=_last30days_env(),
-            cwd=LAST30DAYS_DIR,
+            env=_trendpipe_env(),
+            cwd=TRENDPIPE_DIR,
         )
     except subprocess.TimeoutExpired as exc:
         raise ResearchExecutionError(
@@ -81,10 +81,10 @@ def normalize_report(payload: dict[str, Any], topic: str) -> dict[str, Any]:
 
 
 def run_research(topic: str, depth: str, sources: list[str]) -> dict[str, Any]:
-    """Run last30days and return its normalized raw-profile report."""
+    """Run trendpipe and return its normalized raw-profile report."""
     args = [
         PYTHON_BIN,
-        LAST30DAYS_SCRIPT,
+        TRENDPIPE_SCRIPT,
         topic,
         "--emit",
         "json",
@@ -100,8 +100,8 @@ def run_research(topic: str, depth: str, sources: list[str]) -> dict[str, Any]:
             capture_output=True,
             text=True,
             timeout=RESEARCH_TIMEOUT_SECONDS,
-            env=_last30days_env(),
-            cwd=LAST30DAYS_DIR,
+            env=_trendpipe_env(),
+            cwd=TRENDPIPE_DIR,
         )
     except subprocess.TimeoutExpired as exc:
         raise ResearchExecutionError(

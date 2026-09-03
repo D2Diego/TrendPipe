@@ -1,4 +1,4 @@
-"""Check whether a newer stable MoneyPrinterTurbo release is available."""
+"""Check whether a newer stable TrendPipe release is available."""
 
 import threading
 import time
@@ -12,10 +12,10 @@ from packaging.version import InvalidVersion, Version
 
 
 LATEST_RELEASE_API_URL: Final = (
-    "https://api.github.com/repos/harry0703/MoneyPrinterTurbo/releases/latest"
+    "https://api.github.com/repos/d2diego/trendpipe/releases/latest"
 )
 LATEST_RELEASE_PAGE_URL: Final = (
-    "https://github.com/harry0703/MoneyPrinterTurbo/releases/latest"
+    "https://github.com/d2diego/trendpipe/releases/latest"
 )
 # Update checks are optional and must not noticeably delay the local WebUI.
 # Separate connection and read timeouts permit normal GitHub responses while
@@ -24,7 +24,7 @@ RELEASE_CHECK_TIMEOUT: Final = (1.0, 2.0)
 RELEASE_CHECK_HEADERS: Final = {
     "Accept": "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
-    "User-Agent": "MoneyPrinterTurbo-Version-Checker",
+    "User-Agent": "TrendPipe-Version-Checker",
 }
 UPDATE_CHECK_CACHE_TTL_SECONDS: Final = 12 * 60 * 60
 
@@ -90,7 +90,7 @@ def get_available_update(current_version: str) -> str | None:
 
     normalized_latest_version = str(latest_version)
     logger.info(
-        "MoneyPrinterTurbo update available: "
+        "TrendPipe update available: "
         f"current={installed_version}, latest={normalized_latest_version}"
     )
     return normalized_latest_version
@@ -162,7 +162,7 @@ class AsyncUpdateChecker:
             worker = threading.Thread(
                 target=self._run_check,
                 args=(normalized_current_version,),
-                name="mpt-version-check",
+                name="trendpipe-version-check",
                 daemon=True,
             )
             worker.start()
@@ -175,7 +175,7 @@ class AsyncUpdateChecker:
         except Exception:
             # Final worker boundary: log unexpected errors and leave pending state.
             logger.exception(
-                "unexpected error while checking for a MoneyPrinterTurbo update"
+                "unexpected error while checking for a TrendPipe update"
             )
             available_version = None
 

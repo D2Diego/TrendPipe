@@ -19,7 +19,7 @@ from app.utils import utils
 router = new_router()
 
 
-@router.post("/researches", summary="Start a new last30days research")
+@router.post("/researches", summary="Start a new trendpipe research")
 def create_research(
     request: Request,
     body: CreateResearchRequest,
@@ -141,7 +141,7 @@ def delete_research(request: Request, research_id: str = Path(...)):
 
 @router.get(
     "/research-settings",
-    summary="Check available last30days sources and credentials",
+    summary="Check available trendpipe sources and credentials",
 )
 def get_research_settings(request: Request):
     try:
@@ -152,7 +152,7 @@ def get_research_settings(request: Request):
     return utils.get_response(200, diagnose)
 
 
-@router.put("/research-settings", summary="Update last30days API keys")
+@router.put("/research-settings", summary="Update trendpipe API keys")
 def update_research_settings(
     request: Request, body: UpdateResearchSettingsRequest
 ):
@@ -164,7 +164,7 @@ def update_research_settings(
     return utils.get_response(200, {"saved": True})
 
 
-@router.delete("/research-settings/{key}", summary="Remove a last30days API key")
+@router.delete("/research-settings/{key}", summary="Remove a trendpipe API key")
 def delete_research_credential(request: Request, key: str = Path(...)):
     try:
         research_credentials.delete_credential(key)

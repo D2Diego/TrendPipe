@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 class TestDependencyManifest(unittest.TestCase):
-    def test_container_runtime_supports_last30days_python_requirement(self):
+    def test_container_runtime_supports_trendpipe_python_requirement(self):
         root = Path(__file__).resolve().parents[2]
         dockerfile = (root / "Dockerfile").read_text(encoding="utf-8")
         runtime_image = re.search(

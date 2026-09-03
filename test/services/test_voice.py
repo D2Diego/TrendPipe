@@ -38,7 +38,7 @@ Projected future 3 Cold air activity is high in Shenzhen, with light rain going 
 
 voice_rate=1.0
 voice_volume=1.0
-RUN_INTEGRATION_TESTS = os.environ.get("MPT_RUN_INTEGRATION_TESTS", "").lower() in {
+RUN_INTEGRATION_TESTS = os.environ.get("TRENDPIPE_RUN_INTEGRATION_TESTS", "").lower() in {
     "1",
     "true",
     "yes",
@@ -180,7 +180,7 @@ class TestVoiceService(unittest.TestCase):
 
     @unittest.skipUnless(
         RUN_INTEGRATION_TESTS,
-        "MPT_RUN_INTEGRATION_TESTS not set",
+        "TRENDPIPE_RUN_INTEGRATION_TESTS not set",
     )
     def test_siliconflow(self):
         # SiliconFlow Yes. API Key Existence [siliconflow].api_key , runtime code from
@@ -218,7 +218,7 @@ class TestVoiceService(unittest.TestCase):
 
     @unittest.skipUnless(
         RUN_INTEGRATION_TESTS,
-        "MPT_RUN_INTEGRATION_TESTS not set",
+        "TRENDPIPE_RUN_INTEGRATION_TESTS not set",
     )
     def test_azure_tts_v1(self):
         voice_name = "zh-CN-XiaoyiNeural-Female"
@@ -340,7 +340,7 @@ class TestVoiceService(unittest.TestCase):
 
     @unittest.skipUnless(
         RUN_INTEGRATION_TESTS,
-        "MPT_RUN_INTEGRATION_TESTS not set",
+        "TRENDPIPE_RUN_INTEGRATION_TESTS not set",
     )
     def test_azure_tts_v2(self):
         if not vs.config.azure.get("speech_key") or not vs.config.azure.get("speech_region"):

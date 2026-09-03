@@ -1,4 +1,4 @@
-"""SQLite-backed persistence for last30days research runs."""
+"""SQLite-backed persistence for trendpipe research runs."""
 
 import json
 import os

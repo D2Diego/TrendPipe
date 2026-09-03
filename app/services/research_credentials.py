@@ -1,12 +1,12 @@
-"""Atomic updates for the vendored last30days credentials file."""
+"""Atomic updates for the vendored trendpipe credentials file."""
 
 import os
 import re
 import tempfile
 
-from app.services.research_engine import LAST30DAYS_DIR
+from app.services.research_engine import TRENDPIPE_DIR
 
-ENV_PATH = os.path.join(LAST30DAYS_DIR, ".env")
+ENV_PATH = os.path.join(TRENDPIPE_DIR, ".env")
 _ENV_KEY_PATTERN = re.compile(r"^[A-Z_][A-Z0-9_]*$")
 ALLOWED_CREDENTIAL_KEYS = frozenset(
     {
@@ -110,6 +110,6 @@ def read_env_file() -> dict[str, str]:
 
     Unlike ``credential_presence``, this isn't scoped to
     ``ALLOWED_CREDENTIAL_KEYS`` — the file also holds non-credential engine
-    settings (e.g. ``LAST30DAYS_REASONING_PROVIDER``) that callers need too.
+    settings (e.g. ``TRENDPIPE_REASONING_PROVIDER``) that callers need too.
     """
     return dict(filter(None, (_parse_env_line(line) for line in _read_lines())))

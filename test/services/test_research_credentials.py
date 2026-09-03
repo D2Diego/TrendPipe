@@ -108,7 +108,7 @@ class TestCredentials(unittest.TestCase):
             env_file.write(
                 "# a comment\n"
                 "OPENROUTER_API_KEY=sk-or-abc\n"
-                "LAST30DAYS_REASONING_PROVIDER=openrouter\n"
+                "TRENDPIPE_REASONING_PROVIDER=openrouter\n"
                 "\n"
             )
 
@@ -118,7 +118,7 @@ class TestCredentials(unittest.TestCase):
             values,
             {
                 "OPENROUTER_API_KEY": "sk-or-abc",
-                "LAST30DAYS_REASONING_PROVIDER": "openrouter",
+                "TRENDPIPE_REASONING_PROVIDER": "openrouter",
             },
         )
 
