@@ -211,7 +211,6 @@ LLM_PROVIDER_REGISTRY = (
     LLMProviderSpec(
         "oneapi",
         "OneAPI",
-        api_key_url="https://github.com/songquanpeng/one-api",
     ),
     LLMProviderSpec(
         "litellm",

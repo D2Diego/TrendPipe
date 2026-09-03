@@ -217,7 +217,7 @@
     "ElevenLabs API Key": "Khóa API ElevenLabs ([Lấy khóa](https://elevenlabs.io/app/settings/api-keys))",
     "ElevenLabs Model": "Mô Hình ElevenLabs",
     "Chatterbox Base URL": "URL cơ sở Chatterbox",
-    "Chatterbox API Key": "Khóa API Chatterbox (Không bắt buộc; [Xem cấu hình](https://github.com/travisvn/chatterbox-tts-api))",
+    "Chatterbox API Key": "Khóa API Chatterbox (Không bắt buộc)",
     "Chatterbox Model": "Mô hình Chatterbox",
     "Chatterbox Voices": "Giọng Chatterbox",
     "Chatterbox Base URL Placeholder": "http://localhost:4123/v1",

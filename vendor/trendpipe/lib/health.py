@@ -162,16 +162,16 @@ _MANAGER_PRESCRIPTIONS: Dict[str, Dict[str, Tuple[str, str]]] = {
 # Last-resort prescriptions when no known package manager is detected.
 _FALLBACK_PRESCRIPTIONS: Dict[str, Tuple[str, str]] = {
     "yt-dlp": (
-        "install yt-dlp (https://github.com/yt-dlp/yt-dlp#installation) and ensure it is on PATH",
-        "reinstall yt-dlp (https://github.com/yt-dlp/yt-dlp#installation); the current binary won't run",
+        "install yt-dlp and ensure it is on PATH",
+        "reinstall yt-dlp; the current binary won't run",
     ),
     "node": (
-        "install Node.js 22+ (https://nodejs.org) and ensure `node` is on PATH",
-        "reinstall Node.js 22+ (https://nodejs.org); the current binary won't run",
+        "install Node.js 22+ and ensure `node` is on PATH",
+        "reinstall Node.js 22+; the current binary won't run",
     ),
     "ffmpeg": (
-        "install ffmpeg (https://ffmpeg.org/download.html) and ensure it is on PATH",
-        "reinstall ffmpeg (https://ffmpeg.org/download.html); the current binary won't run",
+        "install ffmpeg and ensure it is on PATH",
+        "reinstall ffmpeg; the current binary won't run",
     ),
 }
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /**
- * bird-search.mjs - Vendored Bird CLI search wrapper for /trendpipe.
- * Subset of @steipete/bird v0.8.0 (MIT License, Peter Steinberger).
+ * bird-search.mjs - Vendored X/Twitter search wrapper for trendpipe.
  *
  * Usage:
  *   node bird-search.mjs <query> [--count N] [--json]

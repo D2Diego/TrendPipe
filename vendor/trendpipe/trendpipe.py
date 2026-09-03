@@ -685,12 +685,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--hiring-signals", action="store_true",
                         help="Analyze public jobs/careers postings as evidence-backed company focus signals.")
     parser.add_argument("--plan", help="JSON query plan (skips internal LLM planner). Can be a JSON string or a file path.")
-    parser.add_argument("--save-suffix", help="Suffix for saved output filename (e.g., 'gemini' → kanye-west-raw-gemini.md)")
-    parser.add_argument("--subreddits", help="Comma-separated broad/category subreddit names to search (e.g., SaaS,Entrepreneur)")
-    parser.add_argument("--dedicated-subreddits", help="Comma-separated entity-home subreddit names (e.g., Kanye,WestSubEver). Pulled in full (top+hot+new) and exempt from the relevance floor since the whole sub is the topic.")
-    parser.add_argument("--tiktok-hashtags", help="Comma-separated TikTok hashtags without # (e.g., tella,screenrecording)")
-    parser.add_argument("--tiktok-creators", help="Comma-separated TikTok creator handles (e.g., TellaHQ,taborplace)")
-    parser.add_argument("--ig-creators", help="Comma-separated Instagram creator handles (e.g., tella.tv,laborstories)")
+    parser.add_argument("--save-suffix", help="Suffix for saved output filename (e.g., 'gemini' → topic-raw-gemini.md)")
+    parser.add_argument("--subreddits", help="Comma-separated broad/category subreddit names to search (e.g., technology,business)")
+    parser.add_argument("--dedicated-subreddits", help="Comma-separated entity-home subreddit names (e.g., subone,subtwo). Pulled in full (top+hot+new) and exempt from the relevance floor since the whole sub is the topic.")
+    parser.add_argument("--tiktok-hashtags", help="Comma-separated TikTok hashtags without # (e.g., tagone,tagtwo)")
+    parser.add_argument("--tiktok-creators", help="Comma-separated TikTok creator handles (e.g., creatorone,creatortwo)")
+    parser.add_argument("--ig-creators", help="Comma-separated Instagram creator handles (e.g., creator.one,creator.two)")
     parser.add_argument(
         "--days",
         "--lookback-days",
@@ -721,12 +721,12 @@ def build_parser() -> argparse.ArgumentParser:
                              "--plan runs instead of just the first two. See issue #716.")
     parser.add_argument("--auto-resolve", action="store_true",
                         help="Use web search to discover subreddits/handles before planning (for platforms without WebSearch)")
-    parser.add_argument("--github-user", help="GitHub username for person-mode search (e.g., steipete)")
-    parser.add_argument("--github-repo", help="Comma-separated owner/repo for project-mode search (e.g., openclaw/openclaw,paperclipai/paperclip)")
+    parser.add_argument("--github-user", help="GitHub username for person-mode search (e.g., a-github-handle)")
+    parser.add_argument("--github-repo", help="Comma-separated owner/repo for project-mode search (e.g., owner/repo,owner2/repo2)")
     parser.add_argument(
         "--trustpilot-domain",
         help=(
-            "Trustpilot review-page domain for the topic (e.g., www.thriftbooks.com). "
+            "Trustpilot review-page domain for the topic (e.g., www.example.com). "
             "Used verbatim, bypasses the brand-shape gate, and auto-activates the "
             "opt-in Trustpilot source for this run (unless EXCLUDE_SOURCES=trustpilot). "
             "Find the domain with `trustpilot-pp-cli search '<name>'`."

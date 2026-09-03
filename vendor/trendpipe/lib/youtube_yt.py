@@ -1,9 +1,7 @@
-"""YouTube search and transcript extraction via yt-dlp for the v3.0.0 pipeline.
+"""YouTube search and transcript extraction via yt-dlp.
 
-Uses yt-dlp (https://github.com/yt-dlp/yt-dlp) for both YouTube search and
-transcript extraction. No API keys needed — just have yt-dlp installed.
-
-Inspired by Peter Steinberger's toolchain approach (yt-dlp + summarize CLI).
+Uses yt-dlp for both YouTube search and transcript extraction. No API keys
+needed — just have yt-dlp installed.
 """
 
 import copy

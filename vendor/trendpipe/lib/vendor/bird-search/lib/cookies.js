@@ -1,13 +1,17 @@
 /**
- * Browser cookie extraction for Twitter authentication.
- * Delegates to @steipete/sweet-cookie for Safari/Chrome/Firefox reads.
+ * Browser cookie extraction for X/Twitter authentication.
+ * Browser reads require an optional cookie provider that is not bundled;
+ * without it, credentials must come from CLI args or environment variables.
  */
 const TWITTER_COOKIE_NAMES = ['auth_token', 'ct0'];
 const TWITTER_URL = 'https://x.com/';
 const TWITTER_ORIGINS = ['https://x.com/', 'https://twitter.com/'];
 const DEFAULT_COOKIE_TIMEOUT_MS = 30_000;
 async function loadSweetCookie() {
-    return import('@steipete/sweet-cookie');
+    // Browser cookie provider is not bundled in this build.
+    const error = new Error('browser cookie provider is not available');
+    error.code = 'ERR_MODULE_NOT_FOUND';
+    throw error;
 }
 function normalizeValue(value) {
     if (typeof value !== 'string') {
@@ -180,11 +184,10 @@ export async function resolveCredentials(options) {
         ({ getCookies } = await loadSweetCookie());
     }
     catch (error) {
-        if (error?.code !== 'ERR_MODULE_NOT_FOUND' ||
-            !String(error.message ?? '').includes('@steipete/sweet-cookie')) {
+        if (error?.code !== 'ERR_MODULE_NOT_FOUND') {
             throw error;
         }
-        warnings.push('Browser cookie lookup unavailable because vendored dependency @steipete/sweet-cookie is not installed.');
+        warnings.push('Browser cookie lookup is unavailable in this build.');
         if (!cookies.authToken) {
             warnings.push('Missing auth_token - provide via --auth-token, AUTH_TOKEN env var, or login to x.com in Safari/Chrome/Firefox');
         }

@@ -293,7 +293,7 @@
     "ElevenLabs API Key": "Chave API do ElevenLabs ([Obter chave](https://elevenlabs.io/app/settings/api-keys))",
     "ElevenLabs Model": "Modelo ElevenLabs",
     "Chatterbox Base URL": "URL base do Chatterbox",
-    "Chatterbox API Key": "Chave API do Chatterbox (Opcional; [Ver configuração](https://github.com/travisvn/chatterbox-tts-api))",
+    "Chatterbox API Key": "Chave API do Chatterbox (Opcional)",
     "Chatterbox Model": "Modelo Chatterbox",
     "Chatterbox Voices": "Vozes do Chatterbox",
     "Chatterbox Base URL Placeholder": "http://localhost:4123/v1",

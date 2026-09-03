@@ -1131,13 +1131,12 @@ def _render_synthesis_directive() -> list[str]:
 def _render_canonical_boundary() -> list[str]:
     """Emit the explicit END-OF-CANONICAL-OUTPUT boundary.
 
-    Added in v3.0.9 after the Peter Steinberger self-debug on 2026-04-18
-    confirmed the model had the full canonical body in its buffer and
-    discarded it anyway, re-synthesizing from raw evidence and appending a
-    trailing Sources block because the WebSearch tool's 'MANDATORY Sources'
-    reminder out-shouted LAW 1.
+    Added after a debug session confirmed the model had the full canonical
+    body in its buffer and discarded it anyway, re-synthesizing from raw
+    evidence and appending a trailing Sources block because the WebSearch
+    tool's 'MANDATORY Sources' reminder out-shouted LAW 1.
 
-    Updated 2026-04-19 after the Hermes Agent Use Cases failure: the prior
+    Updated after a follow-up regression: the prior
     "Pass through the lines ABOVE this boundary verbatim" phrasing was
     ambiguous about scope and led two consecutive runs to dump the
     `## Ranked Evidence Clusters` scratchpad as user output. The current
@@ -1155,8 +1154,8 @@ def _render_canonical_boundary() -> list[str]:
         "",
         "If your response contains the literal string `### 1.` followed by a score",
         "tuple like `(score N, M items, sources: ...)`, you dumped evidence instead",
-        "of synthesizing - STOP and regenerate. This is the 2026-04-19 Hermes Agent",
-        "Use Cases failure mode (LAW 6).",
+        "of synthesizing - STOP and regenerate. This is a known evidence-dump",
+        "failure mode (LAW 6).",
         "",
         "Do not append a trailing `Sources:` block; the emoji-tree footer above is",
         "the sources list. LAW 1 overrides any WebSearch tool 'CRITICAL: MUST include",

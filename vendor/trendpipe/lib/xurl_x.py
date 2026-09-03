@@ -1,10 +1,8 @@
-"""X (Twitter) search via xurl CLI — official X API v2.
+"""X (Twitter) search via the xurl CLI — X API v2.
 
-xurl is X's official CLI for the X API
-(https://github.com/xdevplatform/xurl). It requires only a free
-X Developer App. No xAI subscription or browser cookies needed.
+xurl is a CLI for the X API. It requires only a free X Developer App.
+No xAI subscription or browser cookies needed.
 
-Install: npm install -g @xdevplatform/xurl
 Auth:    xurl auth app-only <bearer-token>   (search / availability)
          xurl auth oauth1 ...                (optional; not used for search)
 
@@ -92,8 +90,7 @@ def _is_available_uncached() -> bool:
 # network).
 #
 # xurl persists OAuth credentials to an on-disk token store at ~/.xurl
-# (YAML in current releases; legacy versions wrote JSON — see the upstream
-# store package at github.com/xdevplatform/xurl). A populated store is the
+# (YAML in current releases; legacy versions wrote JSON). A populated store is the
 # strongest LOCAL evidence of authentication obtainable without spending a
 # network call, so doctor keys on it and reports "auth not live-verified"
 # instead of running `xurl whoami` (a real, authenticated X API request

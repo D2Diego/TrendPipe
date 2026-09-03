@@ -1,8 +1,7 @@
-"""Bird X search client for the v3.0.0 trendpipe pipeline.
+"""Bird X search client for the trendpipe pipeline.
 
-Uses a vendored subset of @steipete/bird v0.8.0 (MIT License) to search X
-via Twitter's GraphQL API. No external `bird` CLI binary needed - just Node.js.
-See scripts/lib/vendor/bird-search/package.json for authoritative version.
+Uses a vendored search subset to query X via the GraphQL API. No external CLI
+binary is needed - just Node.js.
 """
 
 import json

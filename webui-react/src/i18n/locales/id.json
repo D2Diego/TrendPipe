@@ -217,7 +217,7 @@
     "ElevenLabs API Key": "Kunci API ElevenLabs ([Dapatkan kunci](https://elevenlabs.io/app/settings/api-keys))",
     "ElevenLabs Model": "Model ElevenLabs",
     "Chatterbox Base URL": "URL Dasar Chatterbox",
-    "Chatterbox API Key": "Kunci API Chatterbox (Opsional; [Lihat konfigurasi](https://github.com/travisvn/chatterbox-tts-api))",
+    "Chatterbox API Key": "Kunci API Chatterbox (Opsional)",
     "Chatterbox Model": "Model Chatterbox",
     "Chatterbox Voices": "Suara Chatterbox",
     "Chatterbox Base URL Placeholder": "http://localhost:4123/v1",

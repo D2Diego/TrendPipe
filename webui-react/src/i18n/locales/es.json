@@ -216,7 +216,7 @@
     "MiMo API Key": "Clave API de Xiaomi MiMo ([Obtener clave](https://mimo.mi.com/docs/quick-start/first-api-call))",
     "ElevenLabs API Key": "Clave API de ElevenLabs ([Obtener clave](https://elevenlabs.io/app/settings/api-keys))",
     "ElevenLabs Model": "Modelo de ElevenLabs",
-    "Chatterbox API Key": "Clave API de Chatterbox (Opcional; [Ver configuración](https://github.com/travisvn/chatterbox-tts-api))",
+    "Chatterbox API Key": "Clave API de Chatterbox (Opcional)",
     "Chatterbox Base URL": "URL base de Chatterbox",
     "Chatterbox Model": "Modelo de Chatterbox",
     "Chatterbox Voices": "Voces de Chatterbox",
