@@ -108,7 +108,7 @@ def _task_file_to_uri(file: str, endpoint: str, task_dir: str, request_id: str) 
     try:
         resolved_path = file_security.resolve_path_within_directory(task_dir, file)
     except ValueError as exc:
-        # The mission status should theoretically save only the product path in the task directory. There's no more collage here. URL，
+        # The mission status should theoretically save only the product path in the task directory. There's no more collage here. URL,
         # Avoid packaging abnormal paths into accessible links; and retain original values to facilitate the search for historical dirty data.
         logger.warning(
             f"skip unsafe task output path, request_id: {request_id}, path: {file}, "
@@ -126,7 +126,7 @@ def _task_file_to_uri(file: str, endpoint: str, task_dir: str, request_id: str) 
 def _parse_byte_range(
     range_header: str | None, file_size: int, request_id: str
 ) -> tuple[int, int]:
-    """Parsing Paragraph HTTP Range，and convert invalid or cross-border requests into 416。"""
+    """Parsing Paragraph HTTP Range, and convert invalid or cross-border requests into 416. """
     if file_size <= 0:
         raise HttpException(
             task_id=request_id,
@@ -138,8 +138,8 @@ def _parse_byte_range(
         return 0, file_size - 1
 
     try:
-        # The video player here only needs a single segment. bytes range。Refusal of multiple requests avoids return Body
-        # and Content-Range Inconsistent, and avoiding an abnormal string. int() Generate 500。
+        # The video player here only needs a single segment. bytes range. Refusal of multiple requests avoids return Body
+        # and Content-Range Inconsistent, and avoiding an abnormal string. int() Generate 500.
         if not range_header.startswith("bytes=") or "," in range_header:
             raise ValueError("unsupported range format")
         start_text, end_text = range_header[6:].split("-", 1)

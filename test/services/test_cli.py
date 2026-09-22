@@ -19,7 +19,7 @@ class TestCli(unittest.TestCase):
         args = cli.parse_args(["--video-subject", "Test Theme"])
         params = cli.build_video_params(args)
 
-        self.assertEqual(params.voice_name, "zh-CN-XiaoxiaoNeural-Female")
+        self.assertEqual(params.voice_name, "en-US-JennyNeural-Female")
 
     def test_complete_script_can_replace_video_subject(self):
         args = cli.parse_args(["--video-script", "Full video file"])
@@ -388,7 +388,7 @@ class TestCli(unittest.TestCase):
                 self.assertEqual(params.bgm_file, "")
 
     def test_custom_bgm_reuses_service_formats_and_managed_path_resolution(self):
-        """CLI Must follow. BGM The white list of services cannot continue to be restricted to MP3。"""
+        """CLI Must follow. BGM The white list of services cannot continue to be restricted to MP3. """
         from app.services import bgm as bgm_service
 
         for extension in bgm_service.SUPPORTED_BGM_EXTENSIONS:
@@ -574,7 +574,7 @@ class TestCli(unittest.TestCase):
 
         self.assertEqual(cm.exception.code, 0)
         help_text = output.getvalue()
-        self.assertIn("zh-CN-XiaoxiaoNeural-Female", help_text)
+        self.assertIn("en-US-JennyNeural-Female", help_text)
         self.assertIn("current working directory", help_text)
         self.assertIn("Pipeline stages:", help_text)
         self.assertIn("exit with 2", help_text)

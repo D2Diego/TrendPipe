@@ -33,7 +33,7 @@ RUN_INTEGRATION_TESTS = os.environ.get("TRENDPIPE_RUN_INTEGRATION_TESTS", "").lo
 class TestScriptPromptOptions(unittest.TestCase):
     def test_normalize_text_response_removes_think_blocks(self):
         """
-        reasoning Model may return `<think>...</think>`。Script generation links must be preserved only
+        reasoning Model may return `<think>...</think>`. Script generation links must be preserved only
         Finally, the text avoids subtitling and phonography.
         """
         result = llm._normalize_text_response(
@@ -52,7 +52,7 @@ class TestScriptPromptOptions(unittest.TestCase):
 
     def test_normalize_text_response_removes_unclosed_think_block(self):
         """
-        Some of the gateways may have been cut back to unclosed ones. `<think>`。It's not the same thing.
+        Some of the gateways may have been cut back to unclosed ones. `<think>`. It's not the same thing.
         Enter the final script; if there is no text after clearance, it should be treated as empty response.
         """
         with self.assertRaises(ValueError):
@@ -145,7 +145,7 @@ class TestScriptPromptOptions(unittest.TestCase):
     def test_generate_terms_can_request_script_ordered_keywords(self):
         """
         Match material dependency in order of case LLM returns the orderly keyword. There is no real model here.
-        Only the certification service level will be bound to "script-out" prompt，Avoid
+        Only the certification service level will be bound to "script-out" prompt, Avoid
         Follow-up downloads, though sequenced, continue to be keywords that are global and disorderly.
         """
         captured = {}
@@ -611,7 +611,7 @@ class TestLiteLLMProvider(unittest.TestCase):
         self.assertIn("account_id is not set", result)
 
     def test_cloudflare_uses_ai_gateway_openai_endpoint(self):
-        """Cloudflare Provider We have to go. AI Gateway，No more calls Workers AI Interface."""
+        """Cloudflare Provider We have to go. AI Gateway, No more calls Workers AI Interface."""
         config.app.update(
             {
                 "llm_provider": "cloudflare",
@@ -668,10 +668,10 @@ class TestLiteLLMProvider(unittest.TestCase):
 
     def test_litellm_provider_returns_normalized_text(self):
         """
-        Authentication LiteLLM provider The main path does not depend on the real network and private API key。
+        Authentication LiteLLM provider The main path does not depend on the real network and private API key.
 
-        Here. fake module Injection `sys.modules`，Direct Overwrite Dynamic import Yes.
-        `litellm.completion()`，Ensure test stable coverage `_generate_response()` Lee.
+        Here. fake module Injection `sys.modules`, Direct Overwrite Dynamic import Yes.
+        `litellm.completion()`, Ensure test stable coverage `_generate_response()` Lee.
         litellm Branch.
         """
         self._use_litellm_provider()
@@ -729,8 +729,8 @@ class TestLiteLLMProvider(unittest.TestCase):
     def test_litellm_provider_handles_empty_message(self):
         """
         Some OpenAI-compatible The gateway returns when content filters or security intercepts
-        HTTP 200，But... `choices[0].message` Yes None。We have to go back here.
-        Diagnosable error, not throw it out. AttributeError。
+        HTTP 200, But... `choices[0].message` Yes None. We have to go back here.
+        Diagnosable error, not throw it out. AttributeError.
         """
         self._use_litellm_provider()
 
@@ -766,7 +766,7 @@ class TestLiteLLMProvider(unittest.TestCase):
 
     def test_openai_provider_error_redacts_embedded_base_url_credentials(self):
         """
-        Custom OpenAI-compatible base_url Could contain the proxy gateway. user:pass。
+        Custom OpenAI-compatible base_url Could contain the proxy gateway. user:pass.
         SDK When you're wrong, you always do. URL Bring back the anomaly information. Check for final return. Here. WebUI/API Yes.
         `Error:` These documents will not be disclosed.
         """
@@ -841,9 +841,9 @@ class TestLiteLLMProvider(unittest.TestCase):
 
     def test_qwen_provider_reads_chat_choices_content(self):
         """
-        DashScope chat Mode will put text in `output.choices[0].message.content`。
+        DashScope chat Mode will put text in `output.choices[0].message.content`.
         Cover here issue #966 Report `output.text is None` scene, avoid triggers again.
-        `'NoneType' object has no attribute 'replace'`。
+        `'NoneType' object has no attribute 'replace'`.
         """
         self._use_qwen_provider()
         response = {
@@ -869,7 +869,7 @@ class TestLiteLLMProvider(unittest.TestCase):
         self.assertEqual(result, "Old Format Response")
 
     def test_qwen_provider_reports_empty_text(self):
-        """Qwen The empty response should return the diagnosis error, not the bottom AttributeError。"""
+        """Qwen The empty response should return the diagnosis error, not the bottom AttributeError. """
         self._use_qwen_provider()
         response = {
             "output": {"text": None, "choices": [{"message": {"content": None}}]}
@@ -1017,7 +1017,7 @@ class TestLiteLLMProvider(unittest.TestCase):
 
     def test_volcengine_provider_uses_openai_compatible_client(self):
         """
-        VolcEngine Ark Exposure OpenAI-compatible Chat Completions。
+        VolcEngine Ark Exposure OpenAI-compatible Chat Completions.
         Here. fake OpenAI client Overwrite provider Default address and default model,
         Avoid real network or private API key Impact testing stability.
         """
@@ -1152,7 +1152,7 @@ class TestLiteLLMProvider(unittest.TestCase):
 
     def test_ollama_default_base_url_uses_localhost_outside_container(self):
         """
-        When the normal machine is running,Ollama Default still in use localhost，Avoid affecting existing users.
+        When the normal machine is running,Ollama Default still in use localhost, Avoid affecting existing users.
         """
         self._use_ollama_provider()
 
@@ -1161,8 +1161,8 @@ class TestLiteLLMProvider(unittest.TestCase):
 
     def test_ollama_default_base_url_uses_host_gateway_inside_container(self):
         """
-        When running inside the container,localhost pointing to the container itself; by default read host.docker.internal，
-        Easy. Docker Desktop User access to host Ollama。
+        When running inside the container,localhost pointing to the container itself; by default read host.docker.internal,
+        Easy. Docker Desktop User access to host Ollama.
         """
         self._use_ollama_provider()
 
@@ -1174,7 +1174,7 @@ class TestLiteLLMProvider(unittest.TestCase):
 
     def test_ollama_default_base_url_falls_back_to_container_gateway(self):
         """
-        Native Linux Docker I don't think it'll solve. host.docker.internal。Use containers at this time
+        Native Linux Docker I don't think it'll solve. host.docker.internal. Use containers at this time
         The default gateway is used as a bottom address and returns unresolved than directly hostname Steady.
         """
         self._use_ollama_provider()
@@ -1200,8 +1200,8 @@ class TestLiteLLMProvider(unittest.TestCase):
     def test_mimo_provider_uses_openai_compatible_client(self):
         """
         MiMo Official interface compatibility OpenAI Chat Completions Agreement. Here. fake OpenAI
-        client Authentication provider Use MiMo Independent Configuration and Default base_url，Not dependent
-        Real network or private API Key。
+        client Authentication provider Use MiMo Independent Configuration and Default base_url, Not dependent
+        Real network or private API Key.
         """
         config.app["llm_provider"] = "mimo"
         config.app["mimo_api_key"] = "mimo-key"
@@ -1242,7 +1242,7 @@ class TestLiteLLMProvider(unittest.TestCase):
     def test_azure_provider_uses_azure_client_directly(self):
         """
         Azure OpenAI and the knowledge,endpoint and api-version By AzureOpenAI Client processing.
-        This test covers issue #892：azure Branch must call directly AzureOpenAI Create a client,
+        This test covers issue #892: azure Branch must call directly AzureOpenAI Create a client,
         We can't go back to normal. OpenAI-compatible Branch, or it'll be lost. Azure Special request configuration.
         """
         config.app["llm_provider"] = "azure"
@@ -1297,7 +1297,7 @@ class TestLiteLLMProvider(unittest.TestCase):
 class TestRuntimeEnvironmentDetection(unittest.TestCase):
     def test_container_detection_ignores_plain_linux_cgroup_file(self):
         """
-        Normal Linux Yeah. /proc/1/cgroup，The existence of the document cannot be considered a container.
+        Normal Linux Yeah. /proc/1/cgroup, The existence of the document cannot be considered a container.
         """
         with tempfile.TemporaryDirectory() as tmp_dir:
             cgroup_path = Path(tmp_dir) / "cgroup"

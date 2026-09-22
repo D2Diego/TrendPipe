@@ -46,7 +46,7 @@ Generate a script for a video, depending on the subject of the video.
 
 
 def _normalize_text_response(content, llm_provider: str) -> str:
-    # Different. LLM SDK It's possible to return in an unusual or intercepted scenario. None、Empty string,
+    # Different. LLM SDK It's possible to return in an unusual or intercepted scenario. None, Empty string,
     # returns even non-string objects. We'll do the bottom check here and avoid subsequent direct calls.
     # `.replace()` Time Throw `NoneType` .
     if content is None:
@@ -57,9 +57,9 @@ def _normalize_text_response(content, llm_provider: str) -> str:
             f"[{llm_provider}] returned non-text content: {type(content).__name__}"
         )
 
-    # MiniMax M3、DeepSeek R1 This one. reasoning Models may contain in-house reasoning.
+    # MiniMax M3, DeepSeek R1 This one. reasoning Models may contain in-house reasoning.
     # `<think>...</think>` Other Organiser Video scripts and keywords need only end up reading the text.
-    # If you don't clean up at the service level,WebUI、Subtitles and phonography are used as the body of thinking.
+    # If you don't clean up at the service level,WebUI, Subtitles and phonography are used as the body of thinking.
     content = _THINK_BLOCK_RE.sub("", content)
     content = _UNCLOSED_THINK_BLOCK_RE.sub("", content).strip()
     if not content:
@@ -73,7 +73,7 @@ def _sanitize_error_message(error: object) -> str:
     Clear Back to WebUI/API Can not open message base_url The evidence was leaked.
 
     Some OpenAI-compatible SDK I'll take the request. URL Could not close temporary folder: %s If the user wants
-    Agent gateway is configured. `https://user:pass@example.com/v1`，Direct Return `str(e)`
+    Agent gateway is configured. `https://user:pass@example.com/v1`, Direct Return `str(e)`
     You'll be exposed to the page.API Caller or subsequent log. It's only a case of error.
     Actual request of address to avoid disruption of normal call links.
     """
@@ -84,7 +84,7 @@ def _sanitize_error_message(error: object) -> str:
 
 
 def _extract_chat_completion_text(response, llm_provider: str) -> str:
-    # OpenAI Compatible interface in an anomaly scenario, probably returned no. choices、
+    # OpenAI Compatible interface in an anomaly scenario, probably returned no. choices,
     # Or... choices/message/content is an empty response object.
     # We'll do a structural check here and avoid it. `NoneType is not subscriptable`
     # Could not close temporary folder: %s
@@ -117,9 +117,9 @@ def _extract_qwen_generation_text(response) -> str:
     From DashScope Generation Responds to extract text.
 
     Qwen Use `messages` Back on call chat Structure:
-    `output.choices[0].message.content`；Old completion The form returns.
-    `output.text`。Both paths are compatible. Avoid. `output.text` Yes None Time
-    Go on. `.replace()` Trigger undiagnosable AttributeError。
+    `output.choices[0].message.content`; Old completion The form returns.
+    `output.text`. Both paths are compatible. Avoid. `output.text` Yes None Time
+    Go on. `.replace()` Trigger undiagnosable AttributeError.
     """
     output = _get_response_field(response, "output")
     choices = _get_response_field(output, "choices") if output else None
@@ -142,7 +142,7 @@ def _generate_response(prompt: str, app_config=None) -> str:
     try:
         # WebUI The user is allowed to prepare the next article during video generation. The caller can enter the moment of submission
         # A configuration snapshot to ensure that the model requests no new configuration due to the end of the backstage mission,
-        # And switch to another one. Provider、Base URL Or model.
+        # And switch to another one. Provider, Base URL Or model.
         runtime_app_config = app_config if app_config is not None else config.app
         llm_provider = str(
             runtime_app_config.get("llm_provider", DEFAULT_LLM_PROVIDER_ID)
@@ -290,7 +290,7 @@ def _generate_response(prompt: str, app_config=None) -> str:
         if adapter == "cloudflare_ai_gateway":
             account_id = extra_values["account_id"]
             gateway_id = extra_values["gateway_id"]
-            # Cloudflare Current Recommended AI Gateway REST API Compatibility OpenAI SDK。
+            # Cloudflare Current Recommended AI Gateway REST API Compatibility OpenAI SDK.
             # Account ID To construct a unified endpoint,Gateway ID Select by Request Header;here
             # No more calls Workers AI Yes. /ai/run/{model} Special interface.
             client = OpenAI(
@@ -419,7 +419,7 @@ def test_connection() -> tuple[bool, str, float]:
     """
     Use current Provider Configure to initiate a minimum request to verify the availability of the actual generation link.
 
-    Connection test directly reuse `_generate_response()`，So it's covered. API Key、Base URL、
+    Connection test directly reuse `_generate_response()`, So it's covered. API Key, Base URL,
     Model name and Provider Special field, but will not enter the retry logic generated by script and will not send
     Other Organiser Returns the value of success, error information and time-consuming requests.
     """
@@ -488,7 +488,7 @@ def build_script_prompt(
     )
 
     # Collapse the Script Generation Rules and the Context at Runtime. So advanced users even overwrite defaults
-    # system prompt，The video theme, language and number of paragraphs will not be omitted as parameters that must be included in each generation.
+    # system prompt, The video theme, language and number of paragraphs will not be omitted as parameters that must be included in each generation.
     prompt = custom_system_prompt or DEFAULT_SCRIPT_SYSTEM_PROMPT
     prompt += f"""
 
@@ -677,7 +677,7 @@ Please note that you must use English for generating video search terms; Chinese
             else:
                 response = _generate_response(prompt, app_config=app_config)
             if response.startswith("Error: "):
-                # generate_terms The public return type is List[str]。♪ If you put ♪ Provider Yes.
+                # generate_terms The public return type is List[str]. ♪ If you put ♪ Provider Yes.
                 # The error file returns as it is and the non-empty string is mistakenly considered successful when only empty values are judged downstream.
                 # Material download loops also run through the wrong text by character, resulting in meaningless external requests.
                 # Here you return the empty list, so that the task layer ends immediately at the real malfunction.
@@ -698,7 +698,7 @@ Please note that you must use English for generating video search terms; Chinese
                     try:
                         search_terms = json.loads(match.group())
                     except Exception as e:
-                        # Keep the retry process here, but it must be recorded. LLM Non-standard return JSON，
+                        # Keep the retry process here, but it must be recorded. LLM Non-standard return JSON,
                         # Otherwise, the next search word cannot be located when empty.
                         # Is it a model format problem or a logic problem.
                         logger.warning(f"failed to generate video terms: {str(e)}")
@@ -715,8 +715,8 @@ Please note that you must use English for generating video search terms; Chinese
 # =============================================================================
 # Social publishing metadata
 #
-# Used to generate short video platforms for distribution based on video themes and scripts title、caption and hashtags。
-# This power is only available. LLM provider，No access to any external distribution services and no impact on the main video generation link.
+# Used to generate short video platforms for distribution based on video themes and scripts title, caption and hashtags.
+# This power is only available. LLM provider, No access to any external distribution services and no impact on the main video generation link.
 # =============================================================================
 
 # length and file length of different platforms hashtag Number preferences differ. Use conservative caps here to avoid model returns.
@@ -807,13 +807,13 @@ def _normalize_hashtags(raw, count: int) -> List[str]:
 
     LLM May return strings, arrays, phrases with spaces, duplicate labels, or content containing points.
     Centralized cleaning here will stabilize the interface response structure and avoid empty labels when the platform is released.
-    Duplicate labels or non-conforming hashtag。
+    Duplicate labels or non-conforming hashtag.
     """
     if isinstance(raw, str):
         candidates = re.split(r"[\s,]+", raw)
     elif isinstance(raw, (list, tuple)):
         # Each of the arrays is considered a complete label, so "du lich" It's gonna be...
-        # "#dulich"，Instead of breaking into two labels.
+        # "#dulich", Instead of breaking into two labels.
         candidates = [str(entry) for entry in raw]
     else:
         candidates = []
@@ -885,8 +885,8 @@ def _parse_social_metadata(response: str, platform: str) -> dict:
     try:
         data = json.loads(_strip_code_fence(response))
     except Exception:
-        # Some of the models will be JSON A description of the outer package or markdown fence。
-        # API The caller just needs a stable structure, so here's the first extraction. JSON object。
+        # Some of the models will be JSON A description of the outer package or markdown fence.
+        # API The caller just needs a stable structure, so here's the first extraction. JSON object.
         match = re.search(r"\{.*\}", response or "", re.DOTALL)
         if match:
             data = json.loads(match.group())
@@ -913,8 +913,8 @@ def _fallback_social_metadata(
 
     title = subject
     if not title and script:
-        # When there is no theme, create it at the bottom of the first sentence of the script title，Avoids an interface returning to an empty title.
-        title = re.split(r"(?<=[.!?。！？])\s+", script)[0]
+        # When there is no theme, create it at the bottom of the first sentence of the script title, Avoids an interface returning to an empty title.
+        title = re.split(r"(?<=[.!?.!? ])\s+", script)[0]
 
     return {
         "title": _clamp_text(title, spec["title_max"]),
@@ -932,7 +932,7 @@ def generate_social_metadata(
     """
     Generate short video release file metadata.
 
-    Return structure fixed to `{"title": str, "caption": str, "hashtags": List[str]}`。
+    Return structure fixed to `{"title": str, "caption": str, "hashtags": List[str]}`.
     If LLM Unable to use or return an abnormal format, downgraded to a generic inspirational result, guaranteed API
     The caller always gets a data structure that can be displayed and edited before release.
     """

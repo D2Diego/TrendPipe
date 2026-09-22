@@ -22,7 +22,7 @@ _WINDOWS_RESERVED_FILENAMES = frozenset(
     | {f"COM{index}" for index in range(1, 10)}
     | {f"LPT{index}" for index in range(1, 10)}
 )
-# MoviePy Final pass. FFmpeg Decoding background music, so no artificial restriction is required MP3。It's only open here.
+# MoviePy Final pass. FFmpeg Decoding background music, so no artificial restriction is required MP3. It's only open here.
 # Mainstream and semantic audio extension to avoid the use of MP4 When video containers are erroneously uploaded as background music.
 # It's the same as the same. WebUI A single data source for upload controls does not appear inconsistent with subsequent additions or deletions.
 SUPPORTED_BGM_EXTENSIONS = (
@@ -66,7 +66,7 @@ def uploaded_bgm_dir(create: bool = True) -> str:
     """
     Returns a persistent directory of user background music.
 
-    The built-in song is a code resource. Keep it on. resource/songs；User uploads content to run-time data.
+    The built-in song is a code resource. Keep it on. resource/songs; User uploads content to run-time data.
     It has to be. Docker Mounted storage Down, the container will be rebuilt before it's preserved. Git Workspace.
     """
     return utils.storage_dir("bgm", create=create)
@@ -100,8 +100,8 @@ def sanitize_upload_filename(filename: str) -> str:
     ):
         raise BgmUploadError("invalid background music filename")
 
-    # Windows The first section before the extension is identified as a device, for example. CON.mp3、LPT1.wav Both
-    # Could not close temporary folder: %s Even if the service end up using UUID，You could have rejected such names in advance.
+    # Windows The first section before the extension is identified as a device, for example. CON.mp3, LPT1.wav Both
+    # Could not close temporary folder: %s Even if the service end up using UUID, You could have rejected such names in advance.
     # Promise. API Inputs are consistent on different platforms.
     windows_basename = safe_name.split(".", 1)[0].rstrip(" .").upper()
     if windows_basename in _WINDOWS_RESERVED_FILENAMES:
@@ -121,8 +121,8 @@ def _validate_audio(file_path: str, timeout_seconds: int = 30) -> None:
     """
     Use current project configuration only FFmpeg The authentication file contains a fully decoded audio stream.
 
-    Project permission imageio-ffmpeg Offer port FFmpeg，This installation does not guarantee simultaneous presence
-    FFprobe，Therefore, an independent binary dependency cannot be added.`-map 0:a:0` It'll fail without audio stream.
+    Project permission imageio-ffmpeg Offer port FFmpeg, This installation does not guarantee simultaneous presence
+    FFprobe, Therefore, an independent binary dependency cannot be added.`-map 0:a:0` It'll fail without audio stream.
     `-xerror` It raises the decoding error to a failure; complete decoding can also intercept encrypted files or random data by accident
     The error of the audio frame. The file may contain additional streams such as the album cover, but only verify the first audio stream.
     """
@@ -159,7 +159,7 @@ def validate_audio_file(file_path: str, timeout_seconds: int = 120) -> None:
     Verify audio files on disk from item FFmpeg Full decode.
 
     It's usually only for uploading. 30 sec;Sonilo The longest pair of codas ever produced. 6 Minutes, therefore, available externally
-    Re-entry can be adjusted for overtime. Services depend only on FFmpeg，No additional system installation required FFprobe。
+    Re-entry can be adjusted for overtime. Services depend only on FFmpeg, No additional system installation required FFprobe.
     """
     if not os.path.isfile(file_path) or os.path.getsize(file_path) <= 0:
         raise BgmUploadError("background music file is empty or missing")
@@ -189,7 +189,7 @@ def _stage_bgm_upload(filename: str, source: BinaryIO) -> tuple[str, str, int]:
             raise BgmUploadError("background music upload is not seekable") from exc
 
         # Keep original extension convenient FFmpeg For uncontainable heads. AAC Waiting for the correct format
-        # demuxer；Provisional documents remain in the target directory to ensure finality os.replace It's atom operation.
+        # demuxer; Provisional documents remain in the target directory to ensure finality os.replace It's atom operation.
         descriptor, temp_path = tempfile.mkstemp(
             prefix=_INTERNAL_UPLOAD_PREFIX,
             suffix=Path(safe_name).suffix.lower(),
@@ -287,7 +287,7 @@ def list_bgm_files() -> list[str]:
             file_path = os.path.join(directory, name)
             try:
                 # The results of the count also require a true path check. Otherwise the assailant can be placed in the permitted directory.
-                # Acoustic links to external files, borrowed randomly BGM Pass the path. MoviePy。
+                # Acoustic links to external files, borrowed randomly BGM Pass the path. MoviePy.
                 resolved_path = file_security.resolve_path_within_directory(
                     directory, file_path
                 )
@@ -302,10 +302,10 @@ def list_bgm_files() -> list[str]:
 
 def resolve_bgm_file(unsafe_path: str) -> str:
     """
-    Parsing in user upload directory and built-in song directory BGM，And reject the path beyond the two white lists.
+    Parsing in user upload directory and built-in song directory BGM, And reject the path beyond the two white lists.
 
-    File name should be given priority in the user directory while retaining `output000.mp3`、Absolute white list path and
-    `./resource/songs/output000.mp3` Wait for old usage. Use of new upload files UUID，Normal
+    File name should be given priority in the user directory while retaining `output000.mp3`, Absolute white list path and
+    `./resource/songs/output000.mp3` Wait for old usage. Use of new upload files UUID, Normal
     There is no renaming with a built-in song or history.
     """
     if (

@@ -10,7 +10,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 
 def test_main_starts_uvicorn_with_runtime_config():
     """
-    The service start-up portal is only responsible for handing over the operation configuration. Uvicorn。Here. mock The real server started,
+    The service start-up portal is only responsible for handing over the operation configuration. Uvicorn. Here. mock The real server started,
     Avoids testing the occupancy port and confirms that the listening address, port and heat load configuration will not be lost at the entrance level.
     """
     with (

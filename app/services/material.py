@@ -23,7 +23,7 @@ def _safe_public_url(value: Any) -> str | None:
     """
     Only keep publicly available HTTP(S) page address, and remove the query parameters and supporting evidence.
 
-    The feed downloading address may be carried API Key、Signature JWT or temporary token。The list of tasks only needs
+    The feed downloading address may be carried API Key, Signature JWT or temporary token. The list of tasks only needs
     Helping users to return to the vendor ' s public material pages, without saving parameters; user information form URL
     Again. Avoid. ``https://user:pass@example.com`` One type of content drops.
     """
@@ -70,7 +70,7 @@ def _material_source_record(item: MaterialInfo, local_path: str) -> dict[str, An
     """
     Generate light source records for successfully downloaded materials.
 
-    ``source_info`` Could be from the cache, even from the outside. ``MaterialInfo``，Therefore...
+    ``source_info`` Could be from the cache, even from the outside. ``MaterialInfo``, Therefore...
     Could not close temporary folder: %s Restructured by white list, only open pages, business IDs and sizes are kept.
     And only local filenames are recorded, avoiding user directories or Docker Mount path to task file.
     """
@@ -176,7 +176,7 @@ def _redact_secret(message: str, secret: str) -> str:
     """
     Do minimum dissensitisation for abnormal text to be written in the log.
 
-    requests The connection anomaly may contain a complete request URL，And... Pixabay API Key Through Query
+    requests The connection anomaly may contain a complete request URL, And... Pixabay API Key Through Query
     Parameter transfer. Replace original values and URL Encoding values that both keep network error information for searching,
     Can not delete folder: %s: No such folder
     """
@@ -195,8 +195,8 @@ def _redact_request_error(error: Exception, *secrets: str) -> str:
     """
     Keep searchable information about network anomalies while removing them API Key And proxy evidence.
 
-    It's a direct record of the type of anomaly that will be lost. DNS、Key context such as certificate, timeout; direct recording of original anomalies
-    And maybe the full request. URL。A unified portal would allow three material suppliers to use the same dissensitization rules.
+    It's a direct record of the type of anomaly that will be lost. DNS, Key context such as certificate, timeout; direct recording of original anomalies
+    And maybe the full request. URL. A unified portal would allow three material suppliers to use the same dissensitization rules.
     """
     safe_message = str(error)
     for secret in secrets:
@@ -208,11 +208,11 @@ def _redact_request_error(error: Exception, *secrets: str) -> str:
 
 def _is_cloudflare_challenge(response: requests.Response) -> bool:
     """
-    Identification Cloudflare Returned HTML Challenge，Instead of treating it like Pixabay JSON。
+    Identification Cloudflare Returned HTML Challenge, Instead of treating it like Pixabay JSON.
 
-    Cloudflare Usually set up `cf-mitigated: challenge`；Partial deployment only returns with
-    "Just a moment" or challenge-platform Yes. HTML，The content characteristics are therefore kept to the bottom.
-    Respond to the fact that the body is only judged in memory, does not write in the log, and avoids recording unvalueful large sections HTML。
+    Cloudflare Usually set up `cf-mitigated: challenge`; Partial deployment only returns with
+    "Just a moment" or challenge-platform Yes. HTML, The content characteristics are therefore kept to the bottom.
+    Respond to the fact that the body is only judged in memory, does not write in the log, and avoids recording unvalueful large sections HTML.
     """
     headers = getattr(response, "headers", {}) or {}
     if str(headers.get("cf-mitigated", "")).lower() == "challenge":
@@ -236,7 +236,7 @@ def _matches_video_aspect(
     """
     It's a good idea to see if the remote material is in line with the target image.
 
-    Pexels、Pixabay and Coverr The response fields were not uniform, and therefore the light was used to make reliable judgements;
+    Pexels, Pixabay and Coverr The response fields were not uniform, and therefore the light was used to make reliable judgements;
     Coverr When part of the historical response lacks size, use clear ``is_vertical`` Boolean.
     The material in which the direction cannot be confirmed skips directly, avoiding the task of embedding the screen material and creating a black side in the form.
     """
@@ -520,7 +520,7 @@ def search_videos_coverr(
     Use this function urls.mp4_download Field as Download Address - Press Coverr Official documents
     (https://api.coverr.co/docs/videos/#download-a-video) The story.,
     GET Here. URL It's all about itself. Coverr It's legal. download Event Count Statistics,
-    No more calls. PATCH /videos/:id/stats/downloads。
+    No more calls. PATCH /videos/:id/stats/downloads.
     """
     aspect = VideoAspect(video_aspect)
     api_key = get_api_key("coverr_api_keys")
@@ -673,7 +673,7 @@ def _search_videos_with_cache(
     """
     Integrated processing of three online material sources 24 Other Organiser
 
-    Cache Package Search API，Do not change the subsequent video download with the login. Do not write when remote returns empty list
+    Cache Package Search API, Do not change the subsequent video download with the login. Do not write when remote returns empty list
     Cache because of existing provider The interface uses an empty list to indicate both " no result " and " request failed " ;
     Before the two were divided into clear types of results, it would be preferable to try again next time and not to leave temporary malfunctions behind for one day.
     """
@@ -689,7 +689,7 @@ def _search_videos_with_cache(
             return material_cache.load_material_search_cache(**cache_args)
         except Exception as exc:
             # Cache is an optional optimisation, and any causative anomaly must be treated as uncut and cannot be interrupted
-            # Pexels、Pixabay or Coverr The normal remote search.
+            # Pexels, Pixabay or Coverr The normal remote search.
             logger.warning(
                 "material search cache read failed, continue with remote search: "
                 f"provider={provider}, error={type(exc).__name__}, detail={exc}"

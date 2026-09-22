@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from app.models.schema import MaterialInfo, VideoParams
 
 
-DEFAULT_VOICE_NAME = "zh-CN-XiaoxiaoNeural-Female"
+DEFAULT_VOICE_NAME = "en-US-JennyNeural-Female"
 _PIPELINE_STAGES = ("script", "terms", "audio", "subtitle", "materials", "video")
 _CUSTOM_AUDIO_EXTENSIONS = {".mp3", ".wav", ".m4a", ".aac", ".flac", ".ogg"}
 
@@ -86,7 +86,7 @@ def _hex_color(value: str) -> str:
 
 
 def _task_id(value: str) -> str:
-    """CLI Custom job identifier only accepted UUID，Avoids that value being interpreted as a file system path."""
+    """CLI Custom job identifier only accepted UUID, Avoids that value being interpreted as a file system path."""
     try:
         return str(UUID(value.strip()))
     except (AttributeError, ValueError) as exc:
@@ -188,7 +188,7 @@ Output and exit status:
         "--video-language",
         default=None,
         help=(
-            "script language code, such as zh-CN or en-US (default: auto-detect)"
+            "script language code, such as en-US or es-ES (default: auto-detect)"
         ),
     )
     content_group.add_argument(
@@ -505,7 +505,7 @@ def build_video_params(args: argparse.Namespace) -> VideoParams:
     video_terms = args.video_terms
     if video_terms:
         video_terms = [
-            term.strip() for term in re.split(r"[,，]", video_terms) if term.strip()
+            term.strip() for term in re.split(r"[,, ]", video_terms) if term.strip()
         ]
 
     video_materials = None
@@ -610,7 +610,7 @@ def _path_is_within_directory(file_path: str, directory: str) -> bool:
             [os.path.realpath(directory), os.path.realpath(file_path)]
         ) == os.path.realpath(directory)
     except ValueError:
-        # Windows Different discs cannot be calculated commonpath，It is clear at this point that the document is not in the target directory.
+        # Windows Different discs cannot be calculated commonpath, It is clear at this point that the document is not in the target directory.
         return False
 
 
@@ -677,17 +677,17 @@ def prepare_cli_files(params: VideoParams, stop_at: str) -> None:
 
     if params.bgm_type == "custom":
         if not bgm_service.should_use_bgm(params.bgm_type, params.bgm_volume):
-            # 0 When you go down, you skip everything. BGM。Clear file parameters here at the same time. Avoid.
+            # 0 When you go down, you skip everything. BGM. Clear file parameters here at the same time. Avoid.
             # CLI Execute path resolution, existential check or format for a non-readable file
             # Verify.
             params.bgm_file = ""
         elif not params.bgm_file:
             # Whether the missing file constitutes an error depends on universal BGM Switches, not here. argparse Phase
-            # Unconditional intercept, otherwise. ``custom + 0%`` and WebUI、Service level behaviour is inconsistent.
+            # Unconditional intercept, otherwise. ``custom + 0%`` and WebUI, Service level behaviour is inconsistent.
             raise ValueError("--bgm-file is required when --bgm-type is custom")
         else:
             try:
-                # CLI、WebUI We have to share mission services. BGM File boundary. Right here.
+                # CLI, WebUI We have to share mission services. BGM File boundary. Right here.
                 # Reuse service layer resolution, which supports both user upload and built-in song directories
                 # Automatically inherit new audio format and path security rules, avoiding multiple entry points
                 # Maintain the white list.

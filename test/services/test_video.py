@@ -112,7 +112,7 @@ class TestVideoService(unittest.TestCase):
         self.assertIn("permission denied", message)
 
     def test_generate_video_reports_successful_bgm_mix_and_closes_sources(self):
-        """BGM After mixing is successful, return True，And release all original files. reader。"""
+        """BGM After mixing is successful, return True, And release all original files. reader. """
         params = vd.VideoParams(
             video_subject="test",
             subtitle_enabled=False,
@@ -154,7 +154,7 @@ class TestVideoService(unittest.TestCase):
         self.assertEqual(final_video.close_calls, 1)
 
     def test_generate_video_keeps_output_and_reports_failed_bgm_mix(self):
-        """BGM It should still be written only once when opening failed BGM Video, and return False。"""
+        """BGM It should still be written only once when opening failed BGM Video, and return False. """
         params = vd.VideoParams(
             video_subject="test",
             subtitle_enabled=False,
@@ -351,7 +351,7 @@ class TestVideoService(unittest.TestCase):
 
     def test_preprocess_video_rejects_material_outside_local_videos(self):
         """
-        local Material path from API Parameters, no arbitrary absolute path entry allowed MoviePy。
+        local Material path from API Parameters, no arbitrary absolute path entry allowed MoviePy.
         Check this out. local_videos The path in the white list directory is skipped to avoid any file reading.
         """
         m = MaterialInfo(provider="local", url=self.test_img_path)
@@ -377,7 +377,7 @@ class TestVideoService(unittest.TestCase):
 
     def test_get_bgm_file_accepts_project_relative_song_path(self):
         """
-        User in WebUI Other Organiser ./resource/songs/xxx.mp3。Although the path is...
+        User in WebUI Other Organiser./resource/songs/xxx.mp3. Although the path is...
         Project root directory relative path, but the actual file is still available resource/songs In the White List,
         It should be accepted that self-defined background music is not miscalculated as non-existent.
         """
@@ -409,7 +409,7 @@ class TestVideoService(unittest.TestCase):
 
     def test_get_ffmpeg_binary_falls_back_to_imageio_ffmpeg(self):
         """
-        Windows The portable system. PATH Probably not. ffmpeg，But... moviepy Dependency
+        Windows The portable system. PATH Probably not. ffmpeg, But... moviepy Dependency
         imageio-ffmpeg Executable documents are usually provided. Check here the bottom path is available.
         """
         fake_imageio_ffmpeg = types.SimpleNamespace(
@@ -424,7 +424,7 @@ class TestVideoService(unittest.TestCase):
     def test_get_effective_video_codec_falls_back_when_encoder_missing(self):
         """
         User selected hardware encoder must pass first FFmpeg encoder list. Not detected.
-        Now and then back. libx264，Avoids creating tasks that fail at the writing stage.
+        Now and then back. libx264, Avoids creating tasks that fail at the writing stage.
         """
         config.app["video_codec"] = "h264_nvenc"
 
@@ -433,8 +433,8 @@ class TestVideoService(unittest.TestCase):
 
     def test_get_configured_video_codec_uses_stable_default_when_unset(self):
         """
-        WebUI Default mode does not last video_codec。Backend must continue when configuration is missing
-        Clear Return libx264，You can't give the empty value directly. MoviePy or FFmpeg It's up to you.
+        WebUI Default mode does not last video_codec. Backend must continue when configuration is missing
+        Clear Return libx264, You can't give the empty value directly. MoviePy or FFmpeg It's up to you.
         """
         config.app.pop("video_codec", None)
 
@@ -452,7 +452,7 @@ class TestVideoService(unittest.TestCase):
     def test_ffmpeg_encoder_exists_falls_back_when_probe_fails(self):
         """
         Windows Other Organiser ffmpeg It may not be possible because of damage to the path, access, or soft intercept.
-        Normal implementation.encoder We must return when detection fails. False，Let's keep the top level stable. libx264。
+        Normal implementation.encoder We must return when detection fails. False, Let's keep the top level stable. libx264.
         """
         with patch.object(
             vd.subprocess,
@@ -571,7 +571,7 @@ class TestVideoService(unittest.TestCase):
 
     def test_concat_video_clips_does_not_disable_codec_when_fallback_also_fails(self):
         """
-        concat Phase if libx264 It also failed. list、Path or Output Permissions
+        concat Phase if libx264 It also failed. list, Path or Output Permissions
         problem, the hardware encoder cannot be added to the list when running.
         """
         config.app["video_codec"] = "h264_nvenc"
@@ -609,7 +609,7 @@ class TestVideoService(unittest.TestCase):
         `audio_found: False` The video was miscalculated without sound.
         """
         # Tests only concern whether the service level is shielded MoviePy to read the noise, not to keep a copy of it for long. PNG
-        # Binary Encoded MP4 fixture。The short video generated on the run keeps the test independent and also
+        # Binary Encoded MP4 fixture. The short video generated on the run keeps the test independent and also
         # Avoid fixture The frame scintillation resulting from different coding parameters is misused for visual validation.
         image_path = os.path.join(resources_dir, "1.png")
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -640,7 +640,7 @@ class TestVideoService(unittest.TestCase):
     def test_combine_videos_closes_audio_clip_when_duration_read_fails(self):
         """
         `combine_videos()` All you have to do is read the voice. Even if you read it. duration
-        There's been an anomaly. We have to shut it down. AudioFileClip，Avoid leaking file handles.
+        There's been an anomaly. We have to shut it down. AudioFileClip, Avoid leaking file handles.
         """
 
         class _FakeAudioReader:
@@ -727,7 +727,7 @@ class TestVideoService(unittest.TestCase):
 
             def subclipped(self, start_time, end_time):
                 # Only the extent to which you can read directly from the source file is recorded. The security shears will also be called.
-                # subclipped，However, it does not represent a new source period and cannot be confused with a fault judgement.
+                # subclipped, However, it does not represent a new source period and cannot be confused with a fault judgement.
                 if self.records_source_range:
                     source_ranges.append((start_time, end_time))
                 return _FakeVideoClip(end_time - start_time)

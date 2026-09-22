@@ -75,7 +75,7 @@ fps = 30
 _VIDEO_DURATION_SAFETY_MARGIN = 0.1
 _MIN_MATERIAL_DIMENSION = 480
 # Message applications and partial encoders take the image down, for example. WhatsApp Yes. 9:16 Yes.
-# Material pressured. 478x850，That's right. 480 Two pixels less. Press directly 480 The hard card will get all this stuff.
+# Material pressured. 478x850, That's right. 480 Two pixels less. Press directly 480 The hard card will get all this stuff.
 # Drop it and finally... "no valid materials found" Total failure. Here's a very small difference.
 # The release of material that is slightly below the threshold merely because it is fine-tuned still holds back the real low-level material.
 _MIN_DIMENSION_TOLERANCE = 10
@@ -106,8 +106,8 @@ def is_material_resolution_acceptable(width: int, height: int) -> bool:
     """
     Determines whether the material resolution is sufficient for synthesis.
 
-    Named Minimum 480x480，But it's allowed lower. `_MIN_DIMENSION_TOLERANCE` A pixel,
-    To Compatible Encoder/The message should be taken down (e.g. WhatsApp Yes. 478x850）。
+    Named Minimum 480x480, But it's allowed lower. `_MIN_DIMENSION_TOLERANCE` A pixel,
+    To Compatible Encoder/The message should be taken down (e.g. WhatsApp Yes. 478x850).
     """
     min_dimension = _MIN_MATERIAL_DIMENSION - _MIN_DIMENSION_TOLERANCE
     return width >= min_dimension and height >= min_dimension
@@ -160,9 +160,9 @@ def get_ffmpeg_binary():
     """
     From history. video Service Reading FFmpeg path.
 
-    The real resolution logic has been drawn. `app.utils.utils.get_ffmpeg_binary()`，Video, voice
+    The real resolution logic has been drawn. `app.utils.utils.get_ffmpeg_binary()`, Video, voice
     The same set of priorities should be used for both subsequent new links; this should be kept in thin packaging to avoid external scripts or
-    Old Test Direct Import `app.services.video.get_ffmpeg_binary` It happens. AttributeError。
+    Old Test Direct Import `app.services.video.get_ffmpeg_binary` It happens. AttributeError.
     """
     return utils.get_ffmpeg_binary()
 
@@ -192,8 +192,8 @@ def _ffmpeg_encoder_exists(ffmpeg_binary: str, codec: str) -> bool:
     """
     Check Current FFmpeg Whether or not to declare support for the specified encoder.
 
-    That's proof. FFmpeg Include the encoder，Can't prove current machine hardware and drive
-    It's got to work. So if the actual code fails, it's still back. libx264。
+    That's proof. FFmpeg Include the encoder, Can't prove current machine hardware and drive
+    It's got to work. So if the actual code fails, it's still back. libx264.
     """
     try:
         result = subprocess.run(
@@ -293,7 +293,7 @@ def _write_videofile_with_codec_fallback(clip, output_file: str, codec: str, **k
     """
     Write video using the specified encoder, automatically when failed libx264 Try again.
 
-    The availability of the hardware encoder depends not only on FFmpeg，It also depends on the graphic card, the driver and the current operating environment.
+    The availability of the hardware encoder depends not only on FFmpeg, It also depends on the graphic card, the driver and the current operating environment.
     The generation of tasks cannot fail as a whole because the advanced encoder is not available, so here you can return to focus.
     """
     effective_codec = _get_effective_video_codec(codec)
@@ -323,7 +323,7 @@ def _format_ffmpeg_concat_path(file_path: str) -> str:
 
     FFmpeg Official documentation requirements concat list Special characters and spaces in them need to be converted;Windows
     A backslash in an absolute path is also easy to interpret to a transliteration character. Here's a uniform slash.
-    Jean. `C:\\Users\\...` ♪ Turn into ♪ `C:/Users/...`，Reprocess single quotes, compatible. macOS/Linux。
+    Jean. `C:\\Users\\...` ♪ Turn into ♪ `C:/Users/...`, Reprocess single quotes, compatible. macOS/Linux.
     """
     absolute_path = os.path.abspath(file_path)
     return _escape_ffmpeg_concat_path(absolute_path.replace("\\", "/"))
@@ -400,7 +400,7 @@ def _sanitize_image_file(image_path: str) -> str:
 
     with Image.open(image_path) as image:
         image.load()
-        # Harmonize Export As PNG，Avoid JPEG/PNG Different metadata paths continue to bring the bad pieces over.
+        # Harmonize Export As PNG, Avoid JPEG/PNG Different metadata paths continue to bring the bad pieces over.
         cleaned_image = Image.new(image.mode, image.size)
         cleaned_image.putdata(list(image.getdata()))
         cleaned_image.save(sanitized_path)
@@ -422,17 +422,17 @@ def _open_image_clip_with_fallback(image_path: str):
 
 def _open_video_clip_quietly(video_path: str, audio: bool = False) -> VideoFileClip:
     """
-    Open video files quietly, avoid. MoviePy 2.1.x Put ffmpeg Detection information printed directly to stdout。
+    Open video files quietly, avoid. MoviePy 2.1.x Put ffmpeg Detection information printed directly to stdout.
 
     Background:
     Current version-dependent `FFMPEG_VideoReader` Internal presence `print(self.infos)` and
-    `print(ffmpeg command)`，Output when reading an intermediate video without track
-    `audio_found: False`。It's just input material. metadata，It doesn't mean there's no audio in the end.
+    `print(ffmpeg command)`, Output when reading an intermediate video without track
+    `audio_found: False`. It's just input material. metadata, It doesn't mean there's no audio in the end.
     But it's misleading. WebUI/The end user thinks the generation failed.
 
     Achieved:
-    1. Only open VideoFileClip Redirect within short windows stdout；
-    2. Default `audio=False`，The project's video content phase does not need to keep the originals.
+    1. Only open VideoFileClip Redirect within short windows stdout;
+    2. Default `audio=False`, The project's video content phase does not need to keep the originals.
        And eventually, the audio will be... `generate_video()` Unified stage mount;
     3. If relying on the library does output content, downgrade it to debug Logs, allowing for check-ups, if necessary.
     """
@@ -493,7 +493,7 @@ def delete_files(files: List[str] | str):
 
     # When recycles the video, the same temporary segment path will be FFmpeg The spell list appears repeatedly.
     # Collapse must keep duplicate entries, but clean-up can only be deleted once; here the weight should be done in the same order, so that all
-    # Callers get behaviors like thorium and avoid first-time deletion and successive output FileNotFoundError。
+    # Callers get behaviors like thorium and avoid first-time deletion and successive output FileNotFoundError.
     unique_files = dict.fromkeys(file for file in files if file)
     for file in unique_files:
         try:
@@ -526,7 +526,7 @@ def get_bgm_file(bgm_type: str = "random", bgm_file: str = ""):
 
     if bgm_type == "random":
         files = bgm_service.list_bgm_files()
-        # When background music directories are empty, go back to 'no' BGM”，Avoid random.choice([]) Drop the anomaly.
+        # When background music directories are empty, go back to 'no' BGM”, Avoid random.choice([]) Drop the anomaly.
         if not files:
             logger.warning("no background music files found")
             return ""
@@ -549,7 +549,7 @@ def combine_videos(
     audio_clip = AudioFileClip(audio_file)
     try:
         # All we have to do here is read the adhesive audio to determine the length of the material's video fusion; it won't be used again.
-        # audio_clip。Closes immediately after reading has been completed to avoid early retreat or an abnormal path leaking the file handle.
+        # audio_clip. Closes immediately after reading has been completed to avoid early retreat or an abnormal path leaking the file handle.
         audio_duration = audio_clip.duration
     finally:
         close_clip(audio_clip)
@@ -783,7 +783,7 @@ def wrap_text(text, max_width, font="Arial", fontsize=60):
     def split_long_token(token):
         # ♪ When one ♪ token It is a very broad time in itself (often in Chinese without spaces, or in English with a long word).
         # Declines to character level splits. The key point is: detected candidate When it's too wide, submit the last one.
-        # It's still legal. current，If you insert the current character in the next line, you cannot insert the hyperwide character back into the previous line.
+        # It's still legal. current, If you insert the current character in the next line, you cannot insert the hyperwide character back into the previous line.
         lines = []
         current = ""
         for char in token:
@@ -821,7 +821,7 @@ def wrap_text(text, max_width, font="Arial", fontsize=60):
     if current:
         lines.append(current)
 
-    line_start_punctuation = "，。！？；：、,.!?;:)]}）】》」』”’"
+    line_start_punctuation = ",.!?;:)]}”’"
     for index in range(1, len(lines)):
         # When the Chinese long sentence is divided by character, the last closed point, such as period, commas, may be separated
         # Put it in the next line, which leads to an abnormally high subtitling background.
@@ -887,7 +887,7 @@ def _get_visible_center_position(
     MoviePy Yes. TextClip It's fine by font line. baseline Creates a transparent canvas. A lot of fonts.
     Visible fonts are not at the geometry center of this canvas. `with_position("center")`
     It puts the whole picture of transparency in the middle, causing the subtitles to look up or down. Read here TextClip
-    Transparency mask，Based on actual pixels. bbox Calculating text offsets for viewing by users
+    Transparency mask, Based on actual pixels. bbox Calculating text offsets for viewing by users
     Visualization in the subtitle background.
     """
     x = int(round((container_width - text_clip.w) / 2))
@@ -979,8 +979,8 @@ def generate_video(
     """
     Synthesizes the final video and returns the success of this background music processing.
 
-    Return value only BGM Processing status: No request BGM returns when mixed successfully True；Please.
-    BGM But return when loading, effects or mixing failed False。Even BGM If you fail, you continue to export only
+    Return value only BGM Processing status: No request BGM returns when mixed successfully True; Please.
+    BGM But return when loading, effects or mixing failed False. Even BGM If you fail, you continue to export only
     Narrative video that allows the task group to decide whether or not to display a downgrade warning to the user.
     """
     aspect = VideoAspect(params.video_aspect)
@@ -1165,8 +1165,8 @@ def generate_video(
             _clip = _clip.with_position(("center", "center"))
         return _clip
 
-    # MoviePy Yes. CompositeAudioClip.close() It won't shut down. AudioFileClip。Here.
-    # ExitStack Obvious holding of all original files reader，Make sure it works. Subtitles are abnormal.
+    # MoviePy Yes. CompositeAudioClip.close() It won't shut down. AudioFileClip. Here.
+    # ExitStack Obvious holding of all original files reader, Make sure it works. Subtitles are abnormal.
     # You can release any path such as video writing failure. FFmpeg Subprocess, especially avoid Windows The file is occupied.
     with ExitStack() as clip_stack:
         source_video_clip = clip_stack.enter_context(
@@ -1212,7 +1212,7 @@ def generate_video(
             )
 
         # The provider ' s play can be fed directly into the corresponding document at the task hierarchy.None Means following random/Custom
-        # BGM Parsing, empty string explicitly disables this article BGM；But any source must first adopt the generic volume rule.
+        # BGM Parsing, empty string explicitly disables this article BGM; But any source must first adopt the generic volume rule.
         bgm_file = ""
         if bgm_enabled:
             bgm_file = (
@@ -1249,7 +1249,7 @@ def generate_video(
 
         final_video_clip = video_clip.with_audio(audio_clip)
         clip_stack.callback(final_video_clip.close)
-        # Visibility follows the input audio sampling rate; if not available, back MoviePy Default 44100Hz。
+        # Visibility follows the input audio sampling rate; if not available, back MoviePy Default 44100Hz.
         # This will reduce the number of different environments. Docker .
         output_audio_fps = int(getattr(audio_clip, "fps", 0) or 44100)
         _write_videofile_with_codec_fallback(
@@ -1329,7 +1329,7 @@ def preprocess_video(materials: List[MaterialInfo], clip_duration=4):
 
             if ext in const.FILE_TYPE_IMAGES:
                 logger.info(f"processing image: {material_source_path}")
-                # We've already opened the material once when we're detecting the dimensions. clip。
+                # We've already opened the material once when we're detecting the dimensions. clip.
                 close_clip(clip)
                 # Create an image clip and set its duration to 3 seconds
                 clip = (

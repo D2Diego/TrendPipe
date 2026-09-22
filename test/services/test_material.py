@@ -424,7 +424,7 @@ class TestMaterialTlsVerification(unittest.TestCase):
 
     def test_search_pixabay_reports_cloudflare_challenge(self):
         """
-        Cloudflare Challenge Return HTML，Nope. Pixabay API Yes. JSON。
+        Cloudflare Challenge Return HTML, Nope. Pixabay API Yes. JSON.
         The reason for the end-of-service interception should be indicated directly, so that users do not see anything but context. JSON Parsing error.
         """
         config.app["pixabay_api_keys"] = ["pixabay-secret-key"]
@@ -481,8 +481,8 @@ class TestMaterialTlsVerification(unittest.TestCase):
 
     def test_search_pixabay_reports_non_json_response(self):
         """
-        Even if the status code is 200，Upstream agents may also return login or other non-existent JSON Content.
-        The scene should record the type of response, not the bottom exposure. JSONDecodeError。
+        Even if the status code is 200, Upstream agents may also return login or other non-existent JSON Content.
+        The scene should record the type of response, not the bottom exposure. JSONDecodeError.
         """
         config.app["pixabay_api_keys"] = ["pixabay-key"]
         config.proxy.clear()
@@ -509,7 +509,7 @@ class TestMaterialTlsVerification(unittest.TestCase):
 
     def test_search_pixabay_redacts_api_key_from_network_error(self):
         """
-        requests The connection anomaly is likely to echo the complete request. URL。The unusual details should still be kept for screening.
+        requests The connection anomaly is likely to echo the complete request. URL. The unusual details should still be kept for screening.
         But... URL Among query parameters Pixabay API Key You must be allergic before writing to the log.
         """
         api_key = "pixabay-secret-key"
@@ -533,7 +533,7 @@ class TestMaterialTlsVerification(unittest.TestCase):
 
     def test_search_pixabay_redacts_proxy_credentials_from_network_error(self):
         """
-        The proxy connection abnormally may redisclose the complete agent with authentication information URL。The log should keep the unusual type.
+        The proxy connection abnormally may redisclose the complete agent with authentication information URL. The log should keep the unusual type.
         However, proxy user names and passwords cannot be permanently translated into log files.
         """
         proxy_url = "http://proxy-user:proxy-password@proxy.example.com:8080"
@@ -586,7 +586,7 @@ class TestMaterialTlsVerification(unittest.TestCase):
         """
         download_videos Could be passed directly into string mode by service level or test instead of
         VideoConcatMode Enumerate. Use empty search words to avoid real network requests, only verify
-        String "random" No more interviews. `.value` Throw! AttributeError。
+        String "random" No more interviews. `.value` Throw! AttributeError.
         """
         result = material.download_videos(
             task_id="string-concat-mode",
@@ -794,8 +794,8 @@ class TestMaterialTlsVerification(unittest.TestCase):
 
 class TestCoverrProvider(unittest.TestCase):
     """
-    Coverr Video material source(spec: 2026-06-09-coverr-video-provider-design.md)。
-    Use All unittest.mock Replace requests，Ensure CI It doesn't depend on real networks and reality. API key。
+    Coverr Video material source(spec: 2026-06-09-coverr-video-provider-design.md).
+    Use All unittest.mock Replace requests, Ensure CI It doesn't depend on real networks and reality. API key.
     """
 
     def setUp(self):
@@ -812,11 +812,11 @@ class TestCoverrProvider(unittest.TestCase):
 
     def test_search_coverr_uses_mp4_download_url(self):
         """
-        search_videos_coverr ♪ Should take every one ♪ hit Convert MaterialInfo，And put urls.mp4_download
-        Directly acting MaterialInfo.url。
+        search_videos_coverr ♪ Should take every one ♪ hit Convert MaterialInfo, And put urls.mp4_download
+        Directly acting MaterialInfo.url.
         Press Coverr Official documents (api.coverr.co/docs/videos/#download-a-video),
-        GET mp4_download It's all about itself. Coverr Include download statistics,No extra. PATCH ping。
-        Authentication both Authorization header Use Bearer scheme。
+        GET mp4_download It's all about itself. Coverr Include download statistics,No extra. PATCH ping.
+        Authentication both Authorization header Use Bearer scheme.
         """
         config.app["coverr_api_keys"] = ["coverr-key"]
         config.app.pop("tls_verify", None)

@@ -6,7 +6,7 @@ export function estimateVoiceoverDurationRange(text: string, voiceRate: number):
   const scriptChars = normalized.match(/[\u3400-\u4dbf\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af]/g) || [];
   const remaining = normalized.replace(/[\u3400-\u4dbf\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af]/g, " ");
   const words = remaining.match(/\b[\p{L}\p{N}_]+(?:[-'’][\p{L}\p{N}_]+)*\b/gu) || [];
-  const punctuation = normalized.match(/[,，.。!?！？;；:：]/g) || [];
+  const punctuation = normalized.match(/[,.!?;:]/g) || [];
   const baseSeconds = scriptChars.length / 4.2 + words.length / 2.6 + punctuation.length * 0.12;
   if (baseSeconds <= 0) return null;
   const seconds = baseSeconds / Math.max(Number(voiceRate) || 1, 0.1);

@@ -311,7 +311,7 @@ class TestSoniloService(unittest.TestCase):
                     )
 
     def test_stream_audio_rejects_error_empty_and_oversized_results(self):
-        """Service error, event completion and ultrasound are not valid for release BGM。"""
+        """Service error, event completion and ultrasound are not valid for release BGM. """
         oversized_chunk = base64.b64encode(b"1234").decode()
         cases = [
             ([_event("error", message="credit exhausted")], "credit exhausted"),
@@ -373,7 +373,7 @@ class TestSoniloService(unittest.TestCase):
             self.assertEqual(list(Path(temp_dir).glob(".sonilo-audio-*")), [])
 
     def test_request_bgm_preserves_existing_output_and_cleans_temp_on_failures(self):
-        """HTTP、Neither reading nor audio verification failures can cover the results or leave semi-finished products."""
+        """HTTP, Neither reading nor audio verification failures can cover the results or leave semi-finished products."""
         audio_event = _event(
             "audio_chunk",
             stream_index=0,
@@ -499,7 +499,7 @@ class TestSoniloService(unittest.TestCase):
                     )
 
     def test_generate_bgm_rejects_missing_key_and_input_before_proxy_work(self):
-        """Failure quickly when documents are missing or entered, cannot be called FFmpeg Or outside. API。"""
+        """Failure quickly when documents are missing or entered, cannot be called FFmpeg Or outside. API. """
         with tempfile.TemporaryDirectory() as temp_dir:
             source = Path(temp_dir) / "source.mp4"
             source.write_bytes(b"video")

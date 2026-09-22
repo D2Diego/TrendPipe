@@ -269,7 +269,7 @@ class TestElevenLabsMusicService(unittest.TestCase):
         self.assertIn("inconclusive", str(warning.call_args))
 
     def test_connection_rejects_free_plan_before_music_generation(self):
-        """Free package not supported Music API，Clear errors should be given before uploading the video."""
+        """Free package not supported Music API, Clear errors should be given before uploading the video."""
         response = _StreamingResponse(payload={"tier": "free"})
         with (
             patch.object(
@@ -443,8 +443,8 @@ class TestElevenLabsMusicService(unittest.TestCase):
                 post.call_args.kwargs["params"]["output_format"],
                 "mp3_44100_128",
             )
-            # Actual receipt of production interfaces ``videos``；Using document examples ``videos[]`` Yes.
-            # Back 422 Field required，So you test the real available protocol fields.
+            # Actual receipt of production interfaces ``videos``; Using document examples ``videos[]`` Yes.
+            # Back 422 Field required, So you test the real available protocol fields.
             self.assertEqual(post.call_args.kwargs["files"][0][0], "videos")
             self.assertEqual(post.call_args.kwargs["stream"], True)
             self.assertEqual(

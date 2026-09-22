@@ -86,7 +86,7 @@ class TestSubtitleService(unittest.TestCase):
         Whisper fallback The rectification phase must also be ignored. `---` Such a non-speakable script line.
 
         If we keep it here, Markdown Separator,`correct()` Think of more script lines than
-        Subtitles, line count and add `00:00:00,000 --> 00:00:00,000`，The editing software will put
+        Subtitles, line count and add `00:00:00,000 --> 00:00:00,000`, The editing software will put
         Generated SRT Determines that it is not importable.
         """
         original_srt = (

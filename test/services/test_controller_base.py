@@ -25,7 +25,7 @@ class TestControllerAuthentication(unittest.TestCase):
     def test_get_task_id_reuses_header_or_generates_uuid(self):
         """
         Client-provided request ID , and when missing generate logs and
-        In error response UUID，Ensure that both access points are traceable.
+        In error response UUID, Ensure that both access points are traceable.
         """
         self.assertEqual(
             base.get_task_id(self._request({"x-task-id": "request-123"})),
@@ -46,7 +46,7 @@ class TestControllerAuthentication(unittest.TestCase):
 
     def test_verify_token_rejects_missing_or_wrong_key(self):
         """
-        Missing and wrong API Key All must return. 401，and keep the client request ID，
+        Missing and wrong API Key All must return. 401, and keep the client request ID,
         Avoiding defaults in the log cannot match calls.
         """
         config.app["api_key"] = "secret"

@@ -79,7 +79,7 @@ class TestConfigPersistence:
 
     def test_save_config_uses_parseable_atomic_output(self):
         """
-        Configure to save a temporary file before replacing the atom. The test also confirms that the output is still valid. TOML，
+        Configure to save a temporary file before replacing the atom. The test also confirms that the output is still valid. TOML,
         Other Organiser
         """
         original_cfg = dict(config._cfg)

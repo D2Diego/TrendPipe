@@ -72,7 +72,7 @@ class TestTaskArtifacts(unittest.TestCase):
         self.assertEqual(payload["params"]["video_source"], "pexels")
 
     def test_patch_missing_script_is_non_blocking(self):
-        """Independent call materials download without a list of tasks and should skip silently rather than create gaps JSON。"""
+        """Independent call materials download without a list of tasks and should skip silently rather than create gaps JSON. """
         updated = task_artifacts.patch_script_data(
             "standalone",
             material_sources=[],

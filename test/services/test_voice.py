@@ -54,8 +54,8 @@ class TestVoiceService(unittest.TestCase):
 
     def test_get_all_azure_voices(self):
         voices = vs.get_all_azure_voices()
-        # Data moved from inline string to azure_voices.json，Make sure it's still fully loaded.
-        self.assertEqual(len(voices), 331)
+        # Data moved from inline string to azure_voices.json, Make sure it's still fully loaded.
+        self.assertEqual(len(voices), 316)
         # The result should read "Name-Gender" Formatted and Sorted
         self.assertEqual(voices, sorted(voices))
         for v in voices:
@@ -70,8 +70,8 @@ class TestVoiceService(unittest.TestCase):
 
     def test_no_voice_tts_generates_silent_audio_and_subtitle_timeline(self):
         """
-        No voice mode without calling any externals TTS provider，Only silent audio is generated as a time axis.
-        Here. mock FFmpeg，Validate request parameters, output files legacy Subtitles are structured to follow.
+        No voice mode without calling any externals TTS provider, Only silent audio is generated as a time axis.
+        Here. mock FFmpeg, Validate request parameters, output files legacy Subtitles are structured to follow.
         Video synthesis link expected.
         """
 
@@ -103,8 +103,8 @@ class TestVoiceService(unittest.TestCase):
 
     def test_get_audio_duration_accepts_non_mp3_files(self):
         """
-        Custom Audio custom_audio_file）Commonly m4a/wav/aac Wait! mp3 format.
-        get_audio_duration The extension should not be .mp3 Report. "Invalid target type" And back 0，
+        Custom Audio custom_audio_file) Commonly m4a/wav/aac Wait! mp3 format.
+        get_audio_duration The extension should not be.mp3 Report. "Invalid target type" And back 0,
         And it should be delivered. moviepy(ffmpeg) Read the real time.
         """
         for path in ("custom-audio.m4a", "voice.wav", "clip.aac"):
@@ -115,14 +115,14 @@ class TestVoiceService(unittest.TestCase):
                 mock_afc.assert_called_once_with(path)
 
     def test_get_audio_duration_missing_file_returns_zero(self):
-        """Return safely when audio files do not exist 0，Not to throw an anomaly or read a failure."""
+        """Return safely when audio files do not exist 0, Not to throw an anomaly or read a failure."""
         with patch.object(vs.os.path, "exists", return_value=False):
             self.assertEqual(vs.get_audio_duration("does-not-exist.m4a"), 0.0)
 
     def test_no_voice_alias_none_is_supported_temporarily(self):
         """
-        Compatibility PR #981 Used none sentinel，Avoid a few direct calls API Other Organiser
-        The upgrade will expire immediately. New UI Still using the new code. no-voice。
+        Compatibility PR #981 Used none sentinel, Avoid a few direct calls API Other Organiser
+        The upgrade will expire immediately. New UI Still using the new code. no-voice.
         """
         self.assertTrue(vs.is_no_voice("none"))
         self.assertTrue(vs.is_no_voice(vs.NO_VOICE_NAME))
@@ -243,7 +243,7 @@ class TestVoiceService(unittest.TestCase):
         This is the same scene. Windows After the package upgrade failed, the scene was still in the old version.
         edge_tts Situation:
         1. `Communicate.__init__()` Not accepted `boundary`
-        2. It's just a walk. `stream()`，Nothing. `stream_sync()`
+        2. It's just a walk. `stream()`, Nothing. `stream_sync()`
         """
 
         class _LegacyCommunicate:
@@ -295,8 +295,8 @@ class TestVoiceService(unittest.TestCase):
 
         On the real scene, network anomalies, service restrictions,voice If the language does not match the text, it will not be possible.
         `stream_sync()` Possible prolonged non-return, resulting in WebUI The mission has been stopped.
-        `start, voice name...`。It's blocked here. fake stream It's the same thing.
-        Confirm that overtime protection ends and returns the function None。
+        `start, voice name...`. It's blocked here. fake stream It's the same thing.
+        Confirm that overtime protection ends and returns the function None.
         """
 
         class _HangingCommunicate:
@@ -368,7 +368,7 @@ class TestVoiceService(unittest.TestCase):
         self.loop.run_until_complete(_do())
 
     def test_azure_tts_v2_ssml_applies_rate_and_escapes_text(self):
-        """Azure V2 It must be passed. SSML Use of terms quickly and avoid destruction of user files XML。"""
+        """Azure V2 It must be passed. SSML Use of terms quickly and avoid destruction of user files XML. """
         ssml = vs._build_azure_v2_ssml(
             text='A < B & "quoted"',
             voice_name="zh-CN-XiaoxiaoMultilingualNeural",
@@ -380,7 +380,7 @@ class TestVoiceService(unittest.TestCase):
         self.assertIn("A &lt; B &amp; \"quoted\"", ssml)
 
     def test_tts_forwards_rate_to_azure_v2(self):
-        """Harmonization TTS The entrance cannot be distributed. Azure V2 Time lost voice_rate。"""
+        """Harmonization TTS The entrance cannot be distributed. Azure V2 Time lost voice_rate. """
         voice_name = "zh-CN-XiaoxiaoMultilingualNeural-V2-Female"
         with patch.object(vs, "azure_tts_v2", return_value=object()) as mock_tts:
             result = vs.tts(
@@ -402,7 +402,7 @@ class TestVoiceService(unittest.TestCase):
         """
         Authentication Gemini TTS Yes. edge_tts 7.x The project's subtitling structure is still in place in the environment.
         And can be... `subtitle_provider=edge` It's a direct consumption of subtitles.
-        Avoid retreating again Whisper。Use also non-existent embedded output directories, overwrite API or
+        Avoid retreating again Whisper. Use also non-existent embedded output directories, overwrite API or
         CLI Borders that do not create task catalogues in advance when directly calling.
         """
 
@@ -500,8 +500,8 @@ class TestVoiceService(unittest.TestCase):
         """
         Authentication Xiaomi MiMo TTS It can be consumed. OpenAI-compatible The audio response structure.
 
-        Here. fake OpenAI client and fake AudioSegment Overwrite Real Network with ffmpeg，
-        Confirms that running time code will put the text to be synthesized assistant message，And they're going back.
+        Here. fake OpenAI client and fake AudioSegment Overwrite Real Network with ffmpeg,
+        Confirms that running time code will put the text to be synthesized assistant message, And they're going back.
         base64 WAV Audio is exported to the audio file used in the project follow-up process.
         """
 
@@ -734,7 +734,7 @@ class TestVoiceService(unittest.TestCase):
     def test_generate_subtitle_keeps_edge_provider_for_gemini_legacy_submaker(self):
         """
         Authentication Gemini TTS Returned legacy Subtitle structure edge provider Direct output
-        SRT，It's not like it's a match failure. Whisper。
+        SRT, It's not like it's a match failure. Whisper.
         """
         script = "Gemini subtitle generation should work now. Testing multiple lines."
         sub_maker = vs.populate_legacy_submaker_with_full_text(
@@ -772,7 +772,7 @@ class TestVoiceService(unittest.TestCase):
         """
         Edge TTS Yes. "1,000 years" returns as consecutive text. You can't take a script when it's off.
         The English commas in the middle of the numbers will be the sentence boundary, otherwise the subtitles will come together. issue #894
-        Lee. sub_items Number less script_lines，And wrongly back Whisper。
+        Lee. sub_items Number less script_lines, And wrongly back Whisper.
         """
         text = (
             "It takes about 1,000 years for a single drop of water to finish "
@@ -792,7 +792,7 @@ class TestVoiceService(unittest.TestCase):
     def test_edge_cue_aggregation_handles_thousand_separator_comma(self):
         """
         Revert issue #894 Critical form:Edge cues The last sentence returns as consecutive text.
-        Organisation `1,000 years`。Script break must be cues The condensation is the same.
+        Organisation `1,000 years`. Script break must be cues The condensation is the same.
         Break two subtitles.
         """
         text = (
@@ -857,7 +857,7 @@ class TestVoiceService(unittest.TestCase):
     def test_edge_cue_aggregation_handles_arabic_variant_forms(self):
         """
         Original Arabic subtitle failed core path: script contains أ/ة The letter form,edge cue
-        Back ا/ه And when it's normalized, aggregates should produce complete subtitles and avoid retreating. Whisper。
+        Back ا/ه And when it's normalized, aggregates should produce complete subtitles and avoid retreating. Whisper.
         """
         text = "أهلاً وسهلاً بك في المدرسة؟ هذا اختبار رائع، شكراً لك."
         script_lines = utils.split_string_by_punctuations(text)
@@ -887,7 +887,7 @@ class TestVoiceService(unittest.TestCase):
         """
         User Manual Script may contain `---` This one. Markdown separator.TTS Can't read.
         These symbol lines, subtitling, or subtitling, should not be used as target subtitles.
-        The subtitles are stuck and back. Whisper。
+        The subtitles are stuck and back. Whisper.
         """
         text = "First paragraph\n---\n Second paragraph"
         sub_maker = SimpleNamespace(
@@ -923,7 +923,7 @@ class TestVoiceService(unittest.TestCase):
     def test_create_subtitle_ignores_markdown_underscore_marks(self):
         """
         `_` Often used by users Markdown Emphasis on marking, but TTS Returned cue Usually not included
-        These formatholders. Ignore when matching `_`，Avoid creating empty subtitles or retreating back Whisper。
+        These formatholders. Ignore when matching `_`, Avoid creating empty subtitles or retreating back Whisper.
         """
         text = "This is..._a_Test."
         sub_maker = SimpleNamespace(
@@ -961,7 +961,7 @@ class TestVoiceService(unittest.TestCase):
         self.assertEqual(vs.convert_rate_to_percent(0.8), "-20%")
 
     def test_convert_rate_to_percent_invalid_values_default_to_normal(self):
-        # API And batches of scripts might be able to pass the word out. 0、None or empty strings; none of these should be allowed
+        # API And batches of scripts might be able to pass the word out. 0, None or empty strings; none of these should be allowed
         # edge-tts Copy that. -100% Or trigger an anomaly, but be processed at normal speed.
         self.assertEqual(vs.convert_rate_to_percent(0), "+0%")
         self.assertEqual(vs.convert_rate_to_percent(0.0), "+0%")

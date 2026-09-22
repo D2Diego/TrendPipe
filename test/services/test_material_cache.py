@@ -59,7 +59,7 @@ class TestMaterialSearchCache(unittest.TestCase):
     def test_cache_round_trip_preserves_material_fields(self):
         """
         The disk cache must be able to recover across process. MaterialInfo All fields needed, not just caches URL
-        Lost after provider or duration，This has led to a change in the behaviour of subsequent downloads and time calculations.
+        Lost after provider or duration, This has led to a change in the behaviour of subsequent downloads and time calculations.
         """
         saved = material_cache.save_material_search_cache(
             provider="pixabay",
@@ -94,7 +94,7 @@ class TestMaterialSearchCache(unittest.TestCase):
     def test_expired_cache_is_removed_and_treated_as_miss(self):
         """
         Pixabay Request maximum reuse of search results 24 Hours. The expired documents must immediately expire and be deleted.
-        Prevention of old material URL Infinite re-use and avoid the continued accumulation of cache directories. JSON。
+        Prevention of old material URL Infinite re-use and avoid the continued accumulation of cache directories. JSON.
         """
         material_cache.save_material_search_cache(
             provider="pixabay",
@@ -206,7 +206,7 @@ class TestMaterialSearchCache(unittest.TestCase):
         self.assertNotIn("token=drop", raw_payload)
 
     def test_coverr_signed_urls_are_never_cached(self):
-        """Coverr Download Address Contains Signature JWT，Cannot enter disk caches that can be kept for long."""
+        """Coverr Download Address Contains Signature JWT, Cannot enter disk caches that can be kept for long."""
         item = self._item(
             "https://storage.coverr.co/video/download?token=signed-jwt"
         )

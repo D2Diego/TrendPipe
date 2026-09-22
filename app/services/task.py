@@ -55,7 +55,7 @@ _CROSS_POST_STATE_RETRY_DELAY_SECONDS = 0.1
 _INTERRUPTED_CROSS_POST_ERROR = (
     "cross-posting was interrupted before the process completed"
 )
-# The video chorus service just needs to be achieved. ``is_enabled`` and ``generate_bgm``。Vendor differences are concentrated
+# The video chorus service just needs to be achieved. ``is_enabled`` and ``generate_bgm``. Vendor differences are concentrated
 # File extensions, field anomalies and WebUI Warning code; tasking,0 Audio short circuit and failure downgrade
 # Reuse the same path for all and maintain multiple similar processes while avoiding subsequent additions.
 _VIDEO_MUSIC_PROVIDERS = {
@@ -81,7 +81,7 @@ def _get_video_music_prompt(params: VideoParams) -> str:
     Read the tips actually used by the current video mixer provider.
 
     New mandates used vendor-neutral fields uniformly; old Sonilo CLI Parameters and historical tasks may still be limited
-    ``sonilo_bgm_prompt``，So only Sonilo Generic fields are empty to read old fields.
+    ``sonilo_bgm_prompt``, So only Sonilo Generic fields are empty to read old fields.
     """
     prompt = str(params.video_music_prompt or "").strip()
     if params.bgm_type == "sonilo" and not prompt:
@@ -110,13 +110,13 @@ def is_task_busy(task: dict | None) -> bool:
 
 
 def _register_cross_post_future(task_id: str, future: Future) -> None:
-    """Registration of issuances held by the current process Future，To start recovery and test the real state of operation."""
+    """Registration of issuances held by the current process Future, To start recovery and test the real state of operation."""
     with _cross_post_registry_lock:
         _cross_post_futures[task_id] = future
 
 
 def _unregister_cross_post_future(task_id: str, future: Future | None = None) -> None:
-    """Remove only matching Future，To avoid old calls and deletions of new jobs that follow the mission."""
+    """Remove only matching Future, To avoid old calls and deletions of new jobs that follow the mission."""
     with _cross_post_registry_lock:
         current = _cross_post_futures.get(task_id)
         if current is None or (future is not None and current is not future):
@@ -140,7 +140,7 @@ def _is_windows_process_alive(process_id: int) -> bool:
     error_access_denied = 5
     error_invalid_parameter = 87
     kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
-    # ctypes Default return value not declared 32 bit int。Windows 64 Bit Process Thread Potential
+    # ctypes Default return value not declared 32 bit int. Windows 64 Bit Process Thread Potential
     # So it was cut off and it had to be clearly stated. Win32 function.
     kernel32.OpenProcess.argtypes = [ctypes.c_ulong, ctypes.c_int, ctypes.c_ulong]
     kernel32.OpenProcess.restype = ctypes.c_void_p
@@ -202,13 +202,13 @@ def _is_cross_post_owner_alive(owner: str | None) -> bool:
         return True
 
     # Whether there is still real publishing work in the current process, has been Future The registration form is accurate. Run To
-    # This means there's no match on the register. Future，Even owner It is fully consistent with the current process and should also
+    # This means there's no match on the register. Future, Even owner It is fully consistent with the current process and should also
     # considered interrupted; this covers the final writing of continuing failure,Future End of scene.
     if process_id == os.getpid():
         return False
 
     # Windows Yes. os.kill(pid, 0) and POSIX Different semantics may directly terminate the target process.
-    # Use only search permissions Win32 API，No signal is sent to the target process.
+    # Use only search permissions Win32 API, No signal is sent to the target process.
     if os.name == "nt":
         return _is_windows_process_alive(process_id)
 
@@ -301,7 +301,7 @@ def generate_terms(task_id, params, video_script):
         )
     else:
         if isinstance(video_terms, str):
-            video_terms = [term.strip() for term in re.split(r"[,，]", video_terms)]
+            video_terms = [term.strip() for term in re.split(r"[,, ]", video_terms)]
         elif isinstance(video_terms, list):
             video_terms = [term.strip() for term in video_terms]
         else:
@@ -385,9 +385,9 @@ def _resolve_reusable_voice_preview(
     """
     Verify & Parsing WebUI Submits a full hearing cache.
 
-    The payload is not public. API Parameters, only from current process WebUI。Even so, backstage.
+    The payload is not public. API Parameters, only from current process WebUI. Even so, backstage.
     Re-check the file and all voice referencing parameters and limit the audio to the current task directory; any inconsistencies
-    Back to normal TTS，We can't allow the contamination of expired auditions to be officially filmed.
+    Back to normal TTS, We can't allow the contamination of expired auditions to be officially filmed.
     """
     if not voice_preview:
         return None
@@ -448,7 +448,7 @@ def generate_audio(task_id, params, video_script, voice_preview=None):
         - sub_maker: subtitle maker object if TTS is used, None otherwise
     """
     logger.info("\n\n## generating audio")
-    # /audio and /subtitle Request model not contained custom_audio_file，
+    # /audio and /subtitle Request model not contained custom_audio_file,
     # This is where you can read in a uniform manner, and you can avoid an error in dropping properties when you have a direct interface.
     requested_custom_audio_file = getattr(params, "custom_audio_file", None)
     try:
@@ -526,7 +526,7 @@ def generate_subtitle(task_id, params, video_script, sub_maker, audio_file):
         return ""
 
     if sub_maker is None and subtitle_provider != "whisper":
-        # Custom audio won't pass TTS，So no. Edge/Azure Wait. TTS Returned
+        # Custom audio won't pass TTS, So no. Edge/Azure Wait. TTS Returned
         # sub_maker Time axis. Only Whisper You can write subtitles directly from audio files.
         # Other subtitle providers continue to behave in such a way as to avoid creating the wrong empty axis of time.
         logger.warning(
@@ -541,7 +541,7 @@ def generate_subtitle(task_id, params, video_script, sub_maker, audio_file):
         )
         if not os.path.exists(subtitle_path):
             # Edge Subtitles are occasionally not produced because the timeline does not match the file. Not here.
-            # Auto Switch to Whisper，Otherwise the first failure will be downloaded without the user's knowledge. GB
+            # Auto Switch to Whisper, Otherwise the first failure will be downloaded without the user's knowledge. GB
             # The model. Only visible configuration Whisper It is not allowed to load models until now.Edge Keep failure
             # Videos without subtitles and recording of reasons to avoid unexpected network and disk charges.
             logger.warning(
@@ -651,7 +651,7 @@ def generate_final_videos(
         final_video_path = path.join(utils.task_dir(task_id), f"final-{index}.mp4")
 
         # Video playmate mode is explicitly disabled first BGM Parsing, avoiding old mission remnants. bgm_file By
-        # Misused. Only volume is greater 0 To generate agents and call for payments API；0 Volume uniform skips.
+        # Misused. Only volume is greater 0 To generate agents and call for payments API; 0 Volume uniform skips.
         bgm_file_override = "" if video_music_provider else None
         if video_music_requested:
             service = video_music_provider["service"]
@@ -671,7 +671,7 @@ def generate_final_videos(
                 bgm_file_override = generated_bgm_path
             except video_music_provider["error_type"] as exc:
                 # When videos, bystanders and subtitles are produced, the temporary failure of third-party chorus should not be wasted.
-                # Mission. Current video is explicitly disabled BGM，And return the downgrade. WebUI Synchronising folder
+                # Mission. Current video is explicitly disabled BGM, And return the downgrade. WebUI Synchronising folder
                 logger.warning(
                     f"{display_name} BGM generation failed: task_id={task_id}, "
                     f"video_index={index}, error={exc}"
@@ -718,7 +718,7 @@ def _patch_cross_post_state(task_id: str, **kwargs) -> bool | None:
         try:
             return sm.state.patch_task(task_id, **kwargs)
         except Exception as exc:
-            # Redis A brief break should not allow the mission to remain in place forever. pending/processing。Organisation
+            # Redis A brief break should not allow the mission to remain in place forever. pending/processing. Organisation
             # Writing is low, and there is a fixed number of times and short waiting to cover instant malfunctions, while
             # We need to avoid an unlimited backstage circuit. Last failed to keep the whole stack easily located.
             if attempt >= _CROSS_POST_STATE_WRITE_ATTEMPTS:
@@ -924,7 +924,7 @@ def _run_cross_post(
         if state_updated is False:
             logger.warning(f"discard cross-post result for missing task: {task_id}")
         elif state_updated is None:
-            # If upload is over but the result is not sustainable, it cannot be retained processing。
+            # If upload is over but the result is not sustainable, it cannot be retained processing.
             # The failure status writing will again undergo a limited retest, at least to give the caller a definitive finality.
             _record_cross_post_failure(
                 task_id,
@@ -995,7 +995,7 @@ def _schedule_cross_post(
     platforms: list[str],
     youtube_privacy_status: str,
 ) -> str | None:
-    """Submit background posting; return successfully None，Could not close temporary folder: %s"""
+    """Submit background posting; return successfully None, Could not close temporary folder: %s"""
     if not _cross_post_slots.acquire(blocking=False):
         error = "cross-post queue is full; publishing was skipped"
         logger.warning(
@@ -1050,7 +1050,7 @@ def _run_pipeline(
     sm.state.update_task(task_id, state=const.TASK_STATE_PROCESSING, progress=5)
 
     # Only a complete sequence requires a video-play provider. Stop the shortage as soon as possible Key The complete task, avoid.
-    # First consumption LLM、TTS and material service levels; intermediate interfaces remain stand-alone.
+    # First consumption LLM, TTS and material service levels; intermediate interfaces remain stand-alone.
     video_music_provider = _VIDEO_MUSIC_PROVIDERS.get(params.bgm_type)
     video_music_enabled = (
         stop_at == "video"
@@ -1067,7 +1067,7 @@ def _run_pipeline(
                 f"{display_name} background music requires an API key",
             )
 
-        # WebUI You can limit input length, but API、CLI and the historical task can bypass the frontend control.
+        # WebUI You can limit input length, but API, CLI and the historical task can bypass the frontend control.
         # Check again at the vendor ceiling before generating scripts, audio and material to avoid complete video synthesis
         # It is the request of a third party that is refused. The same verification is retained on the service level as the last line of defence when called directly.
         music_prompt = _get_video_music_prompt(params)
@@ -1265,7 +1265,7 @@ def _run_pipeline(
             ),
         )
         # The queue full or the thread pool closed is a synchronous and known scheduling failure. Task status already scheduled by
-        # Update. Synchronize here to return snapshots to avoid calls that are inconsistent with subsequent queries pending。
+        # Update. Synchronize here to return snapshots to avoid calls that are inconsistent with subsequent queries pending.
         if scheduling_error:
             kwargs["cross_post_state"] = const.CROSS_POST_STATE_FAILED
             kwargs["cross_post_error"] = scheduling_error

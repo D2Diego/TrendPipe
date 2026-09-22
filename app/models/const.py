@@ -2,18 +2,10 @@ PUNCTUATIONS = [
     "?",
     ",",
     ".",
-    "、",
     ";",
     ":",
     "!",
     "…",
-    "？",
-    "，",
-    "。",
-    "、",
-    "；",
-    "：",
-    "！",
     "...",
     # Treat common Arabic punctuation as natural sentence boundaries so script
     # segments remain aligned with the pause boundaries returned by edge-tts.

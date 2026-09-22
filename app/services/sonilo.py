@@ -58,7 +58,7 @@ def _request_timeout() -> tuple[int, int]:
     if not math.isfinite(read_timeout) or read_timeout <= 0:
         read_timeout = 600
     # Requests Not accepted 0 Second reading timeout. Keeps both the valid meaning of the decimal configuration and the ability to move up.
-    # Avoid 0.1~0.9 By int() Interrupt As 0 And then throw it uninto. Sonilo Downlink. ValueError。
+    # Avoid 0.1~0.9 By int() Interrupt As 0 And then throw it uninto. Sonilo Downlink. ValueError.
     return 15, max(1, math.ceil(min(read_timeout, 1800)))
 
 
@@ -67,7 +67,7 @@ def _normalize_service_id(service_id: str) -> str:
     Will Sonilo Service identifiers are harmonized into underlined formats used within the project.
 
     The actual interface returns ``video_to_music``, However, an example of a public document on the same day is used
-    ``video-to-music``。The difference is a word separator only, and therefore in a uniform format at the third-party agreement boundary,
+    ``video-to-music``. The difference is a word separator only, and therefore in a uniform format at the third-party agreement boundary,
     Avoid UI The connection test failed due to a temporary discrepancy between the provider ' s document and the production response.
     """
     return service_id.strip().lower().replace("-", "_")
@@ -81,7 +81,7 @@ def _safe_response_error(response: requests.Response) -> str:
 
 def test_connection() -> dict[str, Any]:
     """
-    Validate using a non-consumption list interface API Key。
+    Validate using a non-consumption list interface API Key.
 
     Return original JSON Easy. UI Display available services, but never recorded in the log Key Or the head of the request.
     """
@@ -201,7 +201,7 @@ def _create_video_proxy(video_path: str) -> str:
 
 
 def _parse_event(raw_line: bytes) -> dict[str, Any]:
-    """Strictly parsing individual lines NDJSON，It is prohibited to silently ignore cut-off or non-object response."""
+    """Strictly parsing individual lines NDJSON, It is prohibited to silently ignore cut-off or non-object response."""
     try:
         event = json.loads(raw_line.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
@@ -215,8 +215,8 @@ def _stream_audio(response: requests.Response, temp_audio_path: str) -> tuple[in
     """
     The first contour stream is written into the provisional document in the order of events and limits the maximum volume.
 
-    API Could return multiple candidate streams at the same time; current product only needs one BGM，So fix the choice.
-    stream_index=0。Only received. complete Events and Passes FFmpeg Full decode will be released.
+    API Could return multiple candidate streams at the same time; current product only needs one BGM, So fix the choice.
+    stream_index=0. Only received. complete Events and Passes FFmpeg Full decode will be released.
     """
     total_bytes = 0
     title = ""
@@ -351,7 +351,7 @@ def generate_bgm(
         raise
     except OSError as exc:
         # A file system error may occur in temporary directories, proxy files and final atomic replacements. Harmonize to
-        # SoniloError，The task layer is designed to be downgraded to “backgroundless music” and to be kept in film.
+        # SoniloError, The task layer is designed to be downgraded to “backgroundless music” and to be kept in film.
         raise SoniloError(f"Sonilo local file operation failed: {exc}") from exc
     finally:
         _remove_file(proxy_path)

@@ -30,7 +30,7 @@ class ElevenLabsMusicError(RuntimeError):
 
 
 class ElevenLabsPaidPlanRequiredError(ElevenLabsMusicError):
-    """Organisation Key Valid, but current account set does not contain ElevenLabs Music API。"""
+    """Organisation Key Valid, but current account set does not contain ElevenLabs Music API. """
 
 
 class ElevenLabsAuthenticationError(ElevenLabsMusicError):
@@ -39,10 +39,10 @@ class ElevenLabsAuthenticationError(ElevenLabsMusicError):
 
 def get_api_key() -> str:
     """
-    Read ElevenLabs Shared API Key。
+    Read ElevenLabs Shared API Key.
 
     Play with the existing ElevenLabs TTS Use the same account configuration to avoid users being present WebUI Duplicate maintenance
-    Two. Key；Environmental variables are used only as back-up sources for unfilled configurations.
+    Two. Key; Environmental variables are used only as back-up sources for unfilled configurations.
     """
     configured_key = str(config.elevenlabs.get("api_key", "") or "").strip()
     return configured_key or os.getenv("ELEVENLABS_API_KEY", "").strip()
@@ -105,8 +105,8 @@ def test_connection() -> dict[str, Any]:
     Check for subscription interfaces using a non-consumption music generation line API Key And account set.
 
     This interface can only confirm Key Accessible subscription information and account numbers are not free packages and do not support current Key
-    There must be. Music endpoint Permission.ElevenLabs Allow to press endpoint、Amount and IP Limits
-    Key，Therefore... UI A successful reminder must retain this boundary, and the actual authority remains confirmed by the creation request.
+    There must be. Music endpoint Permission.ElevenLabs Allow to press endpoint, Amount and IP Limits
+    Key, Therefore... UI A successful reminder must retain this boundary, and the actual authority remains confirmed by the creation request.
     Detailed statements and usages in response will not be recorded in the log, avoiding recording account privacy.
     """
     api_key = get_api_key()
@@ -162,8 +162,8 @@ def validate_generation_access() -> None:
     """
     Excludes accounts that are determined to be incapable of generating music before expensive video stream lines begin.
 
-    Free set and no effect. Key It's a certainty error. It has to be terminated immediately. LLM、TTS
-    And materials service. Subscriptions may also be due to Music-only endpoint scope、IP Restrictions or limitations
+    Free set and no effect. Key It's a certainty error. It has to be terminated immediately. LLM, TTS
+    And materials service. Subscriptions may also be due to Music-only endpoint scope, IP Restrictions or limitations
     Temporary network issues are not accessible; these results cannot be proven Music API Not available; therefore only warnings are recorded.
     Continue to make the real generation of requests determine the outcome and avoid being restricted but available Key Wrong intercept.
     """
@@ -318,8 +318,8 @@ def _request_bgm(video_path: str, output_path: str, prompt: str) -> str:
                     files=[
                         (
                             # The official document displays the table array as ``videos[]``
-                            # The production interface returns the field 422，Actual Starlette Parameter Name
-                            # ``videos``。Repeat Uploading requests The same name paragraph could continue to be added.
+                            # The production interface returns the field 422, Actual Starlette Parameter Name
+                            # ``videos``. Repeat Uploading requests The same name paragraph could continue to be added.
                             "videos",
                             (Path(video_path).name, video_file, "video/mp4"),
                         )

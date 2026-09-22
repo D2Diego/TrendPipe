@@ -67,7 +67,7 @@ class TestVideoControllerHelpers(unittest.TestCase):
                 self.assertEqual(raised.exception.status_code, 400)
 
     def test_resolve_path_maps_missing_and_unsafe_files(self):
-        """No file returned 404，Directory passes and other illegal routes back 403。"""
+        """No file returned 404, Directory passes and other illegal routes back 403. """
         for error, expected_status in (
             ("file does not exist", 404),
             ("path escapes base directory", 403),
@@ -103,7 +103,7 @@ class TestVideoControllerHelpers(unittest.TestCase):
                 )
 
     def test_parse_byte_range_rejects_malformed_or_out_of_bounds_requests(self):
-        """Illegal Range We must return. 416，It can't be because split or int The conversion anomaly becomes 500。"""
+        """Illegal Range We must return. 416, It can't be because split or int The conversion anomaly becomes 500. """
         invalid_headers = (
             "items=0-1",
             "bytes=",
@@ -172,7 +172,7 @@ class TestVideoControllerTasks(unittest.TestCase):
         self.assertIs(captured["func"], api_task_logs.start_with_log_capture)
 
     def test_create_task_removes_state_when_queue_is_full(self):
-        """Queue full must roll back to the created state and return to the caller 429。"""
+        """Queue full must roll back to the created state and return to the caller 429. """
         body = MagicMock()
         body.model_dump.return_value = {"video_subject": "Coffee"}
 
@@ -218,7 +218,7 @@ class TestVideoControllerTasks(unittest.TestCase):
 
     def test_task_query_returns_relative_url_without_mutating_state(self):
         """
-        endpoint Return relative tasks when not configured URL，And you can't use the show. URL Back to status,
+        endpoint Return relative tasks when not configured URL, And you can't use the show. URL Back to status,
         Otherwise, the follow-up request may be based on re-engineered data overlaying paths.
         """
         task_id = "controller-task-url"
@@ -290,7 +290,7 @@ class TestVideoControllerTasks(unittest.TestCase):
         self.assertIn("TaskStatusData", list_schema["$defs"])
 
     def test_delete_rejects_generation_and_cross_posting_tasks(self):
-        """Both the generated and the published tasks are reading the directory and the deleted interface must return 409。"""
+        """Both the generated and the published tasks are reading the directory and the deleted interface must return 409. """
         busy_tasks = (
             {
                 "task_id": "generating-task",
@@ -356,7 +356,7 @@ class TestVideoControllerTasks(unittest.TestCase):
             self.assertFalse(os.path.exists(task_path))
 
     def test_get_and_delete_missing_task_return_404(self):
-        """Both query or delete unknown tasks should return the same 404，It's not an empty response."""
+        """Both query or delete unknown tasks should return the same 404, It's not an empty response."""
         with patch.object(video_controller.sm.state, "get_task", return_value=None):
             for operation in (
                 lambda: video_controller.get_task(

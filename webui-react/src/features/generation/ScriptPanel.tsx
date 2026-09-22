@@ -9,7 +9,7 @@ import { generateScript, generateTerms, previewScriptPrompt } from "@/api/script
 import { useGenerationStore } from "@/store/generationStore";
 import { Panel } from "./Panel";
 
-const SCRIPT_LANGUAGES = ["", "zh-CN", "zh-HK", "zh-TW", "de-DE", "en-US", "es-ES", "fr-FR", "pt-BR", "ru-RU", "vi-VN", "th-TH", "tr-TR"];
+const SCRIPT_LANGUAGES = ["", "de-DE", "en-US", "es-ES", "fr-FR", "pt-BR", "ru-RU", "vi-VN", "th-TH", "tr-TR"];
 
 export function ScriptPanel() {
   const { t } = useTranslation();

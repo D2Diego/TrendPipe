@@ -38,7 +38,7 @@ _MIMO_VOICE_IDS = {
 NO_VOICE_NAME = "no-voice"
 # `none` Yes. No voice tag used. It's short-term compatible. Avoid.
 # It's been called manually. API Validation upon upgrade;WebUI Harmonize with the new code
-# More clearly. `no-voice`。
+# More clearly. `no-voice`.
 _NO_VOICE_ALIASES = {NO_VOICE_NAME, "none"}
 
 
@@ -52,8 +52,8 @@ def mktimestamp(time_unit: float) -> str:
     """
     Will edge_tts Use 100 Subsecond time units converted to subtitles.
 
-    edge_tts 7.x Do not export old versions `mktimestamp`，But the old subtitle link in the project
-    This formatting function is also needed for compatibility. Azure v2、Gemini、SiliconFlow These.
+    edge_tts 7.x Do not export old versions `mktimestamp`, But the old subtitle link in the project
+    This formatting function is also needed for compatibility. Azure v2, Gemini, SiliconFlow These.
     Artificial subtitles, time axis, so here's an equivalent price.
     """
     hour = math.floor(time_unit / 10**7 / 3600)
@@ -313,7 +313,7 @@ def generate_silent_audio(duration_seconds: float, output_file: str) -> bool:
     Generate MP3 Mute audio, occupied as the " no voice " mode time axis.
 
     Use FFmpeg Yes. anullsrc Directly generate static, than construct temporary WAV And turn it in less middle.
-    Documentation. Return when Failed False，Let the top press normal TTS Failed path handles and records logs.
+    Documentation. Return when Failed False, Let the top press normal TTS Failed path handles and records logs.
     """
     ensure_file_path_exists(output_file)
     duration_seconds = max(float(duration_seconds or 0), 0.1)
@@ -415,8 +415,8 @@ def tts(
             return None
     elif is_mimo_voice(voice_name):
         # From voice_name Other Organiser
-        # Format: mimo:voice-Gender；If the caller is executed parse_voice_name，
-        # Maybe. mimo:voice。Both formats are compatible.
+        # Format: mimo:voice-Gender; If the caller is executed parse_voice_name,
+        # Maybe. mimo:voice. Both formats are compatible.
         parts = voice_name.split(":")
         if len(parts) >= 2:
             voice_with_gender = parts[1]
@@ -436,7 +436,7 @@ def tts(
             logger.error(f"Invalid elevenlabs voice name format: {voice_name}")
             return None
     elif is_chatterbox_voice(voice_name):
-        # Format: chatterbox:<voice>，voice Displayable -Female/-Male Postfix
+        # Format: chatterbox:<voice>, voice Displayable -Female/-Male Postfix
         parts = voice_name.split(":", 1)
         if len(parts) >= 2 and parts[1].strip():
             chatterbox_voice = parts[1].strip()
@@ -456,7 +456,7 @@ def convert_rate_to_percent(rate: float) -> str:
     # Rounding can yield 0 for rates near but not equal to 1.0 (e.g. 1.004,
     # 0.997); those must still be returned as "+0%", not the unsigned "0%"
     # which edge-tts rejects with ValueError: Invalid rate '0%'.
-    # API or batch calls may be imported 0、0.0、None or empty values that cannot be converted; these values do not represent
+    # API or batch calls may be imported 0, 0.0, None or empty values that cannot be converted; these values do not represent
     # Legal speed. Direct calculation becomes -100% Or throw an anomaly. This is where we retreat to normal speed.
     # Avoid generating extremely slow audio or Jean TTS Process failed at border entry.
     try:
@@ -488,8 +488,8 @@ def ensure_legacy_submaker_fields(sub_maker: SubMaker) -> SubMaker:
     """
     Compatible fields for projects that still use the old subtitle structure.
 
-    edge_tts 7.x Yes. `SubMaker` Main exposure `cues/get_srt()`，But in the project... Azure v2、
-    Gemini、SiliconFlow These paths can still read and write directly. `subs/offset`。Here's the one.
+    edge_tts 7.x Yes. `SubMaker` Main exposure `cues/get_srt()`, But in the project... Azure v2,
+    Gemini, SiliconFlow These paths can still read and write directly. `subs/offset`. Here's the one.
     Avoid Upgrade edge_tts And then these... edge The path was destroyed.
     """
     if not hasattr(sub_maker, "subs"):
@@ -506,12 +506,12 @@ def populate_legacy_submaker_with_full_text(
     Fill the project history with the entire text `subs/offset` Subtitle structure.
 
     Background:
-    1. edge_tts 7.x Yes. `SubMaker` No more from the old version. `create_sub()`；
-    2. In the project. Gemini、SiliconFlow Wait! edge The path still needs to be returned.
+    1. edge_tts 7.x Yes. `SubMaker` No more from the old version. `create_sub()`;
+    2. In the project. Gemini, SiliconFlow Wait! edge The path still needs to be returned.
        And... `subs/offset` object for subsequent unified calculation of audio length and production of subtitles;
     3. For those who can't reach the word boundary. TTS The service, which requires at least multiple segments of the script,
        This way. `subtitle_provider=edge` It's only because of the logic of convergence that we can continue to work, not
-       Back because the whole text cannot match the script break line by line Whisper。
+       Back because the whole text cannot match the script break line by line Whisper.
 
     Args:
         sub_maker: Subtitle objects need to write compatible fields
@@ -535,7 +535,7 @@ def populate_legacy_submaker_with_full_text(
 
     # Gemini / SiliconFlow You can't get word-to-word borders with this type of path, but try to follow the project.
     # Original "Block by Punctuation" + The policy for allocating hours in proportion to the number of characters. It'll both make...
-    # create_subtitle() Match script break and avoid retreating again Whisper。
+    # create_subtitle() Match script break and avoid retreating again Whisper.
     sentences = utils.split_string_by_punctuations(normalized_text)
     if not sentences:
         sentences = [normalized_text]
@@ -578,13 +578,13 @@ def create_edge_tts_communicate(
     Press Current Installed edge_tts Version Construction Communicate object.
 
     Background:
-    1. Main line code upgraded to edge_tts 7.x，and use `boundary` (b) More detailed border events with parameters;
-    2. But... Windows The live environment may remain in the old version if the upgrade fails edge_tts；
-    3. Old version `Communicate.__init__()` Not accepted `boundary`，It'll just throw out.
-       `unexpected keyword argument 'boundary'`，♪ Cause the whole ♪ TTS The link failed.
+    1. Main line code upgraded to edge_tts 7.x, and use `boundary` (b) More detailed border events with parameters;
+    2. But... Windows The live environment may remain in the old version if the upgrade fails edge_tts;
+    3. Old version `Communicate.__init__()` Not accepted `boundary`, It'll just throw out.
+       `unexpected keyword argument 'boundary'`, ♪ Cause the whole ♪ TTS The link failed.
 
     So this is how to detect the parameters supported by the current version on the basis of the tectonic signature, and then decide whether to transfer them.
-    `boundary`，The same code is both compatible with old and new versions.
+    `boundary`, The same code is both compatible with old and new versions.
     """
     communicate_kwargs = {"rate": rate_str}
     communicate_signature = inspect.signature(edge_tts.Communicate)
@@ -601,13 +601,13 @@ def get_edge_tts_timeout_seconds() -> Union[float, None]:
 
     Background:
     Edge consumer TTS In the network, the service limits,voice In a scenario that does not match the language of the text, it is not possible to read the text.
-    It could be stuck for a long time. `stream_sync()` Inside, logs only stay in `start`。Here's one.
+    It could be stuck for a long time. `stream_sync()` Inside, logs only stay in `start`. Here's one.
     Default timeout, avoid WebUI There was no feedback on the mandate for a long time.
 
     Usage:
     - Default 30 Seconds, covering the first waiting time of a common short video script;
     - If the user is in a slow network or proxy environment, `config.toml` Inner Settings
-      `edge_tts_timeout = 60`；
+      `edge_tts_timeout = 60`;
     - Set As 0 , or a negative number indicates that the active timeout is disabled, with full backward compatibility.
     """
     raw_timeout = config.app.get(
@@ -636,8 +636,8 @@ def _stream_edge_tts_sync_with_timeout(
 
     Reasons for realization:
     `stream_sync()` The main circuit cannot be restored in time when the network layer is stuck.
-    Here, put the blocker on. daemon The main thread passes. Queue Access chunk，
-    Throw directly after timeout. TimeoutError，Let the outer layer retest and the error log continue.
+    Here, put the blocker on. daemon The main thread passes. Queue Access chunk,
+    Throw directly after timeout. TimeoutError, Let the outer layer retest and the error log continue.
 
     Note:
     daemon Threads are used only as a bottom protection, at most. Azure TTS V1 Yes. 3 Second try creation
@@ -687,8 +687,8 @@ def stream_edge_tts_chunks(
     """
     Harmonization of consumption edge_tts .
 
-    edge_tts 7.x Provision `stream_sync()`，Directly iterative in a synchronized function;
-    The earlier version is usually just a walk. `stream()`。To make... `azure_tts_v1()` Yes.
+    edge_tts 7.x Provision `stream_sync()`, Directly iterative in a synchronized function;
+    The earlier version is usually just a walk. `stream()`. To make... `azure_tts_v1()` Yes.
     Work could continue under the old residual scenario, where one layer of fluid compatibility was integrated.
 
     Args:
@@ -740,7 +740,7 @@ def azure_tts_v1(
 
             # It's compatible here. edge_tts 7.x And the old ones that may be left behind in the old ones:
             # 1. Support for new editions `boundary` + `stream_sync()`
-            # 2. Old version not supported `boundary`，And it's usually only exposed. `stream()`
+            # 2. Old version not supported `boundary`, And it's usually only exposed. `stream()`
             ensure_file_path_exists(voice_file)
             communicate = create_edge_tts_communicate(text, voice_name, rate_str)
             sub_maker = edge_tts.SubMaker()
@@ -753,7 +753,7 @@ def azure_tts_v1(
                         file.write(chunk["data"])
                     elif chunk_type in ["WordBoundary", "SentenceBoundary"]:
                         # Whatever comes from 7.x . ..sync stream, or old strip, as long as the event structure
-                        # There's still border information in there. SubMaker，Make sure you follow the subtitle link.
+                        # There's still border information in there. SubMaker, Make sure you follow the subtitle link.
                         # The current logic of the project remains.
                         sub_maker.feed(chunk)
 
@@ -800,7 +800,7 @@ def siliconflow_tts(
         voice: Sound name, e.g. "FunAudioLLM/CosyVoice2-0.5B:alex"
         voice_rate: Voice speed, range[0.25, 4.0]
         voice_file: Output Audio File Path
-        voice_volume: Voice Volume, Range[0.6, 5.0]，The range of gains that need to be converted to silicon flows[-10, 10]
+        voice_volume: Voice Volume, Range[0.6, 5.0], The range of gains that need to be converted to silicon flows[-10, 10]
 
     Returns:
         SubMaker Object or None
@@ -813,7 +813,7 @@ def siliconflow_tts(
         return None
 
     # Will voice_volume Gain range converted to Silicon-based flows
-    # Default voice_volume Yes 1.0，Correspond gain Yes 0
+    # Default voice_volume Yes 1.0, Correspond gain Yes 0
     gain = voice_volume - 1.0
     # Ensure gain Yes.[-10, 10]Scope
     gain = max(-10, min(10, gain))
@@ -925,7 +925,7 @@ def siliconflow_tts(
 
 
 def _build_azure_v2_ssml(text: str, voice_name: str, voice_rate: float) -> str:
-    """Construct Azure Speech V2 Use SSML，And securely regulate speech speed parameters."""
+    """Construct Azure Speech V2 Use SSML, And securely regulate speech speed parameters."""
     try:
         normalized_rate = float(voice_rate)
     except (TypeError, ValueError):
@@ -1149,7 +1149,7 @@ def gemini_tts(
             logger.error(f"Failed to load PCM audio: {e}")
             return None
         
-        # API、CLI or the test can directly position the non-existent embedded directory as an output position. Here it is.
+        # API, CLI or the test can directly position the non-existent embedded directory as an output position. Here it is.
         # Create a parent directory before really writing a file, avoiding a success Gemini The last reason for the request was
         # The local path does not exist and the result is lost. provider Other TTS Behavior consistency.
         ensure_file_path_exists(voice_file)
@@ -1461,9 +1461,9 @@ def _format_text(text: str) -> str:
     Clean up script text before subtitling.
 
     We can't just be here. LLM The generation phase is processed because the user may also manually paste the script or pass the script
-    API Organisation Markdown Marks the text.TTS Usually don't read. `---`、
-    `___`、`***` These separator lines do not read `_` This emphasis mark; if subtitles
-    The characters are still kept in alignment.`create_subtitle()` I'll wait until it doesn't exist. cue，
+    API Organisation Markdown Marks the text.TTS Usually don't read. `---`,
+    `___`, `***` These separator lines do not read `_` This emphasis mark; if subtitles
+    The characters are still kept in alignment.`create_subtitle()` I'll wait until it doesn't exist. cue,
     The end result is subtitle files missing and Whisper fallback Complete during correction 0 Time axis.
     """
     text = text.replace("[", " ")
@@ -1501,7 +1501,7 @@ def _normalize_arabic(text: str) -> str:
     """Common Arabic alphabet variants, raise subtitles cue Matches the error tolerance of the script line.
 
     edge-tts Possible return of Arabic to a different letter form from the original script, e.g. أ/إ/آ
-    It's in. ا，Or carry a transacting sign. This is only used at the bottom of the last line of matching.
+    It's in. ا, Or carry a transacting sign. This is only used at the bottom of the last line of matching.
     Do not change the original subtitle text and avoid compromising the final presentation.
     """
     text = _ARABIC_DIACRITICS.sub("", text)
@@ -1556,8 +1556,8 @@ def _write_subtitle_items(sub_items: list[str], subtitle_file: str) -> bool:
     Write already consolidated subtitles to SRT Documentation and a basic readability validation.
 
     Return value:
-    - `True`：Subtitle files have been successfully closed and can be used moviepy Analysis;
-    - `False`：Subtitle files failed to write or parse.
+    - `True`: Subtitle files have been successfully closed and can be used moviepy Analysis;
+    - `False`: Subtitle files failed to write or parse.
     """
     try:
         ensure_file_path_exists(subtitle_file)
@@ -1589,7 +1589,7 @@ def _build_subtitle_items_from_edge_cues(
     “Money. / Yes. / One. / Social / The tool's a poor reading experience.
 
     Implementation strategy:
-    1. Individual consumption cues Medium `content`；
+    1. Individual consumption cues Medium `content`;
     2. (a) To accumulate a candidate text;
     3. When the candidate text matches the current target break in the script, it is reduced to a full subtitle;
     4. Use Article 1 cue The beginning and the last. cue The end time, the continuity of the axis.
@@ -1712,7 +1712,7 @@ def _get_audio_duration_from_submaker(sub_maker: SubMaker):
     Time to retrieve audio
     """
     # Priority compatibility edge_tts 7.x Yes. cues Structure;
-    # If it's the rest of the project, TTS Manually fill old structures and continue reading offset。
+    # If it's the rest of the project, TTS Manually fill old structures and continue reading offset.
     if hasattr(sub_maker, "cues") and sub_maker.cues:
         return sub_maker.cues[-1].end.total_seconds()
 
@@ -1792,12 +1792,12 @@ if __name__ == "__main__":
 
         text = """
         2023 Year-round performance snapshot
-Accumulated operating income from companies throughout the year 1476.94 Billion dollars, year after year.19.01%，Net profit due to mother 747.34 Billion dollars, year after year.19.16%。EPS Achieved 59.49 Won. Single season, fourth quarter. Business income.444.25 Billion dollars, year after year.20.26%，Ring growth 31.86%；Net profit due to mother 218.58 Billion dollars, year after year.19.33%，Ring growth 29.37%。This stage
+Accumulated operating income from companies throughout the year 1476.94 Billion dollars, year after year.19.01%, Net profit due to mother 747.34 Billion dollars, year after year.19.16%. EPS Achieved 59.49 Won. Single season, fourth quarter. Business income.444.25 Billion dollars, year after year.20.26%, Ring growth 31.86%; Net profit due to mother 218.58 Billion dollars, year after year.19.33%, Ring growth 29.37%. This stage
 Performance not only highlights the growth dynamics and profitability of firms, but also reflects the positive growth of firms in a competitive market environment.
 2023 Year Q4 Performance Summary
-In the fourth quarter, the main growth point in the contribution of operating income; higher sales costs leading to a reduction in profitability; and higher taxes compared to the previous year 27%，Disturbing net interest rate performance.
+In the fourth quarter, the main growth point in the contribution of operating income; higher sales costs leading to a reduction in profitability; and higher taxes compared to the previous year 27%, Disturbing net interest rate performance.
 Performance interpretation
-On the profit side,2023 It's been a year since I was born.>The rate of increase in net profits to the mother is 19%，Of which operating income is contributing 18%，Operating costs are contributing 1 per cent and management costs are contributing 1.4 per cent.(Note: Rate of increase in net profit due to mother=Growth of operating income+Contributions by subject, presentation of contributions/The first four subjects to drag and request contribution value/Net profit growth>15%)
+On the profit side,2023 It's been a year since I was born.>The rate of increase in net profits to the mother is 19%, Of which operating income is contributing 18%, Operating costs are contributing 1 per cent and management costs are contributing 1.4 per cent.(Note: Rate of increase in net profit due to mother=Growth of operating income+Contributions by subject, presentation of contributions/The first four subjects to drag and request contribution value/Net profit growth>15%)
 """
         text = "The Nightingale is a five-word poem written by the Chinese poet Li Bai. This poem depicts a poet's silent night, seeing the moon in front of the window, remembering his distant homeland and his family."
 

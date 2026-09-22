@@ -1224,62 +1224,6 @@
     "gender": "Male"
   },
   {
-    "name": "zh-CN-XiaoxiaoNeural",
-    "gender": "Female"
-  },
-  {
-    "name": "zh-CN-XiaoyiNeural",
-    "gender": "Female"
-  },
-  {
-    "name": "zh-CN-YunjianNeural",
-    "gender": "Male"
-  },
-  {
-    "name": "zh-CN-YunxiNeural",
-    "gender": "Male"
-  },
-  {
-    "name": "zh-CN-YunxiaNeural",
-    "gender": "Male"
-  },
-  {
-    "name": "zh-CN-YunyangNeural",
-    "gender": "Male"
-  },
-  {
-    "name": "zh-CN-liaoning-XiaobeiNeural",
-    "gender": "Female"
-  },
-  {
-    "name": "zh-CN-shaanxi-XiaoniNeural",
-    "gender": "Female"
-  },
-  {
-    "name": "zh-HK-HiuGaaiNeural",
-    "gender": "Female"
-  },
-  {
-    "name": "zh-HK-HiuMaanNeural",
-    "gender": "Female"
-  },
-  {
-    "name": "zh-HK-WanLungNeural",
-    "gender": "Male"
-  },
-  {
-    "name": "zh-TW-HsiaoChenNeural",
-    "gender": "Female"
-  },
-  {
-    "name": "zh-TW-HsiaoYuNeural",
-    "gender": "Female"
-  },
-  {
-    "name": "zh-TW-YunJheNeural",
-    "gender": "Male"
-  },
-  {
     "name": "zu-ZA-ThandoNeural",
     "gender": "Female"
   },
@@ -1317,10 +1261,6 @@
   },
   {
     "name": "fr-FR-VivienneMultilingualNeural-V2",
-    "gender": "Female"
-  },
-  {
-    "name": "zh-CN-XiaoxiaoMultilingualNeural-V2",
     "gender": "Female"
   }
 ]

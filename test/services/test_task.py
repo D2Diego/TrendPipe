@@ -63,7 +63,7 @@ class TestTaskService(unittest.TestCase):
 
     def test_generate_script_forwards_advanced_prompt_options(self):
         """
-        Task Generation Entry and WebUI/API Shared VideoParams。This is how the auto-generated file is verified.
+        Task Generation Entry and WebUI/API Shared VideoParams. This is how the auto-generated file is verified.
         Advanced hint parameters continue to be passed to LLM Service level, avoid only /scripts The interface is effective.
         """
         params = VideoParams(
@@ -309,7 +309,7 @@ class TestTaskService(unittest.TestCase):
         )
 
     def test_start_rejects_missing_sonilo_key_before_costly_pipeline_steps(self):
-        """Full Task Missing Sonilo Key Do not call first. LLM、TTS Or material services."""
+        """Full Task Missing Sonilo Key Do not call first. LLM, TTS Or material services."""
         params = VideoParams(video_subject="test", bgm_type="sonilo")
         state = MemoryState()
         with (
@@ -331,7 +331,7 @@ class TestTaskService(unittest.TestCase):
         self.assertIn("API key", failed_task["error"])
 
     def test_start_does_not_require_sonilo_key_when_volume_is_zero(self):
-        """0 Volume will not be used Sonilo，That's why it's missing. Key It should remain in line for normal mission flow."""
+        """0 Volume will not be used Sonilo, That's why it's missing. Key It should remain in line for normal mission flow."""
         params = VideoParams(
             video_subject="test",
             bgm_type="sonilo",
@@ -369,7 +369,7 @@ class TestTaskService(unittest.TestCase):
         self.assertIn("ElevenLabs", result["error"])
 
     def test_start_rejects_free_elevenlabs_plan_before_pipeline_steps(self):
-        """No free packages can be consumed first. LLM、TTS Or material service."""
+        """No free packages can be consumed first. LLM, TTS Or material service."""
         params = VideoParams(video_subject="test", bgm_type="elevenlabs")
         state = MemoryState()
         with (
@@ -570,7 +570,7 @@ class TestTaskService(unittest.TestCase):
 
     def test_generate_subtitle_uses_whisper_for_custom_audio_without_sub_maker(self):
         """
-        Custom audio won't pass TTS，So no. sub_maker。
+        Custom audio won't pass TTS, So no. sub_maker.
         Whisper It can be transcribed directly from audio files, not at this time. sub_maker Skips the protection logic for empty.
         """
         task_id = "test-custom-audio-whisper-subtitle"
@@ -700,7 +700,7 @@ class TestTaskService(unittest.TestCase):
 
     def test_start_returns_each_intermediate_result(self):
         """
-        API Yes. script、terms、audio、subtitle and materials Model shared task
+        API Yes. script, terms, audio, subtitle and materials Model shared task
         Water lines. Each point of early cessation is subject to the return of the counterpart product, while the subsequent phase of implementation is not mistaken.
         """
         expected_results = {
@@ -803,7 +803,7 @@ class TestTaskService(unittest.TestCase):
     def test_start_marks_pipeline_failures(self):
         """
         All critical products of audio, material and final video must go to failure.
-        Incomplete tasks are misreported as completed. Three scenarios are the same. mock，Replaces only the failure phase.
+        Incomplete tasks are misreported as completed. Three scenarios are the same. mock, Replaces only the failure phase.
         """
         failure_cases = {
             "audio": (
@@ -1391,7 +1391,7 @@ class TestTaskService(unittest.TestCase):
 
     @unittest.skipUnless(os.name == "nt", "Windows process API test")
     def test_windows_process_probe_is_read_only_and_detects_liveness(self):
-        """Windows CI Read-only detection should be authentically validated and no retreats allowed os.kill。"""
+        """Windows CI Read-only detection should be authentically validated and no retreats allowed os.kill. """
         self.assertTrue(tm._is_windows_process_alive(os.getpid()))
         self.assertFalse(tm._is_windows_process_alive(2_147_483_647))
 
@@ -1415,7 +1415,7 @@ class TestTaskService(unittest.TestCase):
         self.assertIn("without persisting", task["cross_post_error"])
 
     def test_cross_post_recovery_reports_state_backend_failure(self):
-        """Returns when starting readback failed None，Allow WebUI Follow-up rerun Try again."""
+        """Returns when starting readback failed None, Allow WebUI Follow-up rerun Try again."""
         state = MagicMock()
         state.get_all_tasks.side_effect = RuntimeError("redis unavailable")
 

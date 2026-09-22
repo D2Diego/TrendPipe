@@ -37,7 +37,7 @@ def _detail_frame(width=128, height=96):
 
 class TestFadeAndSlideTransitions(unittest.TestCase):
     def test_fade_transitions_apply_requested_duration(self):
-        """Fade-out must give the caller's incoming long original MoviePy effect。"""
+        """Fade-out must give the caller's incoming long original MoviePy effect. """
         clip = _gradient_clip()
         self.addCleanup(clip.close)
 

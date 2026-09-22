@@ -19,8 +19,8 @@ RUN_INTEGRATION_TESTS = os.environ.get("TRENDPIPE_RUN_INTEGRATION_TESTS", "").lo
 class TestTwelveLabsService(unittest.TestCase):
     """
     TwelveLabs Integration is complete. opt-in Other Organiser twelvelabs_api_keys functions
-    It has to be side effects. no-op，Behaviour and non-access TwelveLabs Exactly.
-    These are all used. mock Replace SDK Client,CI It doesn't depend on real networks or reality. API key。
+    It has to be side effects. no-op, Behaviour and non-access TwelveLabs Exactly.
+    These are all used. mock Replace SDK Client,CI It doesn't depend on real networks or reality. API key.
     """
 
     def setUp(self):

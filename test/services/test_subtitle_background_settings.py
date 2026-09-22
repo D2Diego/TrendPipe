@@ -20,7 +20,7 @@ class TestSubtitleBackgroundSettings(unittest.TestCase):
     def test_all_locales_include_subtitle_background_labels(self):
         """
         WebUI After adding subtitle background switches and colour selections, all existing languages must be matched
-        Translation key，Avoid some language interfaces to show directly inside English key。
+        Translation key, Avoid some language interfaces to show directly inside English key.
         """
         i18n_dir = Path(__file__).parent.parent.parent / "webui" / "i18n"
         required_keys = {
@@ -64,7 +64,7 @@ class TestSubtitleBackgroundSettings(unittest.TestCase):
         """
         TextClip The canvas will contain font lines taller baseline Blank, right in the middle of the canvas.
         Subtitles look down in the background. Here's a fake. mask Simulate " Visible Text Pixels "
-        In the lower half of the canvas, verify helper Recalculate by real visible area y。
+        In the lower half of the canvas, verify helper Recalculate by real visible area y.
         """
 
         class FakeMask:
@@ -83,8 +83,8 @@ class TestSubtitleBackgroundSettings(unittest.TestCase):
         )
 
         self.assertEqual(x, 0)
-        # Visible pixel height 34px，Put it on. 93px The packagings shall be about to go up or down 29px；
-        # Because... mask Top from 12px Start, so... TextClip It needs to move up to 18px。
+        # Visible pixel height 34px, Put it on. 93px The packagings shall be about to go up or down 29px;
+        # Because... mask Top from 12px Start, so... TextClip It needs to move up to 18px.
         self.assertEqual(y, 18)
 
     def test_detects_indistinguishable_subtitle_colors(self):
@@ -160,5 +160,5 @@ class TestSubtitleBackgroundSettings(unittest.TestCase):
             fontsize=72,
         )
 
-        self.assertNotIn("\n。", wrapped_text)
+        self.assertNotIn("\n. ", wrapped_text)
         self.assertIn("Block.", wrapped_text)

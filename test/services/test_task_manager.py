@@ -34,8 +34,8 @@ class TestInMemoryTaskManager(unittest.TestCase):
 
     def test_add_task_reserves_slot_before_background_thread_runs(self):
         """
-        Co-location must take place before the online process starts; even if mock Other Organiser run_task，
-        The second request should also be in line. max_concurrent_tasks。
+        Co-location must take place before the online process starts; even if mock Other Organiser run_task,
+        The second request should also be in line. max_concurrent_tasks.
         """
         manager = InMemoryTaskManager(max_concurrent_tasks=1, max_queued_tasks=1)
 
@@ -106,8 +106,8 @@ class TestInMemoryTaskManager(unittest.TestCase):
 
     def test_check_queue_handles_dequeue_returning_none(self):
         """
-        dequeue() Probably back after skipping all queue tasks internally that do not meet the current verification None，
-        Even if you call. check_queue Before is_queue_empty() I was. False。check_queue
+        dequeue() Probably back after skipping all queue tasks internally that do not meet the current verification None,
+        Even if you call. check_queue Before is_queue_empty() I was. False. check_queue
         I can't assume that. dequeue I'm sure we'll get the mission. task_info["func"] Crash on.
         """
         manager = InMemoryTaskManager(max_concurrent_tasks=1, max_queued_tasks=1)
@@ -121,7 +121,7 @@ class TestInMemoryTaskManager(unittest.TestCase):
         self.assertEqual(manager.current_tasks, 0)
 
     def test_execute_task_starts_background_thread(self):
-        """The task execution portal must start the thread and pass the function parameters to the whole run_task。"""
+        """The task execution portal must start the thread and pass the function parameters to the whole run_task. """
         manager = InMemoryTaskManager(max_concurrent_tasks=1)
         fake_thread = MagicMock()
 
@@ -157,7 +157,7 @@ class TestRedisTaskManager(unittest.TestCase):
 
     def test_enqueue_serializes_video_params_without_mutating_task(self):
         """
-        Redis We can only save it. JSON；VideoParams It should be converted into a dictionary, but the original task still needs to be a model.
+        Redis We can only save it. JSON; VideoParams It should be converted into a dictionary, but the original task still needs to be a model.
         Avoids serialization of side effects that affect logs, retests or calls for subsequent reading.
         """
         params = VideoParams(video_subject="Coffee")
@@ -209,10 +209,10 @@ class TestRedisTaskManager(unittest.TestCase):
 
     def test_dequeue_skips_task_that_fails_current_validation(self):
         """
-        A mission may be before the rules of the school test are tightened. video_count Allowed 0）。
+        A mission may be before the rules of the school test are tightened. video_count Allowed 0).
         lpop It's destructive. Rebuild. VideoParams By the time it failed, the mission had already begun Redis Lee.
         It's permanently removed and can't pretend it's still there;dequeue The verification anomaly should not be dropped on the caller.
-        （It would break the locked caller and lose the mission without a log.
+         (It would break the locked caller and lose the mission without a log.
         Continue to try the next one in the queue until it is available or the queue is empty.
         """
         stale_payload = {
@@ -266,9 +266,9 @@ class TestRedisTaskManager(unittest.TestCase):
 
     def test_dequeue_marks_stale_task_failed_instead_of_leaving_it_processing(self):
         """
-        Task status log created before entry. Default is processing。Just in dequeue Skip
+        Task status log created before entry. Default is processing. Just in dequeue Skip
         And abandoning this queue without updating the status record will make this task API/WebUI It always shows
-        For running. It should be. patch_task（Not... update_task）Mark it as a failure.
+        For running. It should be. patch_task (Not... update_task) Mark it as a failure.
         So if the task has been deleted by the user, we won't build it back.
         """
         stale_payload = {
@@ -296,7 +296,7 @@ class TestRedisTaskManager(unittest.TestCase):
         self.assertIn("video_count", call_args.kwargs["error"])
 
     def test_dequeue_does_not_recreate_state_for_already_deleted_task(self):
-        """patch_task Return when task has been deleted False；dequeue It should not be treated as a mistake."""
+        """patch_task Return when task has been deleted False; dequeue It should not be treated as a mistake."""
         stale_payload = {
             "func": "start",
             "args": [],
