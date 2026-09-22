@@ -46,7 +46,8 @@ from dataclasses import dataclass
 from shutil import which
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from . import env, health, prescriptions
+from . import env, health
+from .pipeline import prescriptions
 
 # Resolution modes.
 MODE_ALTERNATIVE = "alternative"  # probe-ordered chain, first-usable wins
@@ -204,7 +205,7 @@ def _probe_bird(config: Dict[str, Any]) -> BackendFinding:
     cookie-consent flow — a broken node runtime must not turn an unconfigured
     backend into an error carrying a node prescription.
     """
-    from . import bird_x
+    from .sources import bird_x
 
     requires = "X browser cookies (AUTH_TOKEN/CT0) + node"
     if not (config.get("AUTH_TOKEN") and config.get("CT0")):
@@ -261,7 +262,7 @@ def _probe_xurl(config: Dict[str, Any]) -> BackendFinding:
     read as OK with an explicit "not live-verified" caveat; an unreadable
     token store is a typed ERROR (broken, not unconfigured).
     """
-    from . import xurl_x
+    from .sources import xurl_x
 
     requires = "xurl CLI installed + OAuth2 login"
     if which("xurl") is None:

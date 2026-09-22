@@ -48,7 +48,10 @@ if os.name == "nt":
         if hasattr(stream, "reconfigure"):
             stream.reconfigure(encoding="utf-8", errors="replace")
 
-from app.services.research_lib import competitors as competitors_mod, corpus, dates, discovery_handoff, env, freshness, html_render, http, permission_preflight, pipeline, registers, render, schema, ui
+from app.services.research_lib.pipeline import competitors as competitors_mod, discovery_handoff, freshness, permission_preflight, pipeline, registers
+from app.services.research_lib.sources import corpus
+from app.services.research_lib import dates, env, http, schema
+from app.services.research_lib.output import html_render, render, ui
 
 _child_pids: set[int] = set()
 _child_pids_lock = threading.Lock()
@@ -278,7 +281,7 @@ def save_output(
             raise
         if candidate.suffix.lower() == ".md":
             try:
-                from app.services.research_lib import library, library_index
+                from app.services.research_lib.output import library, library_index
 
                 save_root = candidate.parent.resolve()
                 if save_root == Path(library.DEFAULT_MEMORY_DIR).expanduser().resolve():
@@ -345,7 +348,7 @@ def publish_rendered_html(
     password: str | None = None,
     companion_paths: list[Path] | None = None,
 ) -> dict[str, object]:
-    from app.services.research_lib import html_publish
+    from app.services.research_lib.output import html_publish
 
     result = html_publish.publish_html(rendered, password=password)
     metadata_errors: list[str] = []
@@ -927,7 +930,7 @@ def apply_vs_competitor_routing(
       4. ``--competitors-plan`` keys as peers when there is no vs-string
          (including when ``--competitors N`` is also set)
     """
-    from app.services.research_lib import planner as _planner
+    from app.services.research_lib.pipeline import planner as _planner
 
     if comp_explicit:
         return topic, True, len(comp_explicit), list(comp_explicit)
@@ -1309,7 +1312,7 @@ def _run_drill(
     args: argparse.Namespace,
     config: dict[str, object],
 ) -> int:
-    from app.services.research_lib import planner
+    from app.services.research_lib.pipeline import planner
 
     cached = _load_last_report_cache(
         None,
@@ -2184,7 +2187,7 @@ def _audience_register_for_run(
 ) -> registers.AudienceRegister:
     """Resolve CLI > config for single-topic standard brief renderers."""
 
-    from app.services.research_lib import planner
+    from app.services.research_lib.pipeline import planner
 
     topic = " ".join(getattr(args, "topic", [])).strip()
     comparison_topic_requested = bool(
@@ -2511,7 +2514,7 @@ def _config_policy_for_args(args: argparse.Namespace, topic: str, extra_argv: li
 
 def _run_library_feed(args: argparse.Namespace, config: dict[str, object]) -> int:
     """Generate the local research index/feed and optionally publish it."""
-    from app.services.research_lib import feed, html_publish, library
+    from app.services.research_lib.output import feed, html_publish, library
 
     if args.publish_html:
         sys.stderr.write(
@@ -2682,7 +2685,7 @@ def _run_library_search(
     query: str,
 ) -> int:
     """Search saved briefs and store sightings without network access."""
-    from app.services.research_lib import library, library_index
+    from app.services.research_lib.output import library, library_index
 
     if not query.strip():
         sys.stderr.write("[trendpipe] library search requires a non-empty query.\n")
@@ -2753,7 +2756,7 @@ def _main(
         os.environ["TRENDPIPE_DEBUG"] = "1"
 
     if args.welcome:
-        from app.services.research_lib import setup_wizard
+        from app.services.research_lib.auth import setup_wizard
         print(setup_wizard.render_welcome())
         return 0
 
@@ -2824,7 +2827,7 @@ def _main(
     # research normally). Aggregates probes/descriptors/prescriptions into
     # one grouped health surface; always exits 0.
     if topic.lower() == "doctor":
-        from app.services.research_lib import doctor
+        from app.services.research_lib.output import doctor
         return doctor.run(
             config,
             emit_json=(args.emit == "json" or "--json" in extra_argv),
@@ -2845,7 +2848,7 @@ def _main(
 
     # Handle setup subcommand
     if topic.lower() == "setup":
-        from app.services.research_lib import setup_wizard
+        from app.services.research_lib.auth import setup_wizard
         if "--openclaw" in extra_argv:
             results = setup_wizard.run_openclaw_setup(config)
             print(json.dumps(results))
@@ -3072,7 +3075,7 @@ def _main(
                 "the remote API backend only supports --json-profile=raw.\n"
             )
             return 2
-        from app.services.research_lib import hosted
+        from app.services.research_lib.pipeline import hosted
         depth = "deep" if args.deep else "quick" if args.quick else "default"
         try:
             audience = _audience_register_for_run(args, config, None)
@@ -3122,7 +3125,7 @@ def _main(
             sys.stderr.write("[trendpipe] Warning: --synthesis-file is only used with --emit=html; ignoring.\n")
 
     if not os.environ.get("TRENDPIPE_SKIP_PREFLIGHT"):
-        from app.services.research_lib import preflight
+        from app.services.research_lib.pipeline import preflight
         refuse_msg = preflight.check_class_1_trap(topic)
         if refuse_msg:
             sys.stderr.write(refuse_msg)
@@ -3199,7 +3202,7 @@ def _main(
                 # and burning a paid run the user did not ask for. Mirrors the
                 # --plan file-read branch above and parse_competitors_plan.
                 raise SystemExit(2)
-            from app.services.research_lib import planner as _plan_validator
+            from app.services.research_lib.pipeline import planner as _plan_validator
             try:
                 _plan_validator.validate_external_plan(external_plan)
             except ValueError as exc:
@@ -3212,7 +3215,7 @@ def _main(
         repos_from_auto_resolve = False
         trustpilot_domain_is_hint = False
         if args.auto_resolve and not external_plan:
-            from app.services.research_lib import resolve
+            from app.services.research_lib.pipeline import resolve
             resolution = resolve.auto_resolve(topic, config)
             if resolution.get("subreddits") and not subreddits:
                 subreddits = resolution["subreddits"]
@@ -3264,7 +3267,7 @@ def _main(
         # canonicalize_github_repos(cap=5) and ranked by relevance; re-running here
         # with cap=None can re-sort by topic-slug match and lose that ordering.
         if github_repos and not repos_from_auto_resolve:
-            from app.services.research_lib import resolve as resolve_lib
+            from app.services.research_lib.pipeline import resolve as resolve_lib
             original_github_repos = github_repos[:]
             github_repos = resolve_lib.canonicalize_github_repos(topic, github_repos, cap=None)
             if github_repos != original_github_repos:
@@ -3366,8 +3369,8 @@ def _main(
             return r
 
         if comp_enabled:
-            from app.services.research_lib import competitors as competitors_mod
-            from app.services.research_lib import fanout, resolve as resolve_mod
+            from app.services.research_lib.pipeline import competitors as competitors_mod
+            from app.services.research_lib.pipeline import fanout, resolve as resolve_mod
 
             if comp_explicit:
                 discovered = comp_explicit
@@ -3547,8 +3550,8 @@ def _main(
     # intentionally jobs-focused, so generic source setup advice is noise.
     if not args.hiring_signals:
         try:
-            from app.services.research_lib import quality_nudge
-            from app.services.research_lib import youtube_yt as _youtube_yt
+            from app.services.research_lib.pipeline import quality_nudge
+            from app.services.research_lib.sources import youtube_yt as _youtube_yt
             # Populate transcript-fetch ratio so quality_nudge can detect the
             # degraded-YouTube failure mode (videos returned but transcripts
             # silently failed - typically a stale yt-dlp binary).

@@ -722,7 +722,7 @@ def extract_browser_credentials(config: dict[str, Any]) -> dict[str, str]:
     if not browsers:
         return {}
     try:
-        from . import cookie_extract
+        from .auth import cookie_extract
     except ImportError:
         return {}
     extracted: dict[str, str] = {}
@@ -750,7 +750,7 @@ def get_x_source_with_method(config: dict[str, Any]) -> tuple[str | None, str]:
         method = config.get("_AUTH_TOKEN_SOURCE", "env")
         return "bird", method
     # Fall back to xurl CLI (official X API v2, OAuth2, free developer app)
-    from . import xurl_x
+    from .sources import xurl_x
     if xurl_x.is_available():
         return "xurl", "oauth2"
     return None, "none"
@@ -806,10 +806,10 @@ def _x_backend_available(
     if backend == 'xai':
         return bool(config.get('XAI_API_KEY'))
     if backend == 'bird':
-        from . import bird_x
+        from .sources import bird_x
         return has_bird_creds and bird_x.is_bird_installed()
     if backend == 'xurl':
-        from . import xurl_x
+        from .sources import xurl_x
         if local_only:
             # Doctor/safe-diagnose path: local evidence only (PATH lookup +
             # token store) — never the live `xurl whoami` network call.
@@ -837,7 +837,7 @@ def x_backend_chain(config: dict[str, Any], local_only: bool = False) -> list[st
     network — xurl's live `whoami` check is replaced by its on-disk token
     store). Research-time callers keep the default live semantics.
     """
-    from . import bird_x
+    from .sources import bird_x
     has_bird_creds = bool(config.get('AUTH_TOKEN') and config.get('CT0'))
     if has_bird_creds:
         bird_x.set_credentials(config.get('AUTH_TOKEN'), config.get('CT0'))
@@ -896,13 +896,13 @@ def x_pending_browser_auth(config: dict[str, Any], local_only: bool = False) -> 
         return False
     if not cookie_extraction_browsers(config):
         return False
-    from . import bird_x
+    from .sources import bird_x
     return bird_x.is_bird_installed()
 
 
 def is_ytdlp_available() -> bool:
     """Check if yt-dlp is installed for YouTube search."""
-    from . import youtube_yt
+    from .sources import youtube_yt
     return youtube_yt.is_ytdlp_installed()
 
 
@@ -1195,7 +1195,7 @@ def get_x_source_status(config: dict[str, Any], probe: bool = False) -> dict[str
         Dict with keys: source, bird_installed, bird_authenticated,
         bird_username, xai_available, can_install_bird
     """
-    from . import bird_x
+    from .sources import bird_x
 
     if config.get('AUTH_TOKEN') and config.get('CT0'):
         bird_x.set_credentials(config.get('AUTH_TOKEN'), config.get('CT0'))
@@ -1223,7 +1223,7 @@ def get_x_source_status(config: dict[str, Any], probe: bool = False) -> dict[str
     xquik_status = ""
     if xquik_available:
         if probe:
-            from . import xquik
+            from .sources import xquik
             xquik_working = xquik.probe_works(get_xquik_token(config))
             xquik_status = xquik.probe_reason()
         else:
@@ -1233,7 +1233,7 @@ def get_x_source_status(config: dict[str, Any], probe: bool = False) -> dict[str
     # the real `xurl whoami`; probe=False is the safe path (doctor,
     # --diagnose, --preflight) and must stay local-only — the live check is
     # an authenticated X API network call.
-    from . import xurl_x as _xurl_x
+    from .sources import xurl_x as _xurl_x
     xurl_available = _xurl_x.is_available() if probe else _xurl_x.has_stored_auth()
 
     # Determine active source. bird (browser cookies) and xAI win when present;
