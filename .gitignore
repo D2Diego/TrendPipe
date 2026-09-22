@@ -35,6 +35,3 @@ coverage.xml
 htmlcov/
 .codegraph
 .understand-anything
-
-# trendpipe local secrets (OpenRouter key etc.)
-/vendor/trendpipe/.env

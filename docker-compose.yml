@@ -1,24 +1,4 @@
-x-api-volumes: &api-volumes
-  - ./:/TrendPipe
-
 services:
-  webui:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: "trendpipe-webui"
-    ports:
-      - "127.0.0.1:8501:8501"
-    command: [ "nginx", "-g", "daemon off;" ]
-    depends_on:
-      api:
-        condition: service_healthy
-    healthcheck:
-      test: [ "CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/', timeout=3)" ]
-      interval: 10s
-      timeout: 5s
-      retries: 6
-    restart: always
   api:
     build:
       context: .
@@ -27,7 +7,13 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
     command: [ "python3", "main.py" ]
-    volumes: *api-volumes
+    volumes:
+      - ./:/TrendPipe
+      # The bind mount above shadows the whole repo, including the built
+      # React app the Dockerfile copies into resource/public. Pin that one
+      # path to an anonymous volume so the image's build wins there instead
+      # of the (unbuilt, placeholder) copy tracked in git on the host.
+      - /TrendPipe/resource/public
     healthcheck:
       test: [ "CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/docs', timeout=3)" ]
       interval: 10s

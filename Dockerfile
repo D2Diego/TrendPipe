@@ -11,8 +11,6 @@ COPY webui-react/ ./
 ARG VITE_APP_VERSION=1.3.3
 RUN VITE_APP_VERSION="$VITE_APP_VERSION" npm run build
 
-# The runtime image contains both Nginx (used by the webui service) and Python
-# (used by the api service). This keeps the existing single-image release flow.
 FROM python:3.12-slim-bullseye
 
 # Set the working directory in the container
@@ -40,8 +38,7 @@ RUN if [ "$DOCKER_BUILD_MIRROR" = "china" ]; then \
             echo "Attempt $i: installing system dependencies"; \
             apt-get update && apt-get install -y --no-install-recommends \
                 git \
-                ffmpeg \
-                nginx && break || \
+                ffmpeg && break || \
             echo "Attempt $i failed, retrying..."; \
             if [ "$DOCKER_BUILD_MIRROR" = "china" ] && [ $i -eq 3 ]; then \
                 echo "Aliyun mirror failed, switching to Tsinghua mirror"; \
@@ -50,16 +47,14 @@ RUN if [ "$DOCKER_BUILD_MIRROR" = "china" ]; then \
                 ( \
                     apt-get update && apt-get install -y --no-install-recommends \
                         git \
-                        ffmpeg \
-                        nginx || \
+                        ffmpeg || \
                     ( \
                         echo "Tsinghua mirror failed, switching to default Debian mirror"; \
                         sed -i 's/mirrors.tuna.tsinghua.edu.cn/deb.debian.org/g' /etc/apt/sources.list && \
                         sed -i 's/mirrors.tuna.tsinghua.edu.cn\/debian-security/security.debian.org/g' /etc/apt/sources.list; \
                         apt-get update && apt-get install -y --no-install-recommends \
                             git \
-                            ffmpeg \
-                            nginx; \
+                            ffmpeg; \
                     ); \
                 ); \
             fi; \
@@ -82,22 +77,18 @@ RUN if [ "$PIP_USE_OFFICIAL" = "1" ]; then \
 # Now copy the rest of the codebase into the image
 COPY . .
 
-# Install the immutable frontend artifact and the same-origin reverse proxy.
-COPY --from=frontend-build /build/webui-react/dist/ /usr/share/nginx/html/
-COPY deploy/nginx-react.conf /etc/nginx/conf.d/default.conf
+# Install the built frontend where FastAPI already serves static files from
+# (app.asgi mounts /assets and falls back to this index.html for every other
+# non-API route). One process now serves the UI and the API - no more
+# separate Nginx container.
+COPY --from=frontend-build /build/webui-react/dist/ ./resource/public/
 
-# Nginx serves the React UI on 8501; the compose api service overrides CMD and
-# serves FastAPI on 8080 from the same image.
-EXPOSE 8501 8080
+EXPOSE 8080
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["python3", "main.py"]
 
 # 1. Build the Docker image using the following command
 # docker build -t trendpipe .
 
 # 2. Run the Docker container using the following command
-## For Linux or MacOS:
-# Use docker compose so Nginx can proxy API and generated-video requests to
-# the companion api service.
-## For Windows:
-# Use docker compose for the same reason.
+# docker compose up

@@ -1,3 +1,16 @@
+# Build the production React application.
+FROM node:20-alpine AS frontend-build
+
+WORKDIR /build/webui-react
+
+COPY webui-react/package.json webui-react/package-lock.json ./
+RUN npm ci
+
+COPY webui-react/ ./
+
+ARG VITE_APP_VERSION=1.3.3
+RUN VITE_APP_VERSION="$VITE_APP_VERSION" npm run build
+
 # Use NVIDIA CUDA runtime as parent image (includes CUDA 12.1 + cuDNN 8)
 FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
 
@@ -10,7 +23,9 @@ RUN chmod 777 /TrendPipe
 
 ENV PYTHONPATH="/TrendPipe"
 
-# Install Python 3.11 and system dependencies
+# Install Python 3.12 and system dependencies. The research engine
+# (app.services.research_cli) requires 3.12+, so this must match the main
+# Dockerfile and .python-version rather than trailing behind them.
 RUN apt-get update && apt-get install -y --no-install-recommends \
         software-properties-common \
         git \
@@ -18,13 +33,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         curl \
         && add-apt-repository ppa:deadsnakes/ppa \
         && apt-get update && apt-get install -y --no-install-recommends \
-        python3.11 \
-        python3.11-venv \
-        python3.11-dev \
+        python3.12 \
+        python3.12-venv \
+        python3.12-dev \
         python3-pip \
-        && ln -sf /usr/bin/python3.11 /usr/bin/python3 \
-        && ln -sf /usr/bin/python3.11 /usr/bin/python \
-        && python3.11 -m pip install --upgrade pip \
+        && ln -sf /usr/bin/python3.12 /usr/bin/python3 \
+        && ln -sf /usr/bin/python3.12 /usr/bin/python \
+        && python3.12 -m pip install --upgrade pip \
         && apt-get remove -y python3-blinker || true \
         && rm -rf /var/lib/apt/lists/*
 
@@ -44,8 +59,11 @@ RUN python3 -m pip install --no-cache-dir \
 # Now copy the rest of the codebase into the image
 COPY . .
 
-# The GPU image is now used only by the FastAPI generation service. The React
-# frontend remains on the lightweight Nginx image from Dockerfile.
+# Install the built frontend where FastAPI serves static files from (see the
+# main Dockerfile and app/asgi.py for details) - this is the only service in
+# the GPU compose override too, so it has to serve the UI as well.
+COPY --from=frontend-build /build/webui-react/dist/ ./resource/public/
+
 EXPOSE 8080
 
 CMD ["python3", "main.py"]

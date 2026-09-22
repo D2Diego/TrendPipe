@@ -1,15 +1,21 @@
-"""Subprocess integration with the vendored trendpipe research engine."""
+"""Subprocess integration with the trendpipe research engine.
 
-import json
+The engine (app.services.research_cli + app.services.research_lib) is a
+first-party part of this backend, not an external tool. It still runs as a
+child process rather than a direct in-process call because its runs are
+long (up to RESEARCH_TIMEOUT_SECONDS) and need a hard, killable timeout -
+something a Python thread cannot safely get.
+"""
+
 import os
+import json
 import subprocess
+import sys
 from typing import Any
 
 from app.utils import utils
 
-TRENDPIPE_DIR = os.path.join(utils.root_dir(), "vendor", "trendpipe")
-TRENDPIPE_SCRIPT = os.path.join(TRENDPIPE_DIR, "trendpipe.py")
-PYTHON_BIN = "python3.12"
+RESEARCH_CLI_MODULE = "app.services.research_cli"
 RESEARCH_TIMEOUT_SECONDS = 900
 DIAGNOSE_TIMEOUT_SECONDS = 30
 _STDERR_TAIL_LENGTH = 2_000
@@ -21,7 +27,7 @@ class ResearchExecutionError(Exception):
 
 def _trendpipe_env() -> dict[str, str]:
     # Imported here, not at module level, to avoid a circular import:
-    # research_credentials imports TRENDPIPE_DIR from this module.
+    # research_credentials also depends on this module.
     from app.services import research_credentials
 
     return {
@@ -56,12 +62,12 @@ def run_diagnose() -> dict[str, Any]:
     """Discover which sources and credentials trendpipe can currently use."""
     try:
         result = subprocess.run(
-            [PYTHON_BIN, TRENDPIPE_SCRIPT, "--diagnose", "--emit", "json"],
+            [sys.executable, "-m", RESEARCH_CLI_MODULE, "--diagnose", "--emit", "json"],
             capture_output=True,
             text=True,
             timeout=DIAGNOSE_TIMEOUT_SECONDS,
             env=_trendpipe_env(),
-            cwd=TRENDPIPE_DIR,
+            cwd=utils.root_dir(),
         )
     except subprocess.TimeoutExpired as exc:
         raise ResearchExecutionError(
@@ -83,8 +89,9 @@ def normalize_report(payload: dict[str, Any], topic: str) -> dict[str, Any]:
 def run_research(topic: str, depth: str, sources: list[str]) -> dict[str, Any]:
     """Run trendpipe and return its normalized raw-profile report."""
     args = [
-        PYTHON_BIN,
-        TRENDPIPE_SCRIPT,
+        sys.executable,
+        "-m",
+        RESEARCH_CLI_MODULE,
         topic,
         "--emit",
         "json",
@@ -101,7 +108,7 @@ def run_research(topic: str, depth: str, sources: list[str]) -> dict[str, Any]:
             text=True,
             timeout=RESEARCH_TIMEOUT_SECONDS,
             env=_trendpipe_env(),
-            cwd=TRENDPIPE_DIR,
+            cwd=utils.root_dir(),
         )
     except subprocess.TimeoutExpired as exc:
         raise ResearchExecutionError(

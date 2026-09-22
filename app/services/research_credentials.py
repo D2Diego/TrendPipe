@@ -1,12 +1,12 @@
-"""Atomic updates for the vendored trendpipe credentials file."""
+"""Atomic updates for the trendpipe research engine's credentials file."""
 
 import os
 import re
 import tempfile
 
-from app.services.research_engine import TRENDPIPE_DIR
+from app.utils import utils
 
-ENV_PATH = os.path.join(TRENDPIPE_DIR, ".env")
+ENV_PATH = os.path.join(utils.storage_dir("research"), ".env")
 _ENV_KEY_PATTERN = re.compile(r"^[A-Z_][A-Z0-9_]*$")
 ALLOWED_CREDENTIAL_KEYS = frozenset(
     {

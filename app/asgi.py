@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from loguru import logger
 
@@ -87,5 +87,24 @@ app.mount(
     "/tasks", StaticFiles(directory=task_dir, html=True, follow_symlink=True), name=""
 )
 
+# The React app (webui-react) is built into here and served same-origin,
+# replacing the separate Nginx container that used to own this job.
 public_dir = utils.public_dir()
-app.mount("/", StaticFiles(directory=public_dir, html=True), name="")
+app.mount(
+    "/assets",
+    StaticFiles(directory=os.path.join(public_dir, "assets")),
+    name="assets",
+)
+
+
+@app.get("/{full_path:path}", include_in_schema=False)
+async def serve_spa(full_path: str):
+    """Fall back to index.html for every non-API route.
+
+    The frontend uses react-router's BrowserRouter (history-API routing), so
+    a hard refresh on a client-side route like /researches/abc must still
+    resolve to index.html and let the router take over - there is no real
+    server-side route for it. This is registered last, after every API
+    router and the /tasks and /assets mounts, so those keep taking priority.
+    """
+    return FileResponse(os.path.join(public_dir, "index.html"))

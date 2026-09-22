@@ -6,10 +6,9 @@
 #   2. NVIDIA Container Toolkit installed
 #   3. Verify with: docker info | grep nvidia
 #
-# This file overrides the default docker-compose.yml to:
-#   - Build with Dockerfile.gpu (NVIDIA CUDA base image)
-#   - Build only the FastAPI generation service with CUDA
-#   - Keep the React/Nginx webui service on the normal lightweight image
+# This file overrides the default docker-compose.yml to build the single
+# api service (FastAPI + the built React UI) with Dockerfile.gpu (NVIDIA
+# CUDA base image) instead of the normal lightweight image.
 services:
   api:
     build:
