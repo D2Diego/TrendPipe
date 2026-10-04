@@ -1,3 +1,5 @@
+import os
+import tempfile
 import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -25,3 +27,13 @@ class TestTaskHistoryController(unittest.TestCase):
             with self.assertRaises(HttpException) as context:
                 controller.get_task_restore_params(SimpleNamespace(headers={}), task_id="missing")
         self.assertEqual(context.exception.status_code, 404)
+
+    def test_reads_task_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            task_path = os.path.join(tmp, "t1")
+            os.makedirs(task_path)
+            with open(os.path.join(task_path, "script.json"), "w", encoding="utf-8") as handle:
+                handle.write('{"script": "hello"}')
+            with patch.object(controller.utils, "task_dir", return_value=tmp):
+                response = controller.read_task_file(SimpleNamespace(headers={}), task_id="t1", name="script.json")
+        self.assertIn("hello", response["data"]["content"])

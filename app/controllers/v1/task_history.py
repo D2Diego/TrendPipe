@@ -1,4 +1,6 @@
-from fastapi import Path, Request
+import os
+
+from fastapi import Path, Query, Request
 
 from app.controllers import base
 from app.controllers.v1.base import new_router
@@ -21,3 +23,16 @@ def get_task_restore_params(request: Request, task_id: str = Path(...)):
         request_id = base.get_task_id(request)
         raise HttpException(task_id=task_id, status_code=404, message=f"{request_id}: task has no restorable parameters")
     return utils.get_response(200, payload)
+
+
+@router.get("/tasks/{task_id}/file", summary="Read a file from a task folder")
+def read_task_file(request: Request, task_id: str = Path(...), name: str = Query(..., description="File name inside the task folder")):
+    # Build the path to the requested file inside the task directory and
+    # return its text contents so the UI can preview logs and scripts.
+    file_path = os.path.join(utils.task_dir(), task_id, name)
+    if not os.path.isfile(file_path):
+        request_id = base.get_task_id(request)
+        raise HttpException(task_id=task_id, status_code=404, message=f"{request_id}: file not found")
+    with open(file_path, "r", encoding="utf-8", errors="replace") as handle:
+        content = handle.read()
+    return utils.get_response(200, {"name": name, "content": content})
