@@ -46,6 +46,18 @@ class TestTaskHistory(unittest.TestCase):
             tasks = task_history.collect_task_summaries()
         self.assertEqual(tasks[0]["video_file"], "t1/final-0.mp4")
 
+    def test_collect_filters_by_search_term(self):
+        for task_id, subject in (("t1", "cats playing"), ("t2", "dogs running")):
+            task_path = os.path.join(self.tmp.name, task_id)
+            os.makedirs(task_path)
+            with open(os.path.join(task_path, "script.json"), "w", encoding="utf-8") as file:
+                json.dump({"params": {"video_subject": subject}}, file)
+        with patch.object(task_history.utils, "task_dir", return_value=self.tmp.name), patch.object(task_history.sm.state, "get_all_tasks", return_value=([], 0)):
+            matched = task_history.collect_task_summaries(search="DOGS")
+            empty = task_history.collect_task_summaries(search="birds")
+        self.assertEqual([task["task_id"] for task in matched], ["t2"])
+        self.assertEqual(empty, [])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -17,6 +17,11 @@ class TestTaskHistoryController(unittest.TestCase):
             response = controller.list_task_history(SimpleNamespace(headers={}))
         self.assertEqual(response["data"]["tasks"][0]["task_id"], "t1")
 
+    def test_passes_search_query_to_service(self):
+        with patch.object(controller.task_history, "collect_task_summaries", return_value=[]) as collect:
+            controller.list_task_history(SimpleNamespace(headers={}), q="cats")
+        collect.assert_called_once_with(limit=20, search="cats")
+
     def test_returns_restore_payload_or_404(self):
         with patch.object(controller.task_history, "load_task_restore_payload", return_value={"task_id": "t1", "params": {"video_subject": "cats"}}):
             response = controller.get_task_restore_params(SimpleNamespace(headers={}), task_id="t1")

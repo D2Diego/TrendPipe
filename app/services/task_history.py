@@ -76,7 +76,12 @@ def _relative_task_path(path: str, tasks_root: str) -> str:
     return os.path.relpath(candidate, tasks_root).replace(os.sep, "/")
 
 
-def collect_task_summaries(limit: int = 20) -> list[dict[str, Any]]:
+def _matches_search(task: dict[str, Any], needle: str) -> bool:
+    haystack = f"{task.get('subject') or ''} {task.get('task_id') or ''}".lower()
+    return needle in haystack
+
+
+def collect_task_summaries(limit: int = 20, search: str | None = None) -> list[dict[str, Any]]:
     by_id = {task["task_id"]: task for task in scan_history_tasks(limit=50)}
     try:
         runtime_tasks, _ = sm.state.get_all_tasks(1, 50)
@@ -99,7 +104,11 @@ def collect_task_summaries(limit: int = 20) -> list[dict[str, Any]]:
         if os.path.isdir(task_path):
             entry["mtime"] = os.path.getmtime(task_path)
     tasks_root = os.path.realpath(utils.task_dir())
-    merged = sorted(by_id.values(), key=lambda task: task.get("mtime", 0), reverse=True)[:limit]
+    candidates = list(by_id.values())
+    needle = (search or "").strip().lower()
+    if needle:
+        candidates = [task for task in candidates if _matches_search(task, needle)]
+    merged = sorted(candidates, key=lambda task: task.get("mtime", 0), reverse=True)[:limit]
     for task in merged:
         task["video_file"] = _relative_task_path(str(task.get("video_file") or ""), tasks_root)
         task["task_path"] = _relative_task_path(str(task.get("task_path") or ""), tasks_root)

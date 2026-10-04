@@ -1,4 +1,4 @@
-from fastapi import Path, Request
+from fastapi import Path, Query, Request
 
 from app.controllers import base
 from app.controllers.v1.base import new_router
@@ -10,8 +10,9 @@ router = new_router()
 
 
 @router.get("/tasks/history", summary="List live and persisted task history")
-def list_task_history(request: Request):
-    return utils.get_response(200, {"tasks": task_history.collect_task_summaries(limit=20)})
+def list_task_history(request: Request, q: str | None = Query(default=None, description="Filter tasks by subject or id")):
+    tasks = task_history.collect_task_summaries(limit=20, search=q)
+    return utils.get_response(200, {"tasks": tasks})
 
 
 @router.get("/tasks/{task_id}/restore-params", summary="Load validated parameters from a past task")
